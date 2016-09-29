@@ -92,96 +92,15 @@
 MIDDLEWARE_CLASSES = (
     &apos;ratelimit.middleware.RatelimitMiddleware&apos;,
 )
-</code></pre><p>然后定义 RATELIMIT_VIEW<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">from importlib import import_module</div><div class="line"></div><div class="line">from django.conf import settings</div><div class="line">from django.http import HttpResponseForbidden</div><div class="line"></div><div class="line"></div><div class="line">def ratelimited(request, exception):</div><div class="line">    usage = exception.usage</div><div class="line">    if usage:</div><div class="line">        task_view = settings.RATELIMIT_TASK</div><div class="line">        if task_view:</div><div class="line">            mod, attr = task_view.rsplit(&apos;.&apos;, 1)</div><div class="line">            keyfn = getattr(import_module(mod), attr)</div><div class="line">            keyfn.delay(usage)</div><div class="line">    return HttpResponseForbidden()</div></pre></td></tr></table></figure></p>
+</code></pre><p>然后定义 RATELIMIT_VIEW<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> importlib <span class="keyword">import</span> import_module</div><div class="line"></div><div class="line"><span class="keyword">from</span> django.conf <span class="keyword">import</span> settings</div><div class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> HttpResponseForbidden</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">ratelimited</span><span class="params">(request, exception)</span>:</span></div><div class="line">    usage = exception.usage</div><div class="line">    <span class="keyword">if</span> usage:</div><div class="line">        task_view = settings.RATELIMIT_TASK</div><div class="line">        <span class="keyword">if</span> task_view:</div><div class="line">            mod, attr = task_view.rsplit(<span class="string">'.'</span>, <span class="number">1</span>)</div><div class="line">            keyfn = getattr(import_module(mod), attr)</div><div class="line">            keyfn.delay(usage)</div><div class="line">    <span class="keyword">return</span> HttpResponseForbidden()</div></pre></td></tr></table></figure></p>
 <p>RATELIMIT_TASK 为指定 celery 异步发送邮件，这里面需要配置 celery 和 邮件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"># email settings</div><div class="line">EMAIL_HOST = &apos;***&apos;</div><div class="line">EMAIL_PORT = &apos;***&apos;</div><div class="line">EMAIL_USE_SSL = True</div><div class="line">EMAIL_HOST_USER = &apos;***&apos;</div><div class="line">EMAIL_HOST_PASSWORD = &apos;***&apos;</div><div class="line"></div><div class="line">EMAIL_RECEIVER = [&apos;**&apos;, &apos;**&apos;]  # 需要接收邮件的用户列表</div><div class="line"></div><div class="line">RATELIMIT_COUNT_TO_SEND_EMAIL = [2, 50, 100]  # 当计数器到某个值时发邮件，防止邮件发送太频繁</div><div class="line"></div><div class="line"></div><div class="line">REDIS_HOST = &apos;127.0.0.1&apos;</div><div class="line">REDIS_PORT = 6379</div><div class="line"></div><div class="line">RATELIMIT_TASK = &apos;ratelimit.task.send_mail&apos;</div><div class="line">CELERY_RESULT_BACKEND = &quot;redis://%s:%d/2&quot; % (REDIS_HOST, REDIS_PORT)</div><div class="line">REDIS_BROKER = &quot;redis://%s:%d/3&quot; % (REDIS_HOST, REDIS_PORT)</div></pre></td></tr></table></figure>
-<p>这里用了 redis 作为消息队列，RATELIMIT_TASK 如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"># -*- coding: utf-8 -*-</div><div class="line"># from __future__ import absolute_import</div><div class="line">import os</div><div class="line">import json</div><div class="line">import django</div><div class="line">from celery import Celery</div><div class="line"></div><div class="line">from django.conf import settings</div><div class="line">from django.core import mail</div><div class="line"></div><div class="line"></div><div class="line">os.environ.setdefault(&apos;DJANGO_SETTINGS_MODULE&apos;, &apos;proj.settings&apos;)</div><div class="line">django.setup()</div><div class="line"></div><div class="line">app = Celery(&apos;block_spider&apos;, backend=settings.CELERY_RESULT_BACKEND, broker=settings.REDIS_BROKER)</div><div class="line">app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)</div><div class="line"></div><div class="line"></div><div class="line">@app.task()</div><div class="line">def send_mail(usage):</div><div class="line">    emails = [&apos;block spider&apos;, json.dumps(usage), settings.EMAIL_HOST_USER, settings.EMAIL_RECEIVER]</div><div class="line">    if (usage.get(&apos;count&apos;) - usage.get(&apos;limit&apos;)) in settings.RATELIMIT_COUNT_TO_SEND_EMAIL:</div><div class="line">        mail.send_mail(*emails)</div></pre></td></tr></table></figure></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># email settings</span></div><div class="line">EMAIL_HOST = <span class="string">'***'</span></div><div class="line">EMAIL_PORT = <span class="string">'***'</span></div><div class="line">EMAIL_USE_SSL = <span class="keyword">True</span></div><div class="line">EMAIL_HOST_USER = <span class="string">'***'</span></div><div class="line">EMAIL_HOST_PASSWORD = <span class="string">'***'</span></div><div class="line"></div><div class="line">EMAIL_RECEIVER = [<span class="string">'**'</span>, <span class="string">'**'</span>]  <span class="comment"># 需要接收邮件的用户列表</span></div><div class="line"></div><div class="line">RATELIMIT_COUNT_TO_SEND_EMAIL = [<span class="number">2</span>, <span class="number">50</span>, <span class="number">100</span>]  <span class="comment"># 当计数器到某个值时发邮件，防止邮件发送太频繁</span></div><div class="line"></div><div class="line"></div><div class="line">REDIS_HOST = <span class="string">'127.0.0.1'</span></div><div class="line">REDIS_PORT = <span class="number">6379</span></div><div class="line"></div><div class="line">RATELIMIT_TASK = <span class="string">'ratelimit.task.send_mail'</span></div><div class="line">CELERY_RESULT_BACKEND = <span class="string">"redis://%s:%d/2"</span> % (REDIS_HOST, REDIS_PORT)</div><div class="line">REDIS_BROKER = <span class="string">"redis://%s:%d/3"</span> % (REDIS_HOST, REDIS_PORT)</div></pre></td></tr></table></figure>
+<p>这里用了 redis 作为消息队列，RATELIMIT_TASK 如下<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"><span class="comment"># from __future__ import absolute_import</span></div><div class="line"><span class="keyword">import</span> os</div><div class="line"><span class="keyword">import</span> json</div><div class="line"><span class="keyword">import</span> django</div><div class="line"><span class="keyword">from</span> celery <span class="keyword">import</span> Celery</div><div class="line"></div><div class="line"><span class="keyword">from</span> django.conf <span class="keyword">import</span> settings</div><div class="line"><span class="keyword">from</span> django.core <span class="keyword">import</span> mail</div><div class="line"></div><div class="line"></div><div class="line">os.environ.setdefault(<span class="string">'DJANGO_SETTINGS_MODULE'</span>, <span class="string">'proj.settings'</span>)</div><div class="line">django.setup()</div><div class="line"></div><div class="line">app = Celery(<span class="string">'block_spider'</span>, backend=settings.CELERY_RESULT_BACKEND, broker=settings.REDIS_BROKER)</div><div class="line">app.autodiscover_tasks(<span class="keyword">lambda</span>: settings.INSTALLED_APPS)</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@app.task()</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">send_mail</span><span class="params">(usage)</span>:</span></div><div class="line">    emails = [<span class="string">'block spider'</span>, json.dumps(usage), settings.EMAIL_HOST_USER, settings.EMAIL_RECEIVER]</div><div class="line">    <span class="keyword">if</span> (usage.get(<span class="string">'count'</span>) - usage.get(<span class="string">'limit'</span>)) <span class="keyword">in</span> settings.RATELIMIT_COUNT_TO_SEND_EMAIL:</div><div class="line">        mail.send_mail(*emails)</div></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/09/29/django-防爬虫实现/" data-id="cito6d3640000fso02vge4qoq" class="article-share-link">Teilen</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-test" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/09/14/test/" class="article-date">
-  <time datetime="2016-09-14T07:54:32.000Z" itemprop="datePublished">2016-09-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/14/test/">test</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/09/14/test/" data-id="cito6d36o0002fso0mcl8dzz1" class="article-share-link">Teilen</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/09/14/hello-world/" class="article-date">
-  <time datetime="2016-09-14T07:26:37.000Z" itemprop="datePublished">2016-09-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/14/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/09/14/hello-world/" data-id="cito6d36g0001fso0jq1g2p8a" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/09/29/django-防爬虫实现/" data-id="cito6k5940000npo0c9sd56d4" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -223,14 +142,6 @@ MIDDLEWARE_CLASSES = (
         
           <li>
             <a href="/2016/09/29/django-防爬虫实现/">django 防爬虫实现</a>
-          </li>
-        
-          <li>
-            <a href="/2016/09/14/test/">test</a>
-          </li>
-        
-          <li>
-            <a href="/2016/09/14/hello-world/">Hello World</a>
           </li>
         
       </ul>
