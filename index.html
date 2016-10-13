@@ -48,7 +48,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -58,6 +58,78 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-python-与-数据结构-第三章-线性表-（上）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（上）/" class="article-date">
+  <time datetime="2016-10-13T12:18:39.000Z" itemprop="datePublished">2016-10-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/13/python-与-数据结构-第三章-线性表-（上）/">python 与 数据结构 第三章 线性表 （上）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="3-1-线性表抽象数据类型"><a href="#3-1-线性表抽象数据类型" class="headerlink" title="3.1  线性表抽象数据类型"></a>3.1  线性表抽象数据类型</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">ADT List:</div><div class="line">  List(self)             # 一个表抽象数据类型</div><div class="line">  is_empty(self)         # 判断 self 是否为一个空表</div><div class="line">  len(self)              # 获得 self 的长度</div><div class="line">  prepend(self, elem)    # 将元素 elem 加入表中作为第一个元素</div><div class="line">  append(self, elem)     # 将元素 elem 加入表中作为最后一个元素</div><div class="line">  insert(self, elem, i)  # 将 elem 加入表中作为第 i 个元素， 其他元素的顺序不变</div><div class="line">  del_first(self)        # 删除表中的首元素</div><div class="line">  del_last(self)         # 删除表中尾元素</div><div class="line">  del(self)              # 删除表中第 i 个元素</div><div class="line">  search(self, elem)     # 查找元素 elem 在表中出现的位置， 不出现时返回 -1</div><div class="line">  forall(self, op)       # 对表中的每个元素执行操作 op</div></pre></td></tr></table></figure>
+<h5 id="3-1-3-线性表实现：基本考虑"><a href="#3-1-3-线性表实现：基本考虑" class="headerlink" title="3.1.3 线性表实现：基本考虑"></a>3.1.3 线性表实现：基本考虑</h5><p> 提出两种基本实现模型：</p>
+<ul>
+<li>将表元素存放在一大块连续存储区里，称为顺序表（连续表)</li>
+<li>将表元素存放在通过链接构造起来的一系列存储块里，称为链接表（链表）</li>
+</ul>
+<p>####3.2 顺序表实现</p>
+<p>#####3.2.2 顺序表基本操作实现</p>
+<ul>
+<li>创建和访问操作<ul>
+<li>不修改表结构的操作只有两种模式，或者是直接访问 <em>O(1)</em>, 或者是基于一个整形变量，按下标循环并检查处理 <em>O(n)</em></li>
+</ul>
+</li>
+<li>变动操作：加入元素         <ul>
+<li>尾端加入新数据项：<em>O(1)</em></li>
+<li>新数据存入元素存储区的第 i 个单位： <em>O(n)</em></li>
+</ul>
+</li>
+<li>变动操作： 删除元素<ul>
+<li>尾端删除数据： <em>O(1)</em></li>
+<li>删除位置 i 的数据：<em>O(1)</em></li>
+<li>基于条件的删除： <em>O(n)</em>           </li>
+</ul>
+</li>
+</ul>
+<p>表的顺序实现（顺序表）的缺点：需要连续的存储区<br>如果连续的存储区容量不够的话，可以动态扩容，主要步骤如下 </p>
+<ol>
+<li>另外申请一块更大的元素存储区</li>
+<li>把表中已有的元素复制到新存储区</li>
+<li>用新的元素存储区替换原来的元素存储区（改变表对象的元素区链接）</li>
+<li>实际加入新元素</li>
+</ol>
+<p>#####3.2.4 Python 的 list<br>list 是一种采用分离式技术实现的动态顺序表，实际策略：在建立空表（或者很小的表）时，系统分配一块能容纳 8 个元素的存储区；在执行插入操作时，如果元素区满就换一块 4 倍大的存储区。但如果当时表很大，目前值为 50000，系统将改变策略，换存储区时容量加倍。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（上）/" data-id="ciu8bbo8b0000ado0o0eqtg2a" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
   
     <article id="post-django-源码分析-base36编码函数" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -89,7 +161,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-base36编码函数/" data-id="ciu819vjj0000vco0fubpgct7" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-base36编码函数/" data-id="ciu8bbo8h0001ado0rw9gft5t" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
@@ -141,7 +213,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-自定义数据结构/" data-id="ciu819vjr0001vco0f9brao1c" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-自定义数据结构/" data-id="ciu8bbo8p0003ado0apa3zsfi" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
@@ -188,7 +260,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/一致性哈希算法-简单的-python-实现/" data-id="ciu819vkh0006vco0dg2mh5c5" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/10/13/一致性哈希算法-简单的-python-实现/" data-id="ciu8bbo8w0005ado0f4pkt7j2" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
@@ -242,7 +314,7 @@ MIDDLEWARE_CLASSES = (
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/09/29/django-防爬虫实现/" data-id="ciu819vkl0007vco0ebo11z9r" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/09/29/django-防爬虫实现/" data-id="ciu8bbo8s0004ado0pn8d28vy" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
@@ -268,7 +340,7 @@ MIDDLEWARE_CLASSES = (
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
     </div>
   </div>
 
@@ -278,14 +350,14 @@ MIDDLEWARE_CLASSES = (
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/web/" style="font-size: 20px;">web</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/web/" style="font-size: 20px;">web</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Archiv</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
@@ -295,9 +367,13 @@ MIDDLEWARE_CLASSES = (
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（上）/">python 与 数据结构 第三章 线性表 （上）</a>
+          </li>
         
           <li>
             <a href="/2016/10/13/django-源码分析-base36编码函数/">django 源码分析 - base36编码函数</a>

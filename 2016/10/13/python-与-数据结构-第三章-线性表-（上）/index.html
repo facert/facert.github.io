@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8">
   
-  <title>django 源码分析 - base36编码函数 | ~o00o~</title>
+  <title>python 与 数据结构 第三章 线性表 （上） | ~o00o~</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="0x01   首先介绍一下什么是 base36编码，它的编码中包含0~9的数字，加上所有26个字母，不区分大小写，不包含任何标点，所有的字母要不全大写，要不全小写。所以加起来就是 “0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ”,或者 ‘0123456789abcdefghijklmnopqrstuvwxyz’，同样的还有 base62编码，就是26个字母的大小写再加上">
+  <meta name="description" content="3.1  线性表抽象数据类型123456789101112ADT List:  List(self)             # 一个表抽象数据类型  is_empty(self)         # 判断 self 是否为一个空表  len(self)              # 获得 self 的长度  prepend(self, elem)    # 将元素 elem 加入表中作为第一个元">
 <meta property="og:type" content="article">
-<meta property="og:title" content="django 源码分析 - base36编码函数">
-<meta property="og:url" content="http://yoursite.com/2016/10/13/django-源码分析-base36编码函数/index.html">
+<meta property="og:title" content="python 与 数据结构 第三章 线性表 （上）">
+<meta property="og:url" content="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（上）/index.html">
 <meta property="og:site_name" content="~o00o~">
-<meta property="og:description" content="0x01   首先介绍一下什么是 base36编码，它的编码中包含0~9的数字，加上所有26个字母，不区分大小写，不包含任何标点，所有的字母要不全大写，要不全小写。所以加起来就是 “0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ”,或者 ‘0123456789abcdefghijklmnopqrstuvwxyz’，同样的还有 base62编码，就是26个字母的大小写再加上">
-<meta property="og:updated_time" content="2016-10-13T07:38:03.000Z">
+<meta property="og:description" content="3.1  线性表抽象数据类型123456789101112ADT List:  List(self)             # 一个表抽象数据类型  is_empty(self)         # 判断 self 是否为一个空表  len(self)              # 获得 self 的长度  prepend(self, elem)    # 将元素 elem 加入表中作为第一个元">
+<meta property="og:updated_time" content="2016-10-13T12:19:23.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="django 源码分析 - base36编码函数">
-<meta name="twitter:description" content="0x01   首先介绍一下什么是 base36编码，它的编码中包含0~9的数字，加上所有26个字母，不区分大小写，不包含任何标点，所有的字母要不全大写，要不全小写。所以加起来就是 “0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ”,或者 ‘0123456789abcdefghijklmnopqrstuvwxyz’，同样的还有 base62编码，就是26个字母的大小写再加上">
+<meta name="twitter:title" content="python 与 数据结构 第三章 线性表 （上）">
+<meta name="twitter:description" content="3.1  线性表抽象数据类型123456789101112ADT List:  List(self)             # 一个表抽象数据类型  is_empty(self)         # 判断 self 是否为一个空表  len(self)              # 获得 self 的长度  prepend(self, elem)    # 将元素 elem 加入表中作为第一个元">
   
     <link rel="alternate" href="/atom.xml" title="~o00o~" type="application/atom+xml">
   
@@ -61,10 +61,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-django-源码分析-base36编码函数" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-python-与-数据结构-第三章-线性表-（上）" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/10/13/django-源码分析-base36编码函数/" class="article-date">
-  <time datetime="2016-10-13T07:37:36.000Z" itemprop="datePublished">2016-10-13</time>
+    <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（上）/" class="article-date">
+  <time datetime="2016-10-13T12:18:39.000Z" itemprop="datePublished">2016-10-13</time>
 </a>
     
   </div>
@@ -75,7 +75,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      django 源码分析 - base36编码函数
+      python 与 数据结构 第三章 线性表 （上）
     </h1>
   
 
@@ -83,18 +83,47 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h3><p>   首先介绍一下什么是 base36编码，它的编码中包含0~9的数字，加上所有26个字母，不区分大小写，不包含任何标点，所有的字母要不全大写，要不全小写。所以加起来就是 “0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ”,<br>或者 ‘0123456789abcdefghijklmnopqrstuvwxyz’，同样的还有 base62编码，就是26个字母的大小写再加上0-9，一共62个字符。</p>
-<p>   base62 编码在短地址服务中用的比较多，比如这种： <a href="http://dwz.cn/1qPNt，" target="_blank" rel="external">http://dwz.cn/1qPNt，</a> 有关怎么设计一个高性能的短地址服务在这里有个回答的不错（<a href="https://www.zhihu.com/question/29270034）" target="_blank" rel="external">https://www.zhihu.com/question/29270034）</a> ，大家可以参考。今天主要说的是 django 中 base36 和 int 之间的转换。代码如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">def int_to_base36(i):</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    Converts an integer to a base36 string</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    char_set = &apos;0123456789abcdefghijklmnopqrstuvwxyz&apos;</div><div class="line">    if i &lt; 36:</div><div class="line">        return char_set[i]</div><div class="line">    b36 = &apos;&apos;</div><div class="line">    while i != 0:</div><div class="line">        i, n = divmod(i, 36)</div><div class="line">        b36 = char_set[n] + b36</div><div class="line">    return b36</div><div class="line"></div><div class="line">&gt;&gt;&gt; int_to_base36(123456)</div><div class="line">&apos;2n9c&apos;</div><div class="line">&gt;&gt;&gt; int(&apos;2n9c&apos;, 32)</div><div class="line">89388</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure>
-<p>这个函数主要用于 django auth 模块自带的密码重置生成 token 模块 default_token_generator 中。</p>
+        <h4 id="3-1-线性表抽象数据类型"><a href="#3-1-线性表抽象数据类型" class="headerlink" title="3.1  线性表抽象数据类型"></a>3.1  线性表抽象数据类型</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">ADT List:</div><div class="line">  List(self)             # 一个表抽象数据类型</div><div class="line">  is_empty(self)         # 判断 self 是否为一个空表</div><div class="line">  len(self)              # 获得 self 的长度</div><div class="line">  prepend(self, elem)    # 将元素 elem 加入表中作为第一个元素</div><div class="line">  append(self, elem)     # 将元素 elem 加入表中作为最后一个元素</div><div class="line">  insert(self, elem, i)  # 将 elem 加入表中作为第 i 个元素， 其他元素的顺序不变</div><div class="line">  del_first(self)        # 删除表中的首元素</div><div class="line">  del_last(self)         # 删除表中尾元素</div><div class="line">  del(self)              # 删除表中第 i 个元素</div><div class="line">  search(self, elem)     # 查找元素 elem 在表中出现的位置， 不出现时返回 -1</div><div class="line">  forall(self, op)       # 对表中的每个元素执行操作 op</div></pre></td></tr></table></figure>
+<h5 id="3-1-3-线性表实现：基本考虑"><a href="#3-1-3-线性表实现：基本考虑" class="headerlink" title="3.1.3 线性表实现：基本考虑"></a>3.1.3 线性表实现：基本考虑</h5><p> 提出两种基本实现模型：</p>
+<ul>
+<li>将表元素存放在一大块连续存储区里，称为顺序表（连续表)</li>
+<li>将表元素存放在通过链接构造起来的一系列存储块里，称为链接表（链表）</li>
+</ul>
+<p>####3.2 顺序表实现</p>
+<p>#####3.2.2 顺序表基本操作实现</p>
+<ul>
+<li>创建和访问操作<ul>
+<li>不修改表结构的操作只有两种模式，或者是直接访问 <em>O(1)</em>, 或者是基于一个整形变量，按下标循环并检查处理 <em>O(n)</em></li>
+</ul>
+</li>
+<li>变动操作：加入元素         <ul>
+<li>尾端加入新数据项：<em>O(1)</em></li>
+<li>新数据存入元素存储区的第 i 个单位： <em>O(n)</em></li>
+</ul>
+</li>
+<li>变动操作： 删除元素<ul>
+<li>尾端删除数据： <em>O(1)</em></li>
+<li>删除位置 i 的数据：<em>O(1)</em></li>
+<li>基于条件的删除： <em>O(n)</em>           </li>
+</ul>
+</li>
+</ul>
+<p>表的顺序实现（顺序表）的缺点：需要连续的存储区<br>如果连续的存储区容量不够的话，可以动态扩容，主要步骤如下 </p>
+<ol>
+<li>另外申请一块更大的元素存储区</li>
+<li>把表中已有的元素复制到新存储区</li>
+<li>用新的元素存储区替换原来的元素存储区（改变表对象的元素区链接）</li>
+<li>实际加入新元素</li>
+</ol>
+<p>#####3.2.4 Python 的 list<br>list 是一种采用分离式技术实现的动态顺序表，实际策略：在建立空表（或者很小的表）时，系统分配一块能容纳 8 个元素的存储区；在执行插入操作时，如果元素区满就换一块 4 倍大的存储区。但如果当时表很大，目前值为 50000，系统将改变策略，换存储区时容量加倍。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-base36编码函数/" data-id="ciu8bbo8h0001ado0rw9gft5t" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（上）/" data-id="ciu8bbo8b0000ado0o0eqtg2a" class="article-share-link">Teilen</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
 
     </footer>
   </div>
@@ -102,19 +131,10 @@
     
 <nav id="article-nav">
   
-    <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（上）/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Neuer</strong>
-      <div class="article-nav-title">
-        
-          python 与 数据结构 第三章 线性表 （上）
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/10/13/django-源码分析-自定义数据结构/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2016/10/13/django-源码分析-base36编码函数/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Älter</strong>
-      <div class="article-nav-title">django 源码分析 - 自定义数据结构</div>
+      <div class="article-nav-title">django 源码分析 - base36编码函数</div>
     </a>
   
 </nav>
@@ -125,7 +145,7 @@
 
 <section id="comments">
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="post-django-源码分析-base36编码函数" data-title="django 源码分析 - base36编码函数" data-url="http://yoursite.com/2016/10/13/django-源码分析-base36编码函数/"></div>
+<div class="ds-thread" data-thread-key="post-python-与-数据结构-第三章-线性表-（上）" data-title="python 与 数据结构 第三章 线性表 （上）" data-url="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（上）/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
