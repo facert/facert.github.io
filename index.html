@@ -48,7 +48,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -58,6 +58,79 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-python-与-数据结构-第三章-线性表-（中）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（中）/" class="article-date">
+  <time datetime="2016-10-13T15:38:28.000Z" itemprop="datePublished">2016-10-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/13/python-与-数据结构-第三章-线性表-（中）/">python 与 数据结构 第三章 线性表 （中）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="3-3-链接表"><a href="#3-3-链接表" class="headerlink" title="3.3 链接表"></a>3.3 链接表</h4><p>基于链接技术实现的线性表称为链接表或者链表</p>
+<h5 id="3-2-3-单链表"><a href="#3-2-3-单链表" class="headerlink" title="3.2.3 单链表"></a>3.2.3 单链表</h5><ul>
+<li>一个单链表由一些具体的表节点构成</li>
+<li>每个节点是一个对象，有自己的标识</li>
+<li>节点之间通过节点链接建立起单向的顺序联系</li>
+</ul>
+<p>定义一个简单的表结点类：</p>
+<pre><code>class LNode:
+    def __init__(self, elem, next_=None):
+        self.elem = elem
+        self.next = next_
+</code></pre><p>基本操作:</p>
+<ul>
+<li>创建空表：O(1)</li>
+<li>删除表：在 Python 里是 O(1)。当然存储管理也需要时间</li>
+<li>判断空表：O(1)</li>
+<li>加入元素（都需要加一个 T(分配) 的时间）<ul>
+<li>首端加入元素：O(1)</li>
+<li>尾端加入元素：O(n)，因为需要找到表的最后结点</li>
+</ul>
+</li>
+<li>定位加入元素：O(n)，平均情况和最坏情况</li>
+<li>删除元素：<ul>
+<li>首端删除元素：O(1)；尾端删除：O(n)</li>
+<li>定位删除元素：O(n)，平均情况和最坏情况</li>
+</ul>
+</li>
+<li>其他删除通常需要扫描整个表或其一部分，O(n) 操作<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">LinkedListUnderflow</span><span class="params">(ValueError)</span>:</span></div><div class="line">	<span class="comment"># 自定义一个 Exception</span></div><div class="line">	<span class="keyword">pass</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">LList</span><span class="params">(object)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        self._head = <span class="keyword">None</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_empty</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">return</span> <span class="keyword">not</span> self._head</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">prepend</span><span class="params">(self, elem)</span>:</span></div><div class="line">        self._head = LNode(elem, self._head)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pop</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self._head:</div><div class="line">            <span class="keyword">raise</span> LinkedListUnderflow(<span class="string">'in pop'</span>)</div><div class="line">        e = self._head.elem</div><div class="line">        self._head = self._head.next</div><div class="line">        <span class="keyword">return</span> e</div></pre></td></tr></table></figure>
+<p>后端操作<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">append</span><span class="params">(self, elem)</span>:</span></div><div class="line">       <span class="keyword">if</span> <span class="keyword">not</span> self._head:</div><div class="line">           self._head = LNode(elem)</div><div class="line">           <span class="keyword">return</span></div><div class="line">       p = self._head</div><div class="line">       <span class="keyword">while</span> p.next:</div><div class="line">           p = p.next</div><div class="line">       p.next = LNode(elem)</div><div class="line">       </div><div class="line">   <span class="function"><span class="keyword">def</span> <span class="title">pop_last</span><span class="params">(self)</span>:</span></div><div class="line">       <span class="keyword">if</span> <span class="keyword">not</span> self._head:  <span class="comment"># 空表</span></div><div class="line">           <span class="keyword">raise</span> LinkedListUnderflow(<span class="string">'in pop_last'</span>)</div><div class="line">       p = self._head</div><div class="line"></div><div class="line">       <span class="keyword">if</span> <span class="keyword">not</span> p.next:  <span class="comment"># 表中只有一个元素</span></div><div class="line">           e = p.elem</div><div class="line">           self._head = <span class="keyword">None</span></div><div class="line">           <span class="keyword">return</span> e</div><div class="line">       <span class="keyword">while</span> p.next.next:</div><div class="line">           p = p.next</div><div class="line">       e = p.next.elem</div><div class="line">       p.next = <span class="keyword">None</span></div><div class="line">       <span class="keyword">return</span> e</div></pre></td></tr></table></figure></p>
+<p>其他操作<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">find</span><span class="params">(self, pred)</span>:</span></div><div class="line">       p = self._head</div><div class="line">       <span class="keyword">while</span> p:</div><div class="line">           <span class="keyword">if</span> pred(p.elem):</div><div class="line">               <span class="keyword">return</span> p.elem</div><div class="line">           p = p.next</div><div class="line"></div><div class="line">   <span class="function"><span class="keyword">def</span> <span class="title">printall</span><span class="params">(self)</span>:</span></div><div class="line">       p = self._head</div><div class="line">       <span class="keyword">while</span> p:</div><div class="line">           <span class="keyword">print</span> p.elem</div><div class="line">           p = p.next</div></pre></td></tr></table></figure></p>
+<p>详见代码:  <a href="https://github.com/facert/python-data-structure/blob/master/List/LList.py" target="_blank" rel="external">LList.py</a><br>未完待续</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（中）/" data-id="ciu8igmc20003y5o0aehn3d4c" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
   
     <article id="post-python-与-数据结构-第三章-线性表-（上）" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -116,7 +189,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（上）/" data-id="ciu8bbo8b0000ado0o0eqtg2a" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（上）/" data-id="ciu8igmc80005y5o0yue9ewcq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
@@ -159,7 +232,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-base36编码函数/" data-id="ciu8bbo8h0001ado0rw9gft5t" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-base36编码函数/" data-id="ciu8igmbl0000y5o0h6974ofe" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
@@ -211,7 +284,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-自定义数据结构/" data-id="ciu8bbo8p0003ado0apa3zsfi" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-自定义数据结构/" data-id="ciu8igmbs0001y5o0akxqlems" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
@@ -258,7 +331,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/一致性哈希算法-简单的-python-实现/" data-id="ciu8bbo8w0005ado0f4pkt7j2" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/10/13/一致性哈希算法-简单的-python-实现/" data-id="ciu8igmcc0008y5o0qro9gofr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
@@ -312,7 +385,7 @@ MIDDLEWARE_CLASSES = (
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/09/29/django-防爬虫实现/" data-id="ciu8bbo8s0004ado0pn8d28vy" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/09/29/django-防爬虫实现/" data-id="ciu8igmc60004y5o0w11axqp3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
@@ -348,14 +421,14 @@ MIDDLEWARE_CLASSES = (
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/web/" style="font-size: 20px;">web</a> <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/web/" style="font-size: 20px;">web</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archiv</h3>
+    <h3 class="widget-title">Archives</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
@@ -365,9 +438,13 @@ MIDDLEWARE_CLASSES = (
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">letzter Beitrag</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（中）/">python 与 数据结构 第三章 线性表 （中）</a>
+          </li>
         
           <li>
             <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（上）/">python 与 数据结构 第三章 线性表 （上）</a>
@@ -383,10 +460,6 @@ MIDDLEWARE_CLASSES = (
         
           <li>
             <a href="/2016/10/13/一致性哈希算法-简单的-python-实现/">一致性哈希算法 简单的 python 实现</a>
-          </li>
-        
-          <li>
-            <a href="/2016/09/29/django-防爬虫实现/">django 防爬虫实现</a>
           </li>
         
       </ul>
