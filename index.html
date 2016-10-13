@@ -48,7 +48,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -59,10 +59,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-test" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-django-源码分析-base36编码函数" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/10/10/test/" class="article-date">
-  <time datetime="2016-10-10T02:55:18.000Z" itemprop="datePublished">2016-10-10</time>
+    <a href="/2016/10/13/django-源码分析-base36编码函数/" class="article-date">
+  <time datetime="2016-10-13T07:37:36.000Z" itemprop="datePublished">2016-10-13</time>
 </a>
     
   </div>
@@ -73,7 +73,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/10/test/">test</a>
+      <a class="article-title" href="/2016/10/13/django-源码分析-base36编码函数/">django 源码分析 - base36编码函数</a>
     </h1>
   
 
@@ -81,14 +81,119 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>$\displaystyle \forall$N &gt; N0; f (N) &lt; c.g(N)</p>
+        <h3 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h3><p>   首先介绍一下什么是 base36编码，它的编码中包含0~9的数字，加上所有26个字母，不区分大小写，不包含任何标点，所有的字母要不全大写，要不全小写。所以加起来就是 “0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ”,<br>或者 ‘0123456789abcdefghijklmnopqrstuvwxyz’，同样的还有 base62编码，就是26个字母的大小写再加上0-9，一共62个字符。</p>
+<p>   base62 编码在短地址服务中用的比较多，比如这种： <a href="http://dwz.cn/1qPNt，" target="_blank" rel="external">http://dwz.cn/1qPNt，</a> 有关怎么设计一个高性能的短地址服务在这里有个回答的不错（<a href="https://www.zhihu.com/question/29270034）" target="_blank" rel="external">https://www.zhihu.com/question/29270034）</a> ，大家可以参考。今天主要说的是 django 中 base36 和 int 之间的转换。代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">def int_to_base36(i):</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    Converts an integer to a base36 string</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    char_set = &apos;0123456789abcdefghijklmnopqrstuvwxyz&apos;</div><div class="line">    if i &lt; 36:</div><div class="line">        return char_set[i]</div><div class="line">    b36 = &apos;&apos;</div><div class="line">    while i != 0:</div><div class="line">        i, n = divmod(i, 36)</div><div class="line">        b36 = char_set[n] + b36</div><div class="line">    return b36</div><div class="line"></div><div class="line">&gt;&gt;&gt; int_to_base36(123456)</div><div class="line">&apos;2n9c&apos;</div><div class="line">&gt;&gt;&gt; int(&apos;2n9c&apos;, 32)</div><div class="line">89388</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure>
+<p>这个函数主要用于 django auth 模块自带的密码重置生成 token 模块 default_token_generator 中。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/10/test/" data-id="ciu3gvee90000a3o049bp55e3" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-base36编码函数/" data-id="ciu819vjj0000vco0fubpgct7" class="article-share-link">Teilen</a>
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-django-源码分析-自定义数据结构" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/13/django-源码分析-自定义数据结构/" class="article-date">
+  <time datetime="2016-10-13T07:36:40.000Z" itemprop="datePublished">2016-10-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/13/django-源码分析-自定义数据结构/">django 源码分析 - 自定义数据结构</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>django 自定义了一些数据结构，主要有 OrderedSet，MultiValueDict，ImmutableList，DictWrapper</p>
+<h3 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h3><h4 id="OrderedSet"><a href="#OrderedSet" class="headerlink" title="OrderedSet"></a>OrderedSet</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">class OrderedSet(object):</div><div class="line"></div><div class="line">    def __init__(self, iterable=None):</div><div class="line">        self.dict = OrderedDict(((x, None) for x in iterable) if iterable else [])</div><div class="line"></div><div class="line">    def add(self, item):</div><div class="line">        self.dict[item] = None</div><div class="line"></div><div class="line">    def remove(self, item):</div><div class="line">        del self.dict[item]</div><div class="line"></div><div class="line">    def discard(self, item):</div><div class="line">        try:</div><div class="line">            self.remove(item)</div><div class="line">        except KeyError:</div><div class="line">            pass</div><div class="line"></div><div class="line">    def __iter__(self):</div><div class="line">        return iter(self.dict.keys())</div><div class="line"></div><div class="line">    def __contains__(self, item):</div><div class="line">        return item in self.dict</div><div class="line"></div><div class="line">    def __bool__(self):</div><div class="line">        return bool(self.dict)</div><div class="line"></div><div class="line">    def __nonzero__(self):      # Python 2 compatibility</div><div class="line">        return type(self).__bool__(self)</div><div class="line"></div><div class="line">    def __len__(self):</div><div class="line">        return len(self.dict)</div></pre></td></tr></table></figure>
+<p>这里面最重要的其实就是 <code>self.dict = OrderedDict(((x, None) for x in iterable) if iterable else [])</code>, 使用了 OrderedDict 有序字典 这个 python 标准库里面的数据结构，下面看下 self.dict 的返回形式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; from collections import OrderedDict</div><div class="line">&gt;&gt;&gt; iterable = [1,2,3]</div><div class="line">&gt;&gt;&gt; OrderedDict(((x, None) for x in iterable) if iterable else [])</div><div class="line">OrderedDict([(1, None), (2, None), (3, None)])</div></pre></td></tr></table></figure>
+<h3 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h3><h4 id="MultiValueDict"><a href="#MultiValueDict" class="headerlink" title="MultiValueDict"></a>MultiValueDict</h4><p>MultiValueDict 在 http 请求参数处理的时候特别有用，因为有的时候传入的参数是一个数组，QueryDict 继承了 MultiValueDict, 来对参数进行处理，先贴下用法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; d = MultiValueDict(&#123;&apos;name&apos;: [&apos;Adrian&apos;, &apos;Simon&apos;], &apos;position&apos;: [&apos;Developer&apos;]&#125;)</div><div class="line">&gt;&gt;&gt; d[&apos;name&apos;]</div><div class="line">&apos;Simon&apos;</div><div class="line">&gt;&gt;&gt; d.getlist(&apos;name&apos;)</div><div class="line">[&apos;Adrian&apos;, &apos;Simon&apos;]</div><div class="line">&gt;&gt;&gt; d.getlist(&apos;doesnotexist&apos;)</div><div class="line">[]</div><div class="line">&gt;&gt;&gt; d.getlist(&apos;doesnotexist&apos;, [&apos;Adrian&apos;, &apos;Simon&apos;])</div><div class="line">[&apos;Adrian&apos;, &apos;Simon&apos;]</div><div class="line">&gt;&gt;&gt; d.get(&apos;lastname&apos;, &apos;nonexistent&apos;)</div><div class="line">&apos;nonexistent&apos;</div><div class="line">&gt;&gt;&gt; d.setlist(&apos;lastname&apos;, [&apos;Holovaty&apos;, &apos;Willison&apos;])</div></pre></td></tr></table></figure>
+<p>主要是实现了 getlist, setlist 方法， getlist 调用 <strong>getitem</strong>, <strong>getitem</strong> 当 key 不存在时，返回 []</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">def __getitem__(self, key):</div><div class="line">        &quot;&quot;&quot;</div><div class="line">        Returns the last data value for this key, or [] if it&apos;s an empty list;</div><div class="line">        raises KeyError if not found.</div><div class="line">        &quot;&quot;&quot;</div><div class="line">        try:</div><div class="line">            list_ = super(MultiValueDict, self).__getitem__(key)</div><div class="line">        except KeyError:</div><div class="line">            raise MultiValueDictKeyError(repr(key))</div><div class="line">        try:</div><div class="line">            return list_[-1]</div><div class="line">        except IndexError:</div><div class="line">            return []</div></pre></td></tr></table></figure>
+<h3 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h3><h4 id="ImmutableList"><a href="#ImmutableList" class="headerlink" title="ImmutableList"></a>ImmutableList</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ImmutableList</span><span class="params">(tuple)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, *args, **kwargs)</span>:</span></div><div class="line">        <span class="keyword">if</span> <span class="string">'warning'</span> <span class="keyword">in</span> kwargs:</div><div class="line">            warning = kwargs[<span class="string">'warning'</span>]</div><div class="line">            <span class="keyword">del</span> kwargs[<span class="string">'warning'</span>]</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            warning = <span class="string">'ImmutableList object is immutable.'</span></div><div class="line">        self = tuple.__new__(cls, *args, **kwargs)</div><div class="line">        self.warning = warning</div><div class="line">        <span class="keyword">return</span> self</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">complain</span><span class="params">(self, *wargs, **kwargs)</span>:</span></div><div class="line">        <span class="keyword">if</span> isinstance(self.warning, Exception):</div><div class="line">            <span class="keyword">raise</span> self.warning</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            <span class="keyword">raise</span> AttributeError(self.warning)</div></pre></td></tr></table></figure>
+<p>当这个数据结构的实例改变时，会提示一些有用的信息来提示用户这个类是不可变的</p>
+<h3 id="0x04"><a href="#0x04" class="headerlink" title="0x04"></a>0x04</h3><h4 id="DictWrapper"><a href="#DictWrapper" class="headerlink" title="DictWrapper"></a>DictWrapper</h4><p>主要是做了 dict 的封装</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">DictWrapper</span><span class="params">(dict)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, data, func, prefix)</span>:</span></div><div class="line">        super(DictWrapper, self).__init__(data)</div><div class="line">        self.func = func</div><div class="line">        self.prefix = prefix</div><div class="line">        </div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span><span class="params">(self, key)</span>:</span></div><div class="line">        <span class="keyword">if</span> key.startswith(self.prefix):</div><div class="line">            use_func = <span class="keyword">True</span></div><div class="line">            key = key[len(self.prefix):]</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            use_func = <span class="keyword">False</span></div><div class="line">        value = super(DictWrapper, self).__getitem__(key)</div><div class="line">        <span class="keyword">if</span> use_func:</div><div class="line">            <span class="keyword">return</span> self.func(value)</div><div class="line">        <span class="keyword">return</span> value</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">call_f</span><span class="params">(a)</span>:</span></div><div class="line"><span class="meta">... </span>    <span class="keyword">return</span> <span class="string">'hello %s'</span> % a</div><div class="line">...</div><div class="line">&gt;&gt; dict_wrapper = DictWrapper(&#123;<span class="string">'1'</span>: <span class="string">'john'</span>&#125;, call_f, <span class="string">'prefix_'</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>dict_wrapper[<span class="string">'prefix_1'</span>]</div><div class="line"><span class="string">'hello john'</span></div></pre></td></tr></table></figure>
+<p>当出现 prefix 前缀时自动会去调用 func 返回结果</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-自定义数据结构/" data-id="ciu819vjr0001vco0f9brao1c" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-一致性哈希算法-简单的-python-实现" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/13/一致性哈希算法-简单的-python-实现/" class="article-date">
+  <time datetime="2016-10-13T07:34:55.000Z" itemprop="datePublished">2016-10-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/13/一致性哈希算法-简单的-python-实现/">一致性哈希算法 简单的 python 实现</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>一致性哈希算法 简单的 python 实现</p>
+<h4 id="原理以及应用"><a href="#原理以及应用" class="headerlink" title="原理以及应用"></a>原理以及应用</h4><hr>
+<p>一致性哈希算法现在主要用于分布式系统中负载均衡，比如分布式 cache,  防止某些节点突然 down 掉，或者增加新节点时，大量的  cache 失效。具体介绍原理之类的文章非常多，比如：<a href="http://the-art-of-programming-by-july.readthedocs.io/en/latest/ebook/zh/%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/" target="_blank" rel="external">这篇文章</a>，在这里不再赘述。</p>
+<h4 id="Python-实现"><a href="#Python-实现" class="headerlink" title="Python 实现"></a>Python 实现</h4><hr>
+<p>这里有个关于一致性哈希算法 python 简单实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># coding: utf-8</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> md5</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HashRing</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, nodes=None, replicas=<span class="number">3</span>)</span>:</span></div><div class="line"></div><div class="line">        <span class="string">""" nodes 是字符串的列表</span></div><div class="line">            replicas 表示有多少个虚拟节点</div><div class="line">        """</div><div class="line">        self.replicas = replicas</div><div class="line">        self.ring = dict()</div><div class="line">        self._sorted_keys = []  <span class="comment"># 有序的 hash node 队列</span></div><div class="line">        <span class="keyword">if</span> nodes:</div><div class="line">            <span class="keyword">for</span> node <span class="keyword">in</span> nodes:</div><div class="line">                self.add_node(node)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_node</span><span class="params">(self, node)</span>:</span></div><div class="line"></div><div class="line">        <span class="string">"""将 node 节点加入到哈希环中</span></div><div class="line">        """</div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>, self.replicas):</div><div class="line">            key = self.gen_key(<span class="string">'%s:%s'</span> % (node, i))</div><div class="line">            self.ring[key] = node</div><div class="line">            self._sorted_keys.append(key)</div><div class="line">        self._sorted_keys.sort()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">remove_node</span><span class="params">(self, node)</span>:</span></div><div class="line"></div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>, self.replicas):</div><div class="line">            key = self.gen_key(<span class="string">'%s:%s'</span> % (node, i))</div><div class="line">            <span class="keyword">del</span> self.ring[key]</div><div class="line">            self._sorted_keys.remove(key)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_node</span><span class="params">(self, string_key)</span>:</span></div><div class="line"></div><div class="line">        <span class="string">"""根据 string_key 找到相应的 node 节点</span></div><div class="line">        """</div><div class="line">        <span class="keyword">return</span> self.get_node_pos(string_key)[<span class="number">0</span>]</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_node_pos</span><span class="params">(self, string_key)</span>:</span></div><div class="line"></div><div class="line">        <span class="string">"""根据 string key 找到 node ,如果没找到，则返回第一个节点</span></div><div class="line">        """</div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.ring:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">None</span>, <span class="keyword">None</span></div><div class="line">        key = self.gen_key(string_key)</div><div class="line">        nodes = self._sorted_keys</div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>, len(nodes)):</div><div class="line">            node = nodes[i]</div><div class="line">            <span class="keyword">if</span> key &lt;= node:</div><div class="line">                <span class="keyword">return</span> self.ring[node], i</div><div class="line">        <span class="keyword">return</span> self.ring[nodes[<span class="number">0</span>]], <span class="number">0</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_nodes</span><span class="params">(self, string_key)</span>:</span></div><div class="line"></div><div class="line">        <span class="string">""" 获取 所有可用的 nodes 节点</span></div><div class="line">        """</div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.ring:</div><div class="line">            <span class="keyword">yield</span> <span class="keyword">None</span>, <span class="keyword">None</span></div><div class="line">        node, pos = self.get_node_pos(string_key)</div><div class="line">        <span class="comment"># 先返回 string_key pos 节点后的 nodes</span></div><div class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> self._sorted_keys[pos:]:</div><div class="line">            <span class="keyword">yield</span> self.ring[key]</div><div class="line">        <span class="comment"># 然后循环返回整个列表</span></div><div class="line">        <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">            <span class="keyword">for</span> key <span class="keyword">in</span> self._sorted_keys:</div><div class="line">                <span class="keyword">yield</span> self.ring[key]</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">gen_key</span><span class="params">(self, key)</span>:</span></div><div class="line">        <span class="string">"""生成 key</span></div><div class="line">        """</div><div class="line">        m = md5.new()</div><div class="line">        m.update(key)</div><div class="line">        <span class="keyword">return</span> long(m.hexdigest(), <span class="number">16</span>)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">In [<span class="number">22</span>]: servers = [<span class="string">'192.168.0.1:6379'</span>,</div><div class="line"> 				    <span class="string">'192.168.0.2:6379'</span>, </div><div class="line"> 				    <span class="string">'192.168.0.3:6379'</span></div><div class="line"> 				    ]</div><div class="line"></div><div class="line">In [<span class="number">23</span>]: ring = HashRing(servers)</div><div class="line"></div><div class="line">In [<span class="number">24</span>]: server = ring.get_node(<span class="string">'key1'</span>)</div><div class="line"></div><div class="line">In [<span class="number">25</span>]: server</div><div class="line">Out[<span class="number">25</span>]: <span class="string">'192.168.0.1:6379'</span></div><div class="line"></div><div class="line">In [<span class="number">26</span>]: server = ring.get_nodes(<span class="string">'key1'</span>)</div><div class="line">Out[<span class="number">27</span>]: &lt;generator object get_nodes at <span class="number">0x1055cea00</span>&gt;</div><div class="line"></div><div class="line">In [<span class="number">28</span>]: server.next()</div><div class="line">Out[<span class="number">28</span>]: <span class="string">'192.168.0.1:6379'</span></div><div class="line"></div><div class="line">In [<span class="number">29</span>]: server.next()</div><div class="line">Out[<span class="number">29</span>]: <span class="string">'192.168.0.1:6379'</span></div><div class="line"></div><div class="line">In [<span class="number">30</span>]: server.next()</div><div class="line">Out[<span class="number">30</span>]: <span class="string">'192.168.0.2:6379'</span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>hash 算法并不是保证绝对的平衡，如果 cache 较少的话，对象并不能被均匀的映射到 cache 上</p>
+</blockquote>
+<p>如果节点少的话， cache 对于每个 node  的负载肯定不均匀，所以代码中引入了 replicas 这个参数，也就是每个 node 能够映射多个 hash 节点，称为虚拟节点，均匀分布在环中，就能保持相对的平衡。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/10/13/一致性哈希算法-简单的-python-实现/" data-id="ciu819vkh0006vco0dg2mh5c5" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+
     </footer>
   </div>
   
@@ -137,9 +242,11 @@ MIDDLEWARE_CLASSES = (
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/09/29/django-防爬虫实现/" data-id="ciu3gveeg0001a3o0ywn7a7d4" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/09/29/django-防爬虫实现/" data-id="ciu819vkl0007vco0ebo11z9r" class="article-share-link">Teilen</a>
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+
     </footer>
   </div>
   
@@ -157,13 +264,27 @@ MIDDLEWARE_CLASSES = (
 
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+    </div>
+  </div>
+
 
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/web/" style="font-size: 20px;">web</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+    </div>
+  </div>
+
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Archiv</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
@@ -173,12 +294,20 @@ MIDDLEWARE_CLASSES = (
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
         
           <li>
-            <a href="/2016/10/10/test/">test</a>
+            <a href="/2016/10/13/django-源码分析-base36编码函数/">django 源码分析 - base36编码函数</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/13/django-源码分析-自定义数据结构/">django 源码分析 - 自定义数据结构</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/13/一致性哈希算法-简单的-python-实现/">一致性哈希算法 简单的 python 实现</a>
           </li>
         
           <li>
