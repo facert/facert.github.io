@@ -72,6 +72,51 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-如何通过-python-实现一个-正经-tumblr-爬虫" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/21/如何通过-python-实现一个-正经-tumblr-爬虫/" class="article-date">
+  <time datetime="2016-11-21T05:56:53.000Z" itemprop="datePublished">2016-11-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/21/如何通过-python-实现一个-正经-tumblr-爬虫/">如何通过 python 实现一个`正经` tumblr 爬虫</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>直接入正题，写一个 python 爬虫，最重要的其实是找到入口，从哪里开始爬，以 tumblr 为例，只要能够获取到用户列表，通过每个用户的主页就能拿到每个用户发的或者转发的视频，原作者的名字也可以拿到。<br>代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">download</span><span class="params">(self, url)</span>:</span></div><div class="line">    <span class="comment"># 用 requests 库获取 url 的网页内容</span></div><div class="line">    res = requests.get(url)</div><div class="line">    <span class="comment"># 用 bs4 解析 html</span></div><div class="line">    soup = BeautifulSoup(res.text)  </div><div class="line">    <span class="comment"># 获取 iframe 标签列表</span></div><div class="line">    iframes = soup.find_all(<span class="string">'iframe'</span>)</div><div class="line">    tmp_source = []</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> iframes:</div><div class="line">        <span class="comment"># 获取视频地址</span></div><div class="line">        source = i.get(<span class="string">'src'</span>, <span class="string">''</span>).strip()</div><div class="line">        <span class="comment"># 过滤内容</span></div><div class="line">        <span class="keyword">if</span> source <span class="keyword">and</span> source.find(<span class="string">'https://www.tumblr.com/video'</span>) != <span class="number">-1</span> <span class="keyword">and</span> source <span class="keyword">not</span> <span class="keyword">in</span> self.total_url:</div><div class="line">            tmp_source.append(source)</div><div class="line">            <span class="keyword">print</span> <span class="string">u'新增链接:'</span> + source</div><div class="line"></div><div class="line">    tmp_user = []</div><div class="line">    <span class="comment"># 获取用户列表</span></div><div class="line">    new_users = soup.find_all(class_=<span class="string">'reblog-link'</span>)</div><div class="line">    <span class="keyword">for</span> user <span class="keyword">in</span> new_users:</div><div class="line">        username = user.text.strip()</div><div class="line">        <span class="comment"># 过滤用户</span></div><div class="line">        <span class="keyword">if</span> username <span class="keyword">and</span> username <span class="keyword">not</span> <span class="keyword">in</span> self.total_user:</div><div class="line">            <span class="comment"># 将用户放入待爬取队列</span></div><div class="line">            self.user_queue.put(username)</div><div class="line">            <span class="comment"># 加入总用户列表中</span></div><div class="line">            self.total_user.append(username)</div><div class="line">            tmp_user.append(username)</div><div class="line">            <span class="keyword">print</span> <span class="string">u'新增用户:'</span> + username</div></pre></td></tr></table></figure>
+<p>为了提高爬虫的性能，可以采用多线程的方式，代码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Tumblr</span><span class="params">(threading.Thread)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="comment"># 为了能处理多线程 ctr+c 的信号问题，具体见完整代码</span></div><div class="line">        <span class="keyword">global</span> is_exit</div><div class="line">        <span class="keyword">while</span> <span class="keyword">not</span> is_exit:</div><div class="line">            user = self.user_queue.get()</div><div class="line">            url = <span class="string">'http://%s.tumblr.com/'</span> % user</div><div class="line">            self.download(url)</div><div class="line">            time.sleep(<span class="number">2</span>)</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    <span class="comment"># 线程数</span></div><div class="line">    NUM_WORKERS = <span class="number">10</span></div><div class="line">    <span class="comment"># 待爬取队列</span></div><div class="line">    queue = Queue.Queue()</div><div class="line">    <span class="comment"># 开始的时候将一个热门博主的 username 加入到待爬取队列</span></div><div class="line">    queue.put(<span class="string">'username'</span>)</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(NUM_WORKERS):</div><div class="line">        <span class="comment"># 实例化线程对象</span></div><div class="line">        tumblr = Tumblr(queue)</div><div class="line">        <span class="comment"># 设置线程为守护线程</span></div><div class="line">        tumblr.setDaemon(<span class="keyword">True</span>)</div><div class="line">        tumblr.start()</div></pre></td></tr></table></figure>
+<p>最后将用户和视频资源写入到文件中</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 由于多线程写文件会出现线程安全问题，所以加了个线程锁</span></div><div class="line">mutex.acquire()</div><div class="line"><span class="keyword">if</span> tmp_user:</div><div class="line">    self.f_user.write(<span class="string">'\n'</span>.join(tmp_user)+<span class="string">'\n'</span>)</div><div class="line"><span class="keyword">if</span> tmp_source:</div><div class="line">    self.f_source.write(<span class="string">'\n'</span>.join(tmp_source)+<span class="string">'\n'</span>)</div><div class="line"><span class="comment"># 释放锁</span></div><div class="line">mutex.release()</div></pre></td></tr></table></figure>
+<p>这样一个多线程 python 爬虫就基本完成了，完整代码见 <a href="https://github.com/facert/tumblr_spider" target="_blank" rel="external">github</a></p>
+<p>最后声明这是一个正经的爬虫（严肃脸），爬取的资源跟你第一个填入的 username 有很大关系，老司机怎么开车我不管 ╭(╯^╰)╮</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/21/如何通过-python-实现一个-正经-tumblr-爬虫/" data-id="civrz7fgl000adfo0qycsih9u" class="article-share-link">Teilen</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-微信找房机器人的实现" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/11/19/微信找房机器人的实现/" class="article-date">
@@ -94,7 +139,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h4 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h4><p>生在帝都的人都知道租房的困难，每次找房都是心力交瘁。其中豆瓣租房小组算是比较靠谱的房源了，但是由于小组信息繁杂，而且没有搜索的功能，想要实时获取租房信息是件很困难的事情，所以最近给自己挖了个坑，做个微信找房机器人，先看大概效果吧，见下图：<br><img src="/media/WechatIMG5.jpeg" alt="WechatIMG5"></p>
+        <h4 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h4><p>身在帝都的人都知道租房的困难，每次找房都是心力交瘁。其中豆瓣租房小组算是比较靠谱的房源了，但是由于小组信息繁杂，而且没有搜索的功能，想要实时获取租房信息是件很困难的事情，所以最近给自己挖了个坑，做个微信找房机器人，先看大概效果吧，见下图：<br><img src="/media/WechatIMG5.jpeg" alt="WechatIMG5"></p>
 <h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><p>说下大概的技术实现吧，首先是 scrapy 爬虫对于豆瓣北京租房的小组实时爬取，存储在 mongodb 中，因为做的是全文检索，所以对 title, description 使用 jieba 和 whoosh 进行了分词和索引，做成 api。接下来就是应用的接入，网上有微信机器人的开源 <a href="https://github.com/liuwons/wxBot" target="_blank" rel="external">wxBot</a>，所以对它进行了修改, 实现了定时推送和持久化。最后顺便把公众号也做了同样的功能，支持实时租房信息搜索。</p>
 <h4 id="部分代码"><a href="#部分代码" class="headerlink" title="部分代码"></a>部分代码</h4><p>scrapy 支持自定义 pipeline，能很方便的实现数据录入的时候实时生成索引，见 code:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IndexPipeline</span><span class="params">(object)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, index)</span>:</span></div><div class="line">        self.index = index</div><div class="line"></div><div class="line"><span class="meta">    @classmethod</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">from_crawler</span><span class="params">(cls, crawler)</span>:</span></div><div class="line">        <span class="keyword">return</span> cls(</div><div class="line">            index=crawler.settings.get(<span class="string">'WHOOSH_INDEX'</span>, <span class="string">'indexes'</span>)</div><div class="line">        )</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_item</span><span class="params">(self, item, spider)</span>:</span></div><div class="line">        self.writer = AsyncWriter(get_index(self.index, zufang_schema))</div><div class="line">        create_time = datetime.datetime.strptime(item[<span class="string">'create_time'</span>], <span class="string">"%Y-%m-%d %H:%M:%S"</span>)</div><div class="line">        self.writer.update_document(</div><div class="line">            url=item[<span class="string">'url'</span>].decode(<span class="string">'utf-8'</span>),</div><div class="line">            title=item[<span class="string">'title'</span>],</div><div class="line">            description=item[<span class="string">'description'</span>],</div><div class="line">            create_time=create_time</div><div class="line">        )</div><div class="line">        self.writer.commit()</div><div class="line">        <span class="keyword">return</span> item</div></pre></td></tr></table></figure>
@@ -108,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/19/微信找房机器人的实现/" data-id="civpdd67f0009c1o0ejzyvs79" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/11/19/微信找房机器人的实现/" data-id="civrz7fgq000ddfo0zr8e1q0r" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DIY/">DIY</a></li></ul>
@@ -195,7 +240,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（中）/" data-id="civpdd6770005c1o0906t7uyi" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（中）/" data-id="civrz7fgi0008dfo00n3vfem7" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
@@ -265,7 +310,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（上）/" data-id="civpdd6730004c1o0r49qvpc0" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（上）/" data-id="civrz7fg00003dfo0utzb8id6" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
@@ -308,7 +353,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-base36编码函数/" data-id="civpdd66m0000c1o06kvaau8d" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-base36编码函数/" data-id="civrz7ffi0000dfo0sabhu9xb" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
@@ -360,7 +405,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-自定义数据结构/" data-id="civpdd66t0001c1o0ww3x798y" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-自定义数据结构/" data-id="civrz7ffq0001dfo08djw76qa" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
@@ -407,7 +452,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/一致性哈希算法-简单的-python-实现/" data-id="civpdd67c0008c1o0mkmrhodl" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/10/13/一致性哈希算法-简单的-python-实现/" data-id="civrz7fgc0005dfo0mevf3llu" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
@@ -461,7 +506,7 @@ MIDDLEWARE_CLASSES = (
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/09/29/django-防爬虫实现/" data-id="civpdd66z0003c1o0doygu6vx" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/09/29/django-防爬虫实现/" data-id="civrz7fg60004dfo0byifc86a" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
@@ -519,6 +564,10 @@ MIDDLEWARE_CLASSES = (
       <ul>
         
           <li>
+            <a href="/2016/11/21/如何通过-python-实现一个-正经-tumblr-爬虫/">如何通过 python 实现一个`正经` tumblr 爬虫</a>
+          </li>
+        
+          <li>
             <a href="/2016/11/19/微信找房机器人的实现/">微信找房机器人</a>
           </li>
         
@@ -532,10 +581,6 @@ MIDDLEWARE_CLASSES = (
         
           <li>
             <a href="/2016/10/13/django-源码分析-base36编码函数/">django 源码分析 - base36编码函数</a>
-          </li>
-        
-          <li>
-            <a href="/2016/10/13/django-源码分析-自定义数据结构/">django 源码分析 - 自定义数据结构</a>
           </li>
         
       </ul>
