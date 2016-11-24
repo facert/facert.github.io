@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+	      var hm = document.createElement("script");
+	      hm.src = "//hm.baidu.com/hm.js?98cc862d4b99529da444b0b16203e7e7";
+		  var s = document.getElementsByTagName("script")[0]; 
+		  s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+  
+  <title>python 实现余弦相似度过滤豆瓣租房小组中介贴 | ~o00o~</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前几天做了个微信找房机器人, 爬取豆瓣租房小组的时候发现很多伪装的中介帖，如下这种格式：
+
+可月付 无中介 方庄地铁附近 芳城园一区单间出租
+可月付 无中介 方庄地铁附近 芳城园一区主卧次卧出租
+方庄地铁附近 芳城园一区次卧出租
+
+豆瓣对于小组的帖子有个简单的过滤，如果标题完全一样，就会直接删除，所以中介们一般都会在标题改几个字，内容也会调整下顺序。其实对于这种问题，有简单的方案实现，比如下文介绍">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python 实现余弦相似度过滤豆瓣租房小组中介贴">
+<meta property="og:url" content="http://yoursite.com/2016/11/24/python-实现余弦相似度过滤豆瓣租房小组中介帖/index.html">
+<meta property="og:site_name" content="~o00o~">
+<meta property="og:description" content="前几天做了个微信找房机器人, 爬取豆瓣租房小组的时候发现很多伪装的中介帖，如下这种格式：
+
+可月付 无中介 方庄地铁附近 芳城园一区单间出租
+可月付 无中介 方庄地铁附近 芳城园一区主卧次卧出租
+方庄地铁附近 芳城园一区次卧出租
+
+豆瓣对于小组的帖子有个简单的过滤，如果标题完全一样，就会直接删除，所以中介们一般都会在标题改几个字，内容也会调整下顺序。其实对于这种问题，有简单的方案实现，比如下文介绍">
+<meta property="og:image" content="http://yoursite.com/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-11-24%20%E4%B8%8B%E5%8D%882.25.45.png">
+<meta property="og:updated_time" content="2016-11-24T06:38:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python 实现余弦相似度过滤豆瓣租房小组中介贴">
+<meta name="twitter:description" content="前几天做了个微信找房机器人, 爬取豆瓣租房小组的时候发现很多伪装的中介帖，如下这种格式：
+
+可月付 无中介 方庄地铁附近 芳城园一区单间出租
+可月付 无中介 方庄地铁附近 芳城园一区主卧次卧出租
+方庄地铁附近 芳城园一区次卧出租
+
+豆瓣对于小组的帖子有个简单的过滤，如果标题完全一样，就会直接删除，所以中介们一般都会在标题改几个字，内容也会调整下顺序。其实对于这种问题，有简单的方案实现，比如下文介绍">
+<meta name="twitter:image" content="http://yoursite.com/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-11-24%20%E4%B8%8B%E5%8D%882.25.45.png">
+  
+    <link rel="alternate" href="/atom.xml" title="~o00o~" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">~o00o~</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-python-实现余弦相似度过滤豆瓣租房小组中介帖" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/24/python-实现余弦相似度过滤豆瓣租房小组中介帖/" class="article-date">
+  <time datetime="2016-11-24T11:16:04.000Z" itemprop="datePublished">2016-11-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      python 实现余弦相似度过滤豆瓣租房小组中介贴
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前几天做了个<a href="https://zhuanlan.zhihu.com/p/23798922" target="_blank" rel="external">微信找房机器人</a>, 爬取豆瓣租房小组的时候发现很多伪装的中介帖，如下这种格式：</p>
+<blockquote>
+<p>可月付 无中介 方庄地铁附近 芳城园一区单间出租</p>
+<p>可月付 无中介 方庄地铁附近 芳城园一区主卧次卧出租</p>
+<p>方庄地铁附近 芳城园一区次卧出租</p>
+</blockquote>
+<p>豆瓣对于小组的帖子有个简单的过滤，如果标题完全一样，就会直接删除，所以中介们一般都会在标题改几个字，内容也会调整下顺序。其实对于这种问题，有简单的方案实现，比如下文介绍的余弦相似度。</p>
+<p>关于余弦相似度的原理其实很简单，参考这篇文章<a href="http://www.ruanyifeng.com/blog/2013/03/cosine_similarity.html" target="_blank" rel="external">TF-IDF与余弦相似性的应用（二）：找出相似文章</a><br><img src="/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-11-24%20%E4%B8%8B%E5%8D%882.25.45.png" alt="屏幕快照 2016-11-24 下午2.25.45"></p>
+<p>python 实现如下：</p>
+<p>(一) 对文本分词</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">cut_word</span><span class="params">(content)</span>:</span></div><div class="line">    tags = jieba.analyse.extract_tags(content, withWeight=<span class="keyword">True</span>, topK=<span class="number">20</span>)</div><div class="line">    <span class="keyword">return</span> tags</div></pre></td></tr></table></figure>
+<p>这里用了 jieba ,分词什么的它太有用了<br>返回结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&apos;&apos;&apos;</div><div class="line">(u&apos;\u65b9\u5e84&apos;, 2.4582479479)</div><div class="line">(u&apos;\u82b3\u57ce\u56ed&apos;, 1.19547675029)</div><div class="line">(u&apos;\u53ef\u6708\u4ed8&apos;, 1.19547675029)</div><div class="line">(u&apos;\u4e00\u533a&apos;, 1.04666904475)</div><div class="line">(u&apos;\u5355\u95f4&apos;, 1.02371160058)</div><div class="line">(u&apos;\u51fa\u79df&apos;, 0.832472854883)</div><div class="line">(u&apos;\u5730\u94c1&apos;, 0.8200234078590001)</div><div class="line">(u&apos;\u4e2d\u4ecb&apos;, 0.7891864466530001)</div><div class="line">(u&apos;\u9644\u8fd1&apos;, 0.516934129144)</div><div class="line">&apos;&apos;&apos;</div></pre></td></tr></table></figure></p>
+<p>(二) 返回两个文本词频的多维向量</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge_tag</span><span class="params">(tag1=None, tag2=None)</span>:</span></div><div class="line"></div><div class="line">    v1 = []</div><div class="line">    v2 = []</div><div class="line">    tag_dict1 = &#123;i[<span class="number">0</span>]: i[<span class="number">1</span>] <span class="keyword">for</span> i <span class="keyword">in</span> tag1&#125;</div><div class="line">    tag_dict2 = &#123;i[<span class="number">0</span>]: i[<span class="number">1</span>] <span class="keyword">for</span> i <span class="keyword">in</span> tag2&#125;</div><div class="line">    merged_tag = set(tag_dict1.keys()+tag_dict2.keys())</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> merged_tag:</div><div class="line">        <span class="keyword">if</span> i <span class="keyword">in</span> tag_dict1:</div><div class="line">            v1.append(tag_dict1[i])</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            v1.append(<span class="number">0</span>)</div><div class="line"></div><div class="line">        <span class="keyword">if</span> i <span class="keyword">in</span> tag_dict2:</div><div class="line">            v2.append(tag_dict2[i])</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            v2.append(<span class="number">0</span>)</div><div class="line">    <span class="keyword">return</span> v1, v2</div></pre></td></tr></table></figure>
+<p>(三) 计算余弦相似度</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">dot_product</span><span class="params">(v1, v2)</span>:</span></div><div class="line">    <span class="keyword">return</span> sum(a * b <span class="keyword">for</span> a, b <span class="keyword">in</span> zip(v1, v2))</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">magnitude</span><span class="params">(vector)</span>:</span></div><div class="line">    <span class="keyword">return</span> sqrt(dot_product(vector, vector))</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">similarity</span><span class="params">(v1, v2)</span>:</span></div><div class="line">    <span class="string">'''计算余弦相似度</span></div><div class="line">    '''</div><div class="line">    <span class="keyword">return</span> dot_product(v1, v2) / (magnitude(v1) * magnitude(v2) + <span class="number">.00000000001</span>)</div></pre></td></tr></table></figure>
+<p>(四) 结果<br>我们取一些样本做例子，内容为标题+详情</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># https://www.douban.com/group/topic/93410497/</span></div><div class="line">    content1 = <span class="string">u"""</span></div><div class="line">                可月付 无中介 方庄地铁附近 芳城园一区单间出租</div><div class="line">                我的房子在方庄地铁附近的芳城园一区，正规小区楼房，</div><div class="line">                三家合住，现出租一间主卧和一间带小阳台次卧，室内家电齐全，</div><div class="line">                冰箱，洗衣机等都有，可洗澡上网，做饭都可以，小区交通便利，四通八达，</div><div class="line">                希望入住的是附近正常上班的朋友</div><div class="line">                """</div><div class="line">    <span class="comment"># https://www.douban.com/group/topic/93410328/</span></div><div class="line">    content2 = <span class="string">u"""</span></div><div class="line">                可月付 无中介 方庄地铁附近 芳城园一区主卧次卧出租</div><div class="line">                我的房子在方庄地铁附近的芳城园一区，正规小区楼房，</div><div class="line">                三家合住，现出租一间主卧和一间带小阳台次卧，室内家电齐全，</div><div class="line">                冰箱，洗衣机等都有，可洗澡上网，做饭都可以，小区交通便利，四通八达，</div><div class="line">                希望入住的是附近正常上班的朋友</div><div class="line">                """</div><div class="line"></div><div class="line">    <span class="comment"># https://www.douban.com/group/topic/93410308/</span></div><div class="line">    content3 = <span class="string">u"""方庄地铁附近 芳城园一区次卧出租</span></div><div class="line">                    我的房子在方庄地铁附近的芳城园一区，正规小区楼房，</div><div class="line">                    三家合住，现出租一间主卧和一间带小阳台次卧，室内家电齐全，</div><div class="line">                    冰箱，洗衣机等都有，可洗澡上网，做饭都可以，小区交通便利，四通八达，</div><div class="line">                    希望入住的是附近正常上班的朋友</div><div class="line">                    """</div><div class="line"></div><div class="line">    <span class="comment"># https://www.douban.com/group/topic/93381171/</span></div><div class="line">    content4 = <span class="string">u"""二环玉蜓桥旁下月27号后可入住二居</span></div><div class="line">                方庄方古园一区5号楼下月27日到期出租，</div><div class="line">                我是房主无中介费 ，新一年租6000元每月押一付三，主次卧可分开住。</div><div class="line">                距地铁5号线蒲黄榆站5分钟路程。房屋60平正向，另有看守固定车位。</div></pre></td></tr></table></figure>
+<p>测试结果如下， 越接近 1 则两者文章越相似</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">content1 和 content2 相似度为: 0.968802386285</div><div class="line">content1 和 content3 相似度为: 0.926323584519</div><div class="line">content2 和 content3 相似度为: 0.921885685549</div><div class="line">content2 和 content4 相似度为: 0.174889264654</div></pre></td></tr></table></figure>
+<p>说明 content1 content2 content3 很可能是中介批量发的帖子</p>
+<p>这次只是简单的研究下，代码见 <a href="https://gist.github.com/facert/097af928b50ef9946513c7a5b42ec5c2" target="_blank" rel="external">cosine_similarity.py</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/24/python-实现余弦相似度过滤豆瓣租房小组中介帖/" data-id="civvznao10008bfo0alleo3dd" class="article-share-link">Teilen</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/11/21/如何通过-python-实现一个-正经-tumblr-爬虫/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">如何通过 python 实现一个`正经` tumblr 爬虫</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+<!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="post-python-实现余弦相似度过滤豆瓣租房小组中介帖" data-title="python 实现余弦相似度过滤豆瓣租房小组中介贴" data-url="http://yoursite.com/2016/11/24/python-实现余弦相似度过滤豆瓣租房小组中介帖/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:'facert'};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+</section>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/web/" style="font-size: 20px;">web</a> <a href="/tags/数据结构/" style="font-size: 15px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/11/24/python-实现余弦相似度过滤豆瓣租房小组中介帖/">python 实现余弦相似度过滤豆瓣租房小组中介贴</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/21/如何通过-python-实现一个-正经-tumblr-爬虫/">如何通过 python 实现一个`正经` tumblr 爬虫</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/19/微信找房机器人的实现/">微信找房机器人</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（中）/">python 与 数据结构 第三章 线性表 （中）</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（上）/">python 与 数据结构 第三章 线性表 （上）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 facert<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    }); 
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
