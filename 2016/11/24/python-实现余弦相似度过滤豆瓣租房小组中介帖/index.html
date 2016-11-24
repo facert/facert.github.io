@@ -37,7 +37,7 @@
 
 豆瓣对于小组的帖子有个简单的过滤，如果标题完全一样，就会直接删除，所以中介们一般都会在标题改几个字，内容也会调整下顺序。其实对于这种问题，有简单的方案实现，比如下文介绍">
 <meta property="og:image" content="http://yoursite.com/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-11-24%20%E4%B8%8B%E5%8D%882.25.45.png">
-<meta property="og:updated_time" content="2016-11-24T06:39:27.000Z">
+<meta property="og:updated_time" content="2016-11-24T07:22:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python 实现余弦相似度过滤豆瓣租房小组中介贴">
 <meta name="twitter:description" content="前几天做了个微信找房机器人, 爬取豆瓣租房小组的时候发现很多伪装的中介帖，如下这种格式：
@@ -85,7 +85,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -137,12 +137,12 @@
 <p>测试结果如下， 越接近 1 则两者文章越相似</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">content1 和 content2 相似度为: 0.968802386285</div><div class="line">content1 和 content3 相似度为: 0.926323584519</div><div class="line">content2 和 content3 相似度为: 0.921885685549</div><div class="line">content2 和 content4 相似度为: 0.174889264654</div></pre></td></tr></table></figure>
 <p>说明 content1 content2 content3 很可能是中介批量发的帖子</p>
-<p>这次只是简单的研究下，代码见 <a href="https://gist.github.com/facert/097af928b50ef9946513c7a5b42ec5c2" target="_blank" rel="external">cosine_similarity.py</a></p>
+<p>这次只是简单的研究下，如果要起到更好效果，就得有这些关键词的语料，然后加权重。<br>代码见 <a href="https://gist.github.com/facert/097af928b50ef9946513c7a5b42ec5c2" target="_blank" rel="external">cosine_similarity.py</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/24/python-实现余弦相似度过滤豆瓣租房小组中介帖/" data-id="civvznao10008bfo0alleo3dd" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/11/24/python-实现余弦相似度过滤豆瓣租房小组中介帖/" data-id="civvznao10008bfo0alleo3dd" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
@@ -155,7 +155,7 @@
   
   
     <a href="/2016/11/21/如何通过-python-实现一个-正经-tumblr-爬虫/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Älter</strong>
+      <strong class="article-nav-caption">Older</strong>
       <div class="article-nav-title">如何通过 python 实现一个`正经` tumblr 爬虫</div>
     </a>
   
@@ -212,7 +212,7 @@ var duoshuoQuery = {short_name:'facert'};
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archiv</h3>
+    <h3 class="widget-title">Archives</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
@@ -222,7 +222,7 @@ var duoshuoQuery = {short_name:'facert'};
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">letzter Beitrag</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
         
