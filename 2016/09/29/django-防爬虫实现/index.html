@@ -16,29 +16,23 @@
 
 
   
-  <title>django 防爬虫实现 | ~o00o~</title>
+  <title>django 防爬虫实现 | facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="基本防爬策略
-一般的，像 nginx 这种 web 服务器都有防爬虫模块，基于 ip, user_agent 来识别爬虫，从而限制爬虫的爬取频率。但是基于某一个登录用户去做频率限制就有点麻烦了，这种情况下，只能通过下一层程序去防，比如 django 的话，通过中间件结合缓存的方式可以做到一定的频率限制。
-django-ratelimit
- django-ratelimit 这个库基本从 user">
+一般的，像 nginx 这种 web 服务器都有防爬虫模块，基于 ip, user_agent 来识别爬虫，从而限制爬虫的爬取频率。但是基于某一个登录用户去做频率限制就有点麻烦了，这种情况下，只能通过下一层程序去防，比如 django 的话，通过中间件结合缓存的方式可以做到一定的频率限制。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="django 防爬虫实现">
 <meta property="og:url" content="http://yoursite.com/2016/09/29/django-防爬虫实现/index.html">
-<meta property="og:site_name" content="~o00o~">
+<meta property="og:site_name" content="facert 的杂货店">
 <meta property="og:description" content="基本防爬策略
-一般的，像 nginx 这种 web 服务器都有防爬虫模块，基于 ip, user_agent 来识别爬虫，从而限制爬虫的爬取频率。但是基于某一个登录用户去做频率限制就有点麻烦了，这种情况下，只能通过下一层程序去防，比如 django 的话，通过中间件结合缓存的方式可以做到一定的频率限制。
-django-ratelimit
- django-ratelimit 这个库基本从 user">
-<meta property="og:updated_time" content="2016-10-13T07:35:45.000Z">
+一般的，像 nginx 这种 web 服务器都有防爬虫模块，基于 ip, user_agent 来识别爬虫，从而限制爬虫的爬取频率。但是基于某一个登录用户去做频率限制就有点麻烦了，这种情况下，只能通过下一层程序去防，比如 django 的话，通过中间件结合缓存的方式可以做到一定的频率限制。">
+<meta property="og:updated_time" content="2016-11-26T08:49:19.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django 防爬虫实现">
 <meta name="twitter:description" content="基本防爬策略
-一般的，像 nginx 这种 web 服务器都有防爬虫模块，基于 ip, user_agent 来识别爬虫，从而限制爬虫的爬取频率。但是基于某一个登录用户去做频率限制就有点麻烦了，这种情况下，只能通过下一层程序去防，比如 django 的话，通过中间件结合缓存的方式可以做到一定的频率限制。
-django-ratelimit
- django-ratelimit 这个库基本从 user">
+一般的，像 nginx 这种 web 服务器都有防爬虫模块，基于 ip, user_agent 来识别爬虫，从而限制爬虫的爬取频率。但是基于某一个登录用户去做频率限制就有点麻烦了，这种情况下，只能通过下一层程序去防，比如 django 的话，通过中间件结合缓存的方式可以做到一定的频率限制。">
   
-    <link rel="alternate" href="/atom.xml" title="~o00o~" type="application/atom+xml">
+    <link rel="alternate" href="/atom.xml" title="facert 的杂货店" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
@@ -57,7 +51,7 @@ django-ratelimit
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">~o00o~</a>
+        <a href="/" id="logo">facert 的杂货店</a>
       </h1>
       
     </div>
@@ -74,7 +68,7 @@ django-ratelimit
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -106,7 +100,7 @@ django-ratelimit
     <div class="article-entry" itemprop="articleBody">
       
         <h3 id="基本防爬策略"><a href="#基本防爬策略" class="headerlink" title="基本防爬策略"></a>基本防爬策略</h3><hr>
-<p>一般的，像 nginx 这种 web 服务器都有防爬虫模块，基于 ip, user_agent 来识别爬虫，从而限制爬虫的爬取频率。但是基于某一个登录用户去做频率限制就有点麻烦了，这种情况下，只能通过下一层程序去防，比如 django 的话，通过中间件结合缓存的方式可以做到一定的频率限制。</p>
+<p>一般的，像 nginx 这种 web 服务器都有防爬虫模块，基于 ip, user_agent 来识别爬虫，从而限制爬虫的爬取频率。但是基于某一个登录用户去做频率限制就有点麻烦了，这种情况下，只能通过下一层程序去防，比如 django 的话，通过中间件结合缓存的方式可以做到一定的频率限制。<br><a id="more"></a></p>
 <h3 id="django-ratelimit"><a href="#django-ratelimit" class="headerlink" title="django-ratelimit"></a>django-ratelimit</h3><hr>
 <p> <a href="https://github.com/jsocol/django-ratelimit" target="_blank" rel="external">django-ratelimit</a> 这个库基本从 user 层对爬虫做了限制，具体用法如下<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment"># ip 每分钟5次请求，但是 block 请求</span></div><div class="line"><span class="meta">@ratelimit(key='ip', rate='5/m')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">myview</span><span class="params">(request)</span>:</span></div><div class="line">    <span class="comment"># Will be true if the same IP makes more than 5 POST</span></div><div class="line">    <span class="comment"># requests/minute.</span></div><div class="line">    was_limited = getattr(request, <span class="string">'limited'</span>, <span class="keyword">False</span>)</div><div class="line">    <span class="keyword">return</span> HttpResponse()</div><div class="line"></div><div class="line"><span class="comment"># 限制 ip 每分钟5次请求， block 这个请求</span></div><div class="line"><span class="meta">@ratelimit(key='ip', rate='5/m', block=True)</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">myview</span><span class="params">(request)</span>:</span></div><div class="line">    <span class="comment"># If the same IP makes &gt;5 reqs/min, will raise Ratelimited</span></div><div class="line">    <span class="keyword">return</span> HttpResponse()</div><div class="line"></div><div class="line"><span class="comment"># 限制 post 中有 username 每分钟5次请求，另外请求方法只能为 GET ,POST</span></div><div class="line"><span class="meta">@ratelimit(key='post:username', rate='5/m', method=['GET', 'POST'])</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">login</span><span class="params">(request)</span>:</span></div><div class="line">    <span class="comment"># If the same username is used &gt;5 times/min, this will be True.</span></div><div class="line">    <span class="comment"># The `username` value will come from GET or POST, determined by the</span></div><div class="line">    <span class="comment"># request method.</span></div><div class="line">    was_limited = getattr(request, <span class="string">'limited'</span>, <span class="keyword">False</span>)</div><div class="line">    <span class="keyword">return</span> HttpResponse()</div><div class="line"></div><div class="line"><span class="comment"># 可以使用多种限制</span></div><div class="line"><span class="meta">@ratelimit(key='post:username', rate='5/m')</span></div><div class="line"><span class="meta">@ratelimit(key='post:password', rate='5/m')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">login</span><span class="params">(request)</span>:</span></div><div class="line">    <span class="comment"># Use multiple keys by stacking decorators.</span></div><div class="line">    <span class="keyword">return</span> HttpResponse()</div><div class="line"></div><div class="line"><span class="meta">@ratelimit(key='get:q', rate='5/m')</span></div><div class="line"><span class="meta">@ratelimit(key='post:q', rate='5/m')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(request)</span>:</span></div><div class="line">    <span class="comment"># These two decorators combine to form one rate limit: the same search</span></div><div class="line">    <span class="comment"># query can only be tried 5 times a minute, regardless of the request</span></div><div class="line">    <span class="comment"># method (GET or POST)</span></div><div class="line">    <span class="keyword">return</span> HttpResponse()</div><div class="line"></div><div class="line"><span class="meta">@ratelimit(key='ip', rate='4/h')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">slow</span><span class="params">(request)</span>:</span></div><div class="line">    <span class="comment"># Allow 4 reqs/hour.</span></div><div class="line">    <span class="keyword">return</span> HttpResponse()</div><div class="line"></div><div class="line"><span class="comment"># rate 可以自定义函数</span></div><div class="line">rate = <span class="keyword">lambda</span> r: <span class="keyword">None</span> <span class="keyword">if</span> request.user.is_authenticated() <span class="keyword">else</span> <span class="string">'100/h'</span></div><div class="line"><span class="meta">@ratelimit(key='ip', rate=rate)</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">skipif1</span><span class="params">(request)</span>:</span></div><div class="line">    <span class="comment"># Only rate limit anonymous requests</span></div><div class="line">    <span class="keyword">return</span> HttpResponse()</div><div class="line"></div><div class="line"><span class="comment"># key 可以是 django 的 user ,如果没登录，则使用ip</span></div><div class="line"><span class="meta">@ratelimit(key='user_or_ip', rate='10/s')</span></div><div class="line"><span class="meta">@ratelimit(key='user_or_ip', rate='100/m')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">burst_limit</span><span class="params">(request)</span>:</span></div><div class="line">    <span class="comment"># Implement a separate burst limit.</span></div><div class="line">    <span class="keyword">return</span> HttpResponse()</div><div class="line"></div><div class="line"><span class="meta">@ratelimit(group='expensive', key='user_or_ip', rate='10/h')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">expensive_view_a</span><span class="params">(request)</span>:</span></div><div class="line">    <span class="keyword">return</span> something_expensive()</div><div class="line"></div><div class="line"><span class="meta">@ratelimit(group='expensive', key='user_or_ip', rate='10/h')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">expensive_view_b</span><span class="params">(request)</span>:</span></div><div class="line">    <span class="comment"># Shares a counter with expensive_view_a</span></div><div class="line">    <span class="keyword">return</span> something_else_expensive()</div><div class="line"></div><div class="line"><span class="comment"># key 可以为 header 里面的值</span></div><div class="line"><span class="meta">@ratelimit(key='header:x-cluster-client-ip')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">post</span><span class="params">(request)</span>:</span></div><div class="line">    <span class="comment"># Uses the X-Cluster-Client-IP header value.</span></div><div class="line">    <span class="keyword">return</span> HttpResponse()</div><div class="line"></div><div class="line"><span class="comment"># key 可以自定义函数</span></div><div class="line"><span class="meta">@ratelimit(key=lambda r: r.META.get('HTTP_X_CLUSTER_CLIENT_IP',</span></div><div class="line">                                    r.META[<span class="string">'REMOTE_ADDR'</span>])</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">myview</span><span class="params">(request)</span>:</span></div><div class="line">    <span class="comment"># Use `X-Cluster-Client-IP` but fall back to REMOTE_ADDR.</span></div><div class="line">    <span class="keyword">return</span> HttpResponse()</div></pre></td></tr></table></figure></p>
 <h3 id="爬虫报警邮件"><a href="#爬虫报警邮件" class="headerlink" title="爬虫报警邮件"></a>爬虫报警邮件</h3><hr>
@@ -124,7 +118,7 @@ MIDDLEWARE_CLASSES = (
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/09/29/django-防爬虫实现/" data-id="civvznann0003bfo0ddcchrqo" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/09/29/django-防爬虫实现/" data-id="civvznann0003bfo0ddcchrqo" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
@@ -136,7 +130,7 @@ MIDDLEWARE_CLASSES = (
 <nav id="article-nav">
   
     <a href="/2016/10/13/一致性哈希算法-简单的-python-实现/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
+      <strong class="article-nav-caption">Neuer</strong>
       <div class="article-nav-title">
         
           一致性哈希算法 简单的 python 实现
@@ -198,7 +192,7 @@ var duoshuoQuery = {short_name:'facert'};
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Archiv</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
@@ -208,7 +202,7 @@ var duoshuoQuery = {short_name:'facert'};
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
         

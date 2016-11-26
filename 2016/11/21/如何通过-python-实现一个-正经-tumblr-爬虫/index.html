@@ -16,23 +16,20 @@
 
 
   
-  <title>如何通过 python 实现一个`正经` tumblr 爬虫 | ~o00o~</title>
+  <title>如何通过 python 实现一个`正经` tumblr 爬虫 | facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="直接入正题，写一个 python 爬虫，最重要的其实是找到入口，从哪里开始爬，以 tumblr 为例，只要能够获取到用户列表，通过每个用户的主页就能拿到每个用户发的或者转发的视频，原作者的名字也可以拿到。代码如下：
-123456789101112131415161718192021222324252627282930def download(self, url):    # 用 requests">
+  <meta name="description" content="直接入正题，写一个 python 爬虫，最重要的其实是找到入口，从哪里开始爬，以 tumblr 为例，只要能够获取到用户列表，通过每个用户的主页就能拿到每个用户发的或者转发的视频，原作者的名字也可以拿到。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何通过 python 实现一个`正经` tumblr 爬虫">
 <meta property="og:url" content="http://yoursite.com/2016/11/21/如何通过-python-实现一个-正经-tumblr-爬虫/index.html">
-<meta property="og:site_name" content="~o00o~">
-<meta property="og:description" content="直接入正题，写一个 python 爬虫，最重要的其实是找到入口，从哪里开始爬，以 tumblr 为例，只要能够获取到用户列表，通过每个用户的主页就能拿到每个用户发的或者转发的视频，原作者的名字也可以拿到。代码如下：
-123456789101112131415161718192021222324252627282930def download(self, url):    # 用 requests">
-<meta property="og:updated_time" content="2016-11-21T11:14:57.000Z">
+<meta property="og:site_name" content="facert 的杂货店">
+<meta property="og:description" content="直接入正题，写一个 python 爬虫，最重要的其实是找到入口，从哪里开始爬，以 tumblr 为例，只要能够获取到用户列表，通过每个用户的主页就能拿到每个用户发的或者转发的视频，原作者的名字也可以拿到。">
+<meta property="og:updated_time" content="2016-11-26T08:50:34.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何通过 python 实现一个`正经` tumblr 爬虫">
-<meta name="twitter:description" content="直接入正题，写一个 python 爬虫，最重要的其实是找到入口，从哪里开始爬，以 tumblr 为例，只要能够获取到用户列表，通过每个用户的主页就能拿到每个用户发的或者转发的视频，原作者的名字也可以拿到。代码如下：
-123456789101112131415161718192021222324252627282930def download(self, url):    # 用 requests">
+<meta name="twitter:description" content="直接入正题，写一个 python 爬虫，最重要的其实是找到入口，从哪里开始爬，以 tumblr 为例，只要能够获取到用户列表，通过每个用户的主页就能拿到每个用户发的或者转发的视频，原作者的名字也可以拿到。">
   
-    <link rel="alternate" href="/atom.xml" title="~o00o~" type="application/atom+xml">
+    <link rel="alternate" href="/atom.xml" title="facert 的杂货店" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
@@ -51,7 +48,7 @@
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">~o00o~</a>
+        <a href="/" id="logo">facert 的杂货店</a>
       </h1>
       
     </div>
@@ -68,7 +65,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -99,7 +96,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>直接入正题，写一个 python 爬虫，最重要的其实是找到入口，从哪里开始爬，以 tumblr 为例，只要能够获取到用户列表，通过每个用户的主页就能拿到每个用户发的或者转发的视频，原作者的名字也可以拿到。<br>代码如下：</p>
+        <p>直接入正题，写一个 python 爬虫，最重要的其实是找到入口，从哪里开始爬，以 tumblr 为例，只要能够获取到用户列表，通过每个用户的主页就能拿到每个用户发的或者转发的视频，原作者的名字也可以拿到。<br><a id="more"></a><br>代码如下：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">download</span><span class="params">(self, url)</span>:</span></div><div class="line">    <span class="comment"># 用 requests 库获取 url 的网页内容</span></div><div class="line">    res = requests.get(url)</div><div class="line">    <span class="comment"># 用 bs4 解析 html</span></div><div class="line">    soup = BeautifulSoup(res.text)  </div><div class="line">    <span class="comment"># 获取 iframe 标签列表</span></div><div class="line">    iframes = soup.find_all(<span class="string">'iframe'</span>)</div><div class="line">    tmp_source = []</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> iframes:</div><div class="line">        <span class="comment"># 获取视频地址</span></div><div class="line">        source = i.get(<span class="string">'src'</span>, <span class="string">''</span>).strip()</div><div class="line">        <span class="comment"># 过滤内容</span></div><div class="line">        <span class="keyword">if</span> source <span class="keyword">and</span> source.find(<span class="string">'https://www.tumblr.com/video'</span>) != <span class="number">-1</span> <span class="keyword">and</span> source <span class="keyword">not</span> <span class="keyword">in</span> self.total_url:</div><div class="line">            tmp_source.append(source)</div><div class="line">            <span class="keyword">print</span> <span class="string">u'新增链接:'</span> + source</div><div class="line"></div><div class="line">    tmp_user = []</div><div class="line">    <span class="comment"># 获取用户列表</span></div><div class="line">    new_users = soup.find_all(class_=<span class="string">'reblog-link'</span>)</div><div class="line">    <span class="keyword">for</span> user <span class="keyword">in</span> new_users:</div><div class="line">        username = user.text.strip()</div><div class="line">        <span class="comment"># 过滤用户</span></div><div class="line">        <span class="keyword">if</span> username <span class="keyword">and</span> username <span class="keyword">not</span> <span class="keyword">in</span> self.total_user:</div><div class="line">            <span class="comment"># 将用户放入待爬取队列</span></div><div class="line">            self.user_queue.put(username)</div><div class="line">            <span class="comment"># 加入总用户列表中</span></div><div class="line">            self.total_user.append(username)</div><div class="line">            tmp_user.append(username)</div><div class="line">            <span class="keyword">print</span> <span class="string">u'新增用户:'</span> + username</div></pre></td></tr></table></figure>
 <p>为了提高爬虫的性能，可以采用多线程的方式，代码如下</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Tumblr</span><span class="params">(threading.Thread)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="comment"># 为了能处理多线程 ctr+c 的信号问题，具体见完整代码</span></div><div class="line">        <span class="keyword">global</span> is_exit</div><div class="line">        <span class="keyword">while</span> <span class="keyword">not</span> is_exit:</div><div class="line">            user = self.user_queue.get()</div><div class="line">            url = <span class="string">'http://%s.tumblr.com/'</span> % user</div><div class="line">            self.download(url)</div><div class="line">            time.sleep(<span class="number">2</span>)</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    <span class="comment"># 线程数</span></div><div class="line">    NUM_WORKERS = <span class="number">10</span></div><div class="line">    <span class="comment"># 待爬取队列</span></div><div class="line">    queue = Queue.Queue()</div><div class="line">    <span class="comment"># 开始的时候将一个热门博主的 username 加入到待爬取队列</span></div><div class="line">    queue.put(<span class="string">'username'</span>)</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(NUM_WORKERS):</div><div class="line">        <span class="comment"># 实例化线程对象</span></div><div class="line">        tumblr = Tumblr(queue)</div><div class="line">        <span class="comment"># 设置线程为守护线程</span></div><div class="line">        tumblr.setDaemon(<span class="keyword">True</span>)</div><div class="line">        tumblr.start()</div></pre></td></tr></table></figure>
@@ -111,7 +108,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/21/如何通过-python-实现一个-正经-tumblr-爬虫/" data-id="civvznao9000cbfo061ns0kxm" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/11/21/如何通过-python-实现一个-正经-tumblr-爬虫/" data-id="civvznao9000cbfo061ns0kxm" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -121,7 +118,7 @@
 <nav id="article-nav">
   
     <a href="/2016/11/24/python-实现余弦相似度过滤豆瓣租房小组中介帖/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
+      <strong class="article-nav-caption">Neuer</strong>
       <div class="article-nav-title">
         
           python 实现余弦相似度过滤豆瓣租房小组中介贴
@@ -131,7 +128,7 @@
   
   
     <a href="/2016/11/19/微信找房机器人的实现/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
+      <strong class="article-nav-caption">Älter</strong>
       <div class="article-nav-title">微信找房机器人</div>
     </a>
   
@@ -188,7 +185,7 @@ var duoshuoQuery = {short_name:'facert'};
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Archiv</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
@@ -198,7 +195,7 @@ var duoshuoQuery = {short_name:'facert'};
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
         

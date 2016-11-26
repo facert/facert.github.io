@@ -16,23 +16,20 @@
 
 
   
-  <title>django 源码分析 - 自定义数据结构 | ~o00o~</title>
+  <title>django 源码分析 - 自定义数据结构 | facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="django 自定义了一些数据结构，主要有 OrderedSet，MultiValueDict，ImmutableList，DictWrapper
-0x01OrderedSet12345678910111213141516171819202122232425262728293031class OrderedSet(object):    def __init__(self, iterable=No">
+  <meta name="description" content="django 自定义了一些数据结构，主要有 OrderedSet，MultiValueDict，ImmutableList，DictWrapper">
 <meta property="og:type" content="article">
 <meta property="og:title" content="django 源码分析 - 自定义数据结构">
 <meta property="og:url" content="http://yoursite.com/2016/10/13/django-源码分析-自定义数据结构/index.html">
-<meta property="og:site_name" content="~o00o~">
-<meta property="og:description" content="django 自定义了一些数据结构，主要有 OrderedSet，MultiValueDict，ImmutableList，DictWrapper
-0x01OrderedSet12345678910111213141516171819202122232425262728293031class OrderedSet(object):    def __init__(self, iterable=No">
-<meta property="og:updated_time" content="2016-10-13T07:37:25.000Z">
+<meta property="og:site_name" content="facert 的杂货店">
+<meta property="og:description" content="django 自定义了一些数据结构，主要有 OrderedSet，MultiValueDict，ImmutableList，DictWrapper">
+<meta property="og:updated_time" content="2016-11-26T08:49:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django 源码分析 - 自定义数据结构">
-<meta name="twitter:description" content="django 自定义了一些数据结构，主要有 OrderedSet，MultiValueDict，ImmutableList，DictWrapper
-0x01OrderedSet12345678910111213141516171819202122232425262728293031class OrderedSet(object):    def __init__(self, iterable=No">
+<meta name="twitter:description" content="django 自定义了一些数据结构，主要有 OrderedSet，MultiValueDict，ImmutableList，DictWrapper">
   
-    <link rel="alternate" href="/atom.xml" title="~o00o~" type="application/atom+xml">
+    <link rel="alternate" href="/atom.xml" title="facert 的杂货店" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
@@ -51,7 +48,7 @@
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">~o00o~</a>
+        <a href="/" id="logo">facert 的杂货店</a>
       </h1>
       
     </div>
@@ -68,7 +65,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -99,7 +96,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>django 自定义了一些数据结构，主要有 OrderedSet，MultiValueDict，ImmutableList，DictWrapper</p>
+        <p>django 自定义了一些数据结构，主要有 OrderedSet，MultiValueDict，ImmutableList，DictWrapper<br><a id="more"></a></p>
 <h3 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h3><h4 id="OrderedSet"><a href="#OrderedSet" class="headerlink" title="OrderedSet"></a>OrderedSet</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">class OrderedSet(object):</div><div class="line"></div><div class="line">    def __init__(self, iterable=None):</div><div class="line">        self.dict = OrderedDict(((x, None) for x in iterable) if iterable else [])</div><div class="line"></div><div class="line">    def add(self, item):</div><div class="line">        self.dict[item] = None</div><div class="line"></div><div class="line">    def remove(self, item):</div><div class="line">        del self.dict[item]</div><div class="line"></div><div class="line">    def discard(self, item):</div><div class="line">        try:</div><div class="line">            self.remove(item)</div><div class="line">        except KeyError:</div><div class="line">            pass</div><div class="line"></div><div class="line">    def __iter__(self):</div><div class="line">        return iter(self.dict.keys())</div><div class="line"></div><div class="line">    def __contains__(self, item):</div><div class="line">        return item in self.dict</div><div class="line"></div><div class="line">    def __bool__(self):</div><div class="line">        return bool(self.dict)</div><div class="line"></div><div class="line">    def __nonzero__(self):      # Python 2 compatibility</div><div class="line">        return type(self).__bool__(self)</div><div class="line"></div><div class="line">    def __len__(self):</div><div class="line">        return len(self.dict)</div></pre></td></tr></table></figure>
 <p>这里面最重要的其实就是 <code>self.dict = OrderedDict(((x, None) for x in iterable) if iterable else [])</code>, 使用了 OrderedDict 有序字典 这个 python 标准库里面的数据结构，下面看下 self.dict 的返回形式</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; from collections import OrderedDict</div><div class="line">&gt;&gt;&gt; iterable = [1,2,3]</div><div class="line">&gt;&gt;&gt; OrderedDict(((x, None) for x in iterable) if iterable else [])</div><div class="line">OrderedDict([(1, None), (2, None), (3, None)])</div></pre></td></tr></table></figure>
@@ -116,7 +113,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-自定义数据结构/" data-id="civvznan90001bfo0akybv2eq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-自定义数据结构/" data-id="civvznan90001bfo0akybv2eq" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
@@ -128,7 +125,7 @@
 <nav id="article-nav">
   
     <a href="/2016/10/13/django-源码分析-base36编码函数/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
+      <strong class="article-nav-caption">Neuer</strong>
       <div class="article-nav-title">
         
           django 源码分析 - base36编码函数
@@ -138,7 +135,7 @@
   
   
     <a href="/2016/10/13/一致性哈希算法-简单的-python-实现/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
+      <strong class="article-nav-caption">Älter</strong>
       <div class="article-nav-title">一致性哈希算法 简单的 python 实现</div>
     </a>
   
@@ -195,7 +192,7 @@ var duoshuoQuery = {short_name:'facert'};
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Archiv</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
@@ -205,7 +202,7 @@ var duoshuoQuery = {short_name:'facert'};
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
         
