@@ -20,7 +20,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:type" content="website">
 <meta property="og:title" content="facert 的杂货店">
-<meta property="og:url" content="http://yoursite.com/page/2/index.html">
+<meta property="og:url" content="http://yoursite.com/page/3/index.html">
 <meta property="og:site_name" content="facert 的杂货店">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="facert 的杂货店">
@@ -72,10 +72,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-用-python-提高效率" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-python-与-数据结构-第三章-线性表-（上）" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/11/30/用-python-提高效率/" class="article-date">
-  <time datetime="2016-11-30T11:15:42.000Z" itemprop="datePublished">2016-11-30</time>
+    <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（上）/" class="article-date">
+  <time datetime="2016-10-13T12:18:39.000Z" itemprop="datePublished">2016-10-13</time>
 </a>
     
   </div>
@@ -86,7 +86,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/30/用-python-提高效率/">如何用 Python 提高工作效率</a>
+      <a class="article-title" href="/2016/10/13/python-与-数据结构-第三章-线性表-（上）/">python 与 数据结构 第三章 线性表 （上）</a>
     </h1>
   
 
@@ -94,213 +94,197 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>经常有人说我应该学一门语言，比如 Python 之类，但是却不知道如何入门。这个时候很多人会推荐学各种 web 框架，scrapy 爬虫之类，门槛虽然不高，但是对于新人来说可能就半途而废了。我在想大家需要的或许是通过编程来解决平时遇到的问题，将工作自动化。所以想写一个系列，通过简单的例子来说下 Python 如何提高工作效率，减少重复劳动的。</p>
-<p>废话不多说，进入正题，首先安装 Python 和 pip, 教程网上很多，比如<br><a href="http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/001374738150500472fd5785c194ebea336061163a8a974000" target="_blank" rel="external">廖雪峰的官方网站</a>， pip 可以理解为安装第三方库的软件包，另外教程里面没有特别说明以 Python2.7 版本为例子。</p>
-<ol>
-<li><a href="">用 python 提高工作效率之 selenium 自动登录京东</a></li>
-<li><a href="">用 python 提高工作效率之 SimpleHTTPServer 文件共享</a></li>
-<li><a href="">用 python 提高工作效率之豆瓣自动顶贴</a></li>
-<li><a href="">用 python 提高工作效率之摩尔斯密码</a></li>
-<li><a href="">用 python 提高工作效率之批量发邮件</a></li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/30/用-python-提高效率/" data-id="ciw665wm9000d0yo0nyr9qvow" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python-入门/">python 入门</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-python-实现余弦相似度过滤豆瓣租房小组中介帖" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/11/24/python-实现余弦相似度过滤豆瓣租房小组中介帖/" class="article-date">
-  <time datetime="2016-11-24T11:16:04.000Z" itemprop="datePublished">2016-11-24</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/24/python-实现余弦相似度过滤豆瓣租房小组中介帖/">python 实现余弦相似度过滤豆瓣租房小组中介贴</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>前几天做了个<a href="https://zhuanlan.zhihu.com/p/23798922">微信找房机器人</a>, 爬取豆瓣租房小组的时候发现很多伪装的中介帖，如下这种格式：</p>
-<blockquote>
-<p>可月付 无中介 方庄地铁附近 芳城园一区单间出租</p>
-<p>可月付 无中介 方庄地铁附近 芳城园一区主卧次卧出租</p>
-<p>方庄地铁附近 芳城园一区次卧出租</p>
-</blockquote>
+        <h4 id="3-1-线性表抽象数据类型"><a href="#3-1-线性表抽象数据类型" class="headerlink" title="3.1  线性表抽象数据类型"></a>3.1  线性表抽象数据类型</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">ADT List:</div><div class="line">  List(self)             # 一个表抽象数据类型</div><div class="line">  is_empty(self)         # 判断 self 是否为一个空表</div><div class="line">  len(self)              # 获得 self 的长度</div><div class="line">  prepend(self, elem)    # 将元素 elem 加入表中作为第一个元素</div><div class="line">  append(self, elem)     # 将元素 elem 加入表中作为最后一个元素</div><div class="line">  insert(self, elem, i)  # 将 elem 加入表中作为第 i 个元素， 其他元素的顺序不变</div><div class="line">  del_first(self)        # 删除表中的首元素</div><div class="line">  del_last(self)         # 删除表中尾元素</div><div class="line">  del(self)              # 删除表中第 i 个元素</div><div class="line">  search(self, elem)     # 查找元素 elem 在表中出现的位置， 不出现时返回 -1</div><div class="line">  forall(self, op)       # 对表中的每个元素执行操作 op</div></pre></td></tr></table></figure>
         
           <p class="article-more-link">
-            <a href="/2016/11/24/python-实现余弦相似度过滤豆瓣租房小组中介帖/#more">Read More</a>
+            <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（上）/#more">Read More</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/24/python-实现余弦相似度过滤豆瓣租房小组中介帖/" data-id="ciw665wm7000c0yo0yy67yc30" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-如何通过-python-实现一个-正经-tumblr-爬虫" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/11/21/如何通过-python-实现一个-正经-tumblr-爬虫/" class="article-date">
-  <time datetime="2016-11-21T05:56:53.000Z" itemprop="datePublished">2016-11-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/21/如何通过-python-实现一个-正经-tumblr-爬虫/">如何通过 python 实现一个`正经` tumblr 爬虫</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>直接入正题，写一个 python 爬虫，最重要的其实是找到入口，从哪里开始爬，以 tumblr 为例，只要能够获取到用户列表，通过每个用户的主页就能拿到每个用户发的或者转发的视频，原作者的名字也可以拿到。<br>
-        
-          <p class="article-more-link">
-            <a href="/2016/11/21/如何通过-python-实现一个-正经-tumblr-爬虫/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/21/如何通过-python-实现一个-正经-tumblr-爬虫/" data-id="ciw665wlz00090yo09v0qwohr" class="article-share-link">Teilen</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-微信找房机器人的实现" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/11/19/微信找房机器人的实现/" class="article-date">
-  <time datetime="2016-11-19T15:38:28.000Z" itemprop="datePublished">2016-11-19</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/19/微信找房机器人的实现/">微信找房机器人</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h4><p>身在帝都的人都知道租房的困难，每次找房都是心力交瘁。其中豆瓣租房小组算是比较靠谱的房源了，但是由于小组信息繁杂，而且没有搜索的功能，想要实时获取租房信息是件很困难的事情，所以最近给自己挖了个坑，做个微信找房机器人，先看大概效果吧，见下图：<br><img src="/media/WechatIMG5.jpeg" alt="WechatIMG5"></p>
-        
-          <p class="article-more-link">
-            <a href="/2016/11/19/微信找房机器人的实现/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/19/微信找房机器人的实现/" data-id="ciw665wmc000g0yo0qs35dbfz" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DIY/">DIY</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-python-与-数据结构-第三章-线性表-（中）" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（中）/" class="article-date">
-  <time datetime="2016-10-13T15:38:28.000Z" itemprop="datePublished">2016-10-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/13/python-与-数据结构-第三章-线性表-（中）/">python 与 数据结构 第三章 线性表 （中）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="3-3-链接表"><a href="#3-3-链接表" class="headerlink" title="3.3 链接表"></a>3.3 链接表</h4><p>基于链接技术实现的线性表称为链接表或者链表</p>
-<h5 id="3-2-3-单链表"><a href="#3-2-3-单链表" class="headerlink" title="3.2.3 单链表"></a>3.2.3 单链表</h5><ul>
-<li>一个单链表由一些具体的表节点构成</li>
-<li>每个节点是一个对象，有自己的标识</li>
-<li>节点之间通过节点链接建立起单向的顺序联系</li>
-</ul>
-<p>定义一个简单的表结点类：</p>
-<pre><code>class LNode:
-    def __init__(self, elem, next_=None):
-        self.elem = elem
-        self.next = next_
-</code></pre>
-        
-          <p class="article-more-link">
-            <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（中）/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（中）/" data-id="ciw665wlq00050yo0c3v4n4q0" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（上）/" data-id="ciw665wll00040yo05nksbc3f" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-django-源码分析-base36编码函数" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/13/django-源码分析-base36编码函数/" class="article-date">
+  <time datetime="2016-10-13T07:37:36.000Z" itemprop="datePublished">2016-10-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/13/django-源码分析-base36编码函数/">django 源码分析 - base36编码函数</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h3><p>   首先介绍一下什么是 base36编码，它的编码中包含0~9的数字，加上所有26个字母，不区分大小写，不包含任何标点，所有的字母要不全大写，要不全小写。所以加起来就是 “0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ”,<br>或者 ‘0123456789abcdefghijklmnopqrstuvwxyz’，同样的还有 base62编码，就是26个字母的大小写再加上0-9，一共62个字符。<br>
+        
+          <p class="article-more-link">
+            <a href="/2016/10/13/django-源码分析-base36编码函数/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-base36编码函数/" data-id="ciw665wkr00000yo0k74bka5y" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-django-源码分析-自定义数据结构" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/13/django-源码分析-自定义数据结构/" class="article-date">
+  <time datetime="2016-10-13T07:36:40.000Z" itemprop="datePublished">2016-10-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/13/django-源码分析-自定义数据结构/">django 源码分析 - 自定义数据结构</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>django 自定义了一些数据结构，主要有 OrderedSet，MultiValueDict，ImmutableList，DictWrapper<br>
+        
+          <p class="article-more-link">
+            <a href="/2016/10/13/django-源码分析-自定义数据结构/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-自定义数据结构/" data-id="ciw665wl100010yo0zhynz2ge" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-一致性哈希算法-简单的-python-实现" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/13/一致性哈希算法-简单的-python-实现/" class="article-date">
+  <time datetime="2016-10-13T07:34:55.000Z" itemprop="datePublished">2016-10-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/13/一致性哈希算法-简单的-python-实现/">一致性哈希算法 简单的 python 实现</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="原理以及应用"><a href="#原理以及应用" class="headerlink" title="原理以及应用"></a>原理以及应用</h4><hr>
+<p>一致性哈希算法现在主要用于分布式系统中负载均衡，比如分布式 cache,  防止某些节点突然 down 掉，或者增加新节点时，大量的  cache 失效。具体介绍原理之类的文章非常多，比如：<a href="http://the-art-of-programming-by-july.readthedocs.io/en/latest/ebook/zh/%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">这篇文章</a>，在这里不再赘述。<br>
+        
+          <p class="article-more-link">
+            <a href="/2016/10/13/一致性哈希算法-简单的-python-实现/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/10/13/一致性哈希算法-简单的-python-实现/" data-id="ciw665wlu00080yo07hp33e7y" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-django-防爬虫实现" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/09/29/django-防爬虫实现/" class="article-date">
+  <time datetime="2016-09-29T10:02:42.000Z" itemprop="datePublished">2016-09-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/09/29/django-防爬虫实现/">django 防爬虫实现</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="基本防爬策略"><a href="#基本防爬策略" class="headerlink" title="基本防爬策略"></a>基本防爬策略</h3><hr>
+<p>一般的，像 nginx 这种 web 服务器都有防爬虫模块，基于 ip, user_agent 来识别爬虫，从而限制爬虫的爬取频率。但是基于某一个登录用户去做频率限制就有点麻烦了，这种情况下，只能通过下一层程序去防，比如 django 的话，通过中间件结合缓存的方式可以做到一定的频率限制。<br>
+        
+          <p class="article-more-link">
+            <a href="/2016/09/29/django-防爬虫实现/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/09/29/django-防爬虫实现/" data-id="ciw665wld00030yo08twrzh6f" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
 
     </footer>
   </div>
@@ -314,7 +298,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/">&laquo; zurück</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">weiter &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; zurück</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
   </nav>
 
 </section>
