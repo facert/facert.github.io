@@ -61,7 +61,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -71,6 +71,55 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-用-python-提高效率之-selenium-自动登录京东" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/30/用-python-提高效率之-selenium-自动登录京东/" class="article-date">
+  <time datetime="2016-11-30T11:55:02.000Z" itemprop="datePublished">2016-11-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/30/用-python-提高效率之-selenium-自动登录京东/">用 python 提高效率之 selenium 自动登录京东</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>还记得前段时间阿里月饼事件，当事人因为用 js 脚本刷月饼被开除。直接编写 js 代码可能不够直观，所以本文我们用 selenium 来模拟浏览器执行自动化脚本，同样可以达到效果，比如自动登录京东。</p>
+<h4 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h4><p>安装 selenium</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install selenium</div></pre></td></tr></table></figure>
+<h4 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h4><p>打开京东登录页，用 chrome devtools 查看元素</p>
+<p><img src="/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-01%20%E4%B8%8A%E5%8D%8810.37.43.png" alt="屏幕快照 2016-12-01 上午10.37.43"></p>
+<p>我们需要做的步骤就是输入用户名和密码，点击登录按钮。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">name = &apos;****&apos;</div><div class="line">password = &apos;****&apos;</div><div class="line"></div><div class="line"># 使用火狐作为默认打开的浏览器，确认已经安装火狐</div><div class="line">driver = webdriver.Firefox()</div><div class="line">driver.get(&quot;https://passport.jd.com/new/login.aspx&quot;)</div><div class="line"></div><div class="line">elem_account = driver.find_element_by_name(&quot;loginname&quot;)</div><div class="line">elem_password = driver.find_element_by_name(&quot;nloginpwd&quot;)</div><div class="line"></div><div class="line">elem_account.clear()</div><div class="line">elem_password.clear()</div><div class="line"></div><div class="line">elem_account.send_keys(name)</div><div class="line">elem_password.send_keys(password)</div><div class="line"></div><div class="line">driver.find_element_by_id(&quot;loginsubmit&quot;).click()</div></pre></td></tr></table></figure>
+<p>只需要更改上面的用户名和密码就能运行脚本</p>
+<p>代码 <a href="https://github.com/facert/demo_tools/blob/master/auto_login_jd.py" target="_blank" rel="external">github</a></p>
+<h4 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h4><p>其实 selenium 用来秒杀，抢手机，抢火车票。有验证码的时候，自动识别可能有误差，可以手工输入或者一些其他方式。。。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/30/用-python-提高效率之-selenium-自动登录京东/" data-id="ciwc00g1z000jj6o0vr7o9jxr" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python-入门/">python 入门</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
   
     <article id="post-用-python-提高效率" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -86,7 +135,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/30/用-python-提高效率/">如何用 Python 提高工作效率</a>
+      <a class="article-title" href="/2016/11/30/用-python-提高效率/">如何用 Python 提高效率</a>
     </h1>
   
 
@@ -107,7 +156,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/30/用-python-提高效率/" data-id="ciw665wm9000d0yo0nyr9qvow" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/11/30/用-python-提高效率/" data-id="ciwc00g1r000dj6o00hbp2rj6" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python-入门/">python 入门</a></li></ul>
@@ -156,7 +205,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/24/python-实现余弦相似度过滤豆瓣租房小组中介帖/" data-id="ciw665wm7000c0yo0yy67yc30" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/11/24/python-实现余弦相似度过滤豆瓣租房小组中介帖/" data-id="ciwc00g1c0008j6o0i69338dd" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
@@ -200,7 +249,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/21/如何通过-python-实现一个-正经-tumblr-爬虫/" data-id="ciw665wlz00090yo09v0qwohr" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/11/21/如何通过-python-实现一个-正经-tumblr-爬虫/" data-id="ciwc00g1g0009j6o0x5x9vjeh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -242,65 +291,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/11/19/微信找房机器人的实现/" data-id="ciw665wmc000g0yo0qs35dbfz" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/11/19/微信找房机器人的实现/" data-id="ciwc00g1u000gj6o0k1yuz2rb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DIY/">DIY</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-python-与-数据结构-第三章-线性表-（中）" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（中）/" class="article-date">
-  <time datetime="2016-10-13T15:38:28.000Z" itemprop="datePublished">2016-10-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/13/python-与-数据结构-第三章-线性表-（中）/">python 与 数据结构 第三章 线性表 （中）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="3-3-链接表"><a href="#3-3-链接表" class="headerlink" title="3.3 链接表"></a>3.3 链接表</h4><p>基于链接技术实现的线性表称为链接表或者链表</p>
-<h5 id="3-2-3-单链表"><a href="#3-2-3-单链表" class="headerlink" title="3.2.3 单链表"></a>3.2.3 单链表</h5><ul>
-<li>一个单链表由一些具体的表节点构成</li>
-<li>每个节点是一个对象，有自己的标识</li>
-<li>节点之间通过节点链接建立起单向的顺序联系</li>
-</ul>
-<p>定义一个简单的表结点类：</p>
-<pre><code>class LNode:
-    def __init__(self, elem, next_=None):
-        self.elem = elem
-        self.next = next_
-</code></pre>
-        
-          <p class="article-more-link">
-            <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（中）/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（中）/" data-id="ciw665wlq00050yo0c3v4n4q0" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
 
     </footer>
   </div>
@@ -314,7 +308,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/">&laquo; zurück</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">weiter &raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -345,7 +339,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archiv</h3>
+    <h3 class="widget-title">Archives</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
@@ -355,9 +349,13 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">letzter Beitrag</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/12/05/用-python-提高效率之自如爬虫/">用 python 提高效率之自如爬虫</a>
+          </li>
         
           <li>
             <a href="/2016/12/01/用-python-提高效率之豆瓣自动顶贴/">用 python 提高效率之豆瓣自动顶贴</a>
@@ -373,10 +371,6 @@
         
           <li>
             <a href="/2016/12/01/用-python-提高效率之摩尔斯密码/">用 python 提高效率之摩尔斯密码</a>
-          </li>
-        
-          <li>
-            <a href="/2016/11/30/用-python-提高效率之-selenium-自动登录京东/">用 python 提高效率之 selenium 自动登录京东</a>
           </li>
         
       </ul>

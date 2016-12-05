@@ -16,21 +16,35 @@
 
 
   
-  <title>用 python 提高效率之批量发邮件 | facert 的杂货店</title>
+  <title>用 python 提高效率之自如爬虫 | facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="如果有一天，老板过来给你一个很大的邮箱列表，要你给每个人发邮件，你该如何去做，最简单的就是写一个 python 程序
-12345678910111213141516171819import smtplibfrom email.mime.text import MIMETextreceiver = [&amp;apos;***&amp;apos;, &amp;apos;***&amp;apos;] # 设置邮件接收人，这里是我的公">
+  <meta name="description" content="如果你想入门数据分析，但是苦于没有数据，那就看下文如何用 10 行代码写一个最简单的自如房源爬虫
+首先我们通过分析看到自如手机版有个 url 如下： http://m.ziroom.com/list/ajax-get-data 能够返回 json 数据
+
+这个基本上包括了租房的一些重要信息，价格，小区，地铁沿线，朝向所以要做的就是遍历这个地址得到所有的 json 数据
+下面是代码：
+1234567">
 <meta property="og:type" content="article">
-<meta property="og:title" content="用 python 提高效率之批量发邮件">
-<meta property="og:url" content="http://yoursite.com/2016/12/01/用-python-提高效率之批量发邮件/index.html">
+<meta property="og:title" content="用 python 提高效率之自如爬虫">
+<meta property="og:url" content="http://yoursite.com/2016/12/05/用-python-提高效率之自如爬虫/index.html">
 <meta property="og:site_name" content="facert 的杂货店">
-<meta property="og:description" content="如果有一天，老板过来给你一个很大的邮箱列表，要你给每个人发邮件，你该如何去做，最简单的就是写一个 python 程序
-12345678910111213141516171819import smtplibfrom email.mime.text import MIMETextreceiver = [&amp;apos;***&amp;apos;, &amp;apos;***&amp;apos;] # 设置邮件接收人，这里是我的公">
-<meta property="og:updated_time" content="2016-12-01T09:50:02.000Z">
+<meta property="og:description" content="如果你想入门数据分析，但是苦于没有数据，那就看下文如何用 10 行代码写一个最简单的自如房源爬虫
+首先我们通过分析看到自如手机版有个 url 如下： http://m.ziroom.com/list/ajax-get-data 能够返回 json 数据
+
+这个基本上包括了租房的一些重要信息，价格，小区，地铁沿线，朝向所以要做的就是遍历这个地址得到所有的 json 数据
+下面是代码：
+1234567">
+<meta property="og:image" content="http://yoursite.com/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-05%20%E4%B8%8B%E5%8D%885.46.47.png">
+<meta property="og:updated_time" content="2016-12-05T11:33:07.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="用 python 提高效率之批量发邮件">
-<meta name="twitter:description" content="如果有一天，老板过来给你一个很大的邮箱列表，要你给每个人发邮件，你该如何去做，最简单的就是写一个 python 程序
-12345678910111213141516171819import smtplibfrom email.mime.text import MIMETextreceiver = [&amp;apos;***&amp;apos;, &amp;apos;***&amp;apos;] # 设置邮件接收人，这里是我的公">
+<meta name="twitter:title" content="用 python 提高效率之自如爬虫">
+<meta name="twitter:description" content="如果你想入门数据分析，但是苦于没有数据，那就看下文如何用 10 行代码写一个最简单的自如房源爬虫
+首先我们通过分析看到自如手机版有个 url 如下： http://m.ziroom.com/list/ajax-get-data 能够返回 json 数据
+
+这个基本上包括了租房的一些重要信息，价格，小区，地铁沿线，朝向所以要做的就是遍历这个地址得到所有的 json 数据
+下面是代码：
+1234567">
+<meta name="twitter:image" content="http://yoursite.com/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-05%20%E4%B8%8B%E5%8D%885.46.47.png">
   
     <link rel="alternate" href="/atom.xml" title="facert 的杂货店" type="application/atom+xml">
   
@@ -77,10 +91,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-用-python-提高效率之批量发邮件" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-用-python-提高效率之自如爬虫" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/12/01/用-python-提高效率之批量发邮件/" class="article-date">
-  <time datetime="2016-12-01T09:04:52.000Z" itemprop="datePublished">2016-12-01</time>
+    <a href="/2016/12/05/用-python-提高效率之自如爬虫/" class="article-date">
+  <time datetime="2016-12-05T09:45:17.000Z" itemprop="datePublished">2016-12-05</time>
 </a>
     
   </div>
@@ -91,7 +105,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      用 python 提高效率之批量发邮件
+      用 python 提高效率之自如爬虫
     </h1>
   
 
@@ -99,15 +113,17 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>如果有一天，老板过来给你一个很大的邮箱列表，要你给每个人发邮件，你该如何去做，最简单的就是写一个 python 程序</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">import smtplib</div><div class="line">from email.mime.text import MIMEText</div><div class="line"></div><div class="line">receiver = [&apos;***&apos;, &apos;***&apos;] # 设置邮件接收人，这里是我的公司邮箱</div><div class="line"></div><div class="line">host = &apos;smtp.163.com&apos;  # 设置发件服务器地址</div><div class="line">port = 25  # 设置发件服务器端口号</div><div class="line">sender = &apos;****&apos;  # 设置发件邮箱</div><div class="line">pwd = &apos;*****&apos;  # 设置发件邮箱的密码</div><div class="line">body = &apos;hello&apos; # 设置邮件正文，这里是支持HTML的</div><div class="line"></div><div class="line">msg = MIMEText(body, &apos;html&apos;) # 设置正文为符合邮件格式的HTML内容</div><div class="line">msg[&apos;subject&apos;] = &apos;Hello world&apos; # 设置邮件标题</div><div class="line">msg[&apos;from&apos;] = sender  # 设置发送人</div><div class="line">msg[&apos;to&apos;] = &apos;;&apos;.join(receiver)  # 设置接收人</div><div class="line"></div><div class="line">s = smtplib.SMTP(host, port) </div><div class="line">s.login(sender, pwd)  # 登陆邮箱</div><div class="line">s.sendmail(sender, receiver, msg.as_string())  # 发送邮件</div></pre></td></tr></table></figure>
-<p>不过由于每个垃圾邮件的屏蔽机制，很可能批量发送会被 spam 掉，所以可以使用 sendcloud 专门的发邮件服务接口。</p>
-<p>code 见 <a href="https://github.com/facert/demo_tools/blob/master/send_email.py" target="_blank" rel="external">github</a></p>
+        <p>如果你想入门数据分析，但是苦于没有数据，那就看下文如何用 10 行代码写一个最简单的自如房源爬虫</p>
+<p>首先我们通过分析看到自如手机版有个 url 如下： <a href="http://m.ziroom.com/list/ajax-get-data" target="_blank" rel="external">http://m.ziroom.com/list/ajax-get-data</a> 能够返回 json 数据</p>
+<p><img src="/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-05%20%E4%B8%8B%E5%8D%885.46.47.png" alt="屏幕快照 2016-12-05 下午5.46.47"></p>
+<p>这个基本上包括了租房的一些重要信息，价格，小区，地铁沿线，朝向<br>所以要做的就是遍历这个地址得到所有的 json 数据</p>
+<p>下面是代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> requests</div><div class="line"><span class="keyword">import</span> time</div><div class="line"></div><div class="line"><span class="keyword">with</span> open(<span class="string">'ziroom.txt'</span>, <span class="string">'a+'</span>) <span class="keyword">as</span> f:</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">10</span>, <span class="number">9001</span>, <span class="number">10</span>):</div><div class="line">        payload = &#123;<span class="string">'step'</span>: i&#125;</div><div class="line">        res = requests.post(<span class="string">'http://m.ziroom.com/list/ajax-get-data'</span>, data=payload)</div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> res.json()[<span class="string">'data'</span>]:</div><div class="line">            <span class="keyword">print</span> i[<span class="string">'id'</span>]</div><div class="line">            f.write(str(i)+<span class="string">'\n'</span>)</div><div class="line">        time.sleep(<span class="number">3</span>)</div></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/01/用-python-提高效率之批量发邮件/" data-id="ciwc00g21000lj6o08w7npn6r" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/12/05/用-python-提高效率之自如爬虫/" data-id="ciwc00g490012j6o0cac2nlk2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python-入门/">python 入门</a></li></ul>
@@ -118,19 +134,10 @@
     
 <nav id="article-nav">
   
-    <a href="/2016/12/01/用-python-提高效率之-SimpleHTTPServer-文件共享/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          用 python 提高效率之 SimpleHTTPServer 文件共享
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/12/01/用-python-提高效率之摩尔斯密码/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2016/12/01/用-python-提高效率之豆瓣自动顶贴/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">用 python 提高效率之摩尔斯密码</div>
+      <div class="article-nav-title">用 python 提高效率之豆瓣自动顶贴</div>
     </a>
   
 </nav>
@@ -141,7 +148,7 @@
 
 <section id="comments">
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="post-用-python-提高效率之批量发邮件" data-title="用 python 提高效率之批量发邮件" data-url="http://yoursite.com/2016/12/01/用-python-提高效率之批量发邮件/"></div>
+<div class="ds-thread" data-thread-key="post-用-python-提高效率之自如爬虫" data-title="用 python 提高效率之自如爬虫" data-url="http://yoursite.com/2016/12/05/用-python-提高效率之自如爬虫/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
