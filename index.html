@@ -61,7 +61,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -94,8 +94,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>####本文主要通过分析 django 源码 介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解</p>
-<h4 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h4><p>一般问到如何防御 csrf, 很多人都会给这么个答案，请求的时候带一个 token，到服务器验证 token 的有效性。原理是没错，但是如果让你设计这个防御系统，需要考虑哪些呢，我觉得有这么几点</p>
+        <h4 id="本文主要通过分析-django-源码-介绍-django-在-csrf-跨站请求伪造-的防御措施，-默认大家对-csrf-有一定的了解"><a href="#本文主要通过分析-django-源码-介绍-django-在-csrf-跨站请求伪造-的防御措施，-默认大家对-csrf-有一定的了解" class="headerlink" title="本文主要通过分析 django 源码 介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解"></a>本文主要通过分析 django 源码 介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解</h4><h4 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h4><p>一般问到如何防御 csrf, 很多人都会给这么个答案，请求的时候带一个 token，到服务器验证 token 的有效性。原理是没错，但是如果让你设计这个防御系统，需要考虑哪些呢，我觉得有这么几点</p>
 <ul>
 <li>token 如何存储</li>
 <li>token 如何验证</li>
@@ -103,7 +102,7 @@
 </ul>
 <p>存储和验证相关联，有这么一种做法，每次用户登录生成随机值，存在数据库或者缓存中，请求的时候带上 token，每次去查询 token 有效性，这种方法其实就跟 session 验证用户是否登录一样。但问题是如果用户很多，验证的效率怎么保证。所以这种方法可行，但是成本不划算。第二种就是现在大多数的做法，cookie 里面带一个 csrf_token, 每次请求的时候也带上 token ,然后只要比较两者是否相同就行了，这样服务器没存任何东西，保证了效率。当然如果你的站点有 xss 之类的漏洞，cookie 也会泄露，同样不能保证这种方案的有效性。</p>
 <p>token 刷新其实可以只要登录的时候刷新下，因为除非泄露，一般情况下 token 被暴力破解的概率不大。</p>
-<p>####0x02<br>下面看 django 如何实现的<br>django 对于 csrf 的防御主要在 middleware 实现，默认是开始 csrf 防御的，当然也可以关闭，单独对一些 view 开启，不过不建议这么做</p>
+<h4 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h4><p>下面看 django 如何实现的<br>django 对于 csrf 的防御主要在 middleware 实现，默认是开始 csrf 防御的，当然也可以关闭，单独对一些 view 开启，不过不建议这么做</p>
 <p>这部分是取得 cookie 里面的 csrf_token, 如果不存在则生成一个新的</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">try</span>:</div><div class="line">    csrf_token = _sanitize_token(</div><div class="line">    request.COOKIES[settings.CSRF_COOKIE_NAME])</div><div class="line">    <span class="comment"># Use same token next time</span></div><div class="line">    request.META[<span class="string">'CSRF_COOKIE'</span>] = csrf_token</div><div class="line"><span class="keyword">except</span> KeyError:</div><div class="line">      csrf_token = <span class="keyword">None</span></div></pre></td></tr></table></figure>
 <p>这个是取得 post 请求的 request_csrf_token</p>
@@ -115,12 +114,12 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">referer = force_text(</div><div class="line">    request.META.get(<span class="string">'HTTP_REFERER'</span>),</div><div class="line">    strings_only=<span class="keyword">True</span>,</div><div class="line">    errors=<span class="string">'replace'</span></div><div class="line">)</div><div class="line"><span class="keyword">if</span> referer <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">    <span class="keyword">return</span> self._reject(request, REASON_NO_REFERER)</div><div class="line"></div><div class="line"><span class="comment"># Here we generate a list of all acceptable HTTP referers,</span></div><div class="line"><span class="comment"># including the current host since that has been validated</span></div><div class="line"><span class="comment"># upstream.</span></div><div class="line">good_hosts = list(settings.CSRF_TRUSTED_ORIGINS)</div><div class="line"><span class="comment"># Note that request.get_host() includes the port.</span></div><div class="line">good_hosts.append(request.get_host())</div><div class="line">good_referers = [<span class="string">'https://&#123;0&#125;/'</span>.format(host) <span class="keyword">for</span> host <span class="keyword">in</span> good_hosts]</div><div class="line"><span class="keyword">if</span> <span class="keyword">not</span> any(same_origin(referer, host) <span class="keyword">for</span> host <span class="keyword">in</span> good_referers):</div><div class="line">    reason = REASON_BAD_REFERER % referer</div><div class="line">    <span class="keyword">return</span> self._reject(request, reason)</div></pre></td></tr></table></figure>
 <p>在登录的时候需要加上 rotate_token, 来刷新 token</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">rotate_token</span><span class="params">(request)</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    Changes the CSRF token in use for a request - should be done on login</div><div class="line">    for security purposes.</div><div class="line">    """</div><div class="line">    request.META.update(&#123;</div><div class="line">        <span class="string">"CSRF_COOKIE_USED"</span>: <span class="keyword">True</span>,</div><div class="line">        <span class="string">"CSRF_COOKIE"</span>: _get_new_csrf_key(),</div><div class="line">    &#125;)</div></pre></td></tr></table></figure>
-<p>####0x03<br>总结下，django 框架本身对于安全性这块做的挺好的，对于工程师来说是福也是祸，能够更专注逻辑实现，但是有时候也因为忽视导致安全事故的发生。所以安全研发意识其实很重要，形成一些好的习惯，防患于未然。</p>
+<h4 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h4><p>总结下，django 框架本身对于安全性这块做的挺好的，对于工程师来说是福也是祸，能够更专注逻辑实现，但是有时候也因为忽视导致安全事故的发生。所以安全研发意识其实很重要，形成一些好的习惯，防患于未然。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/09/django-防御-csrf-源码分析/" data-id="ciwhfbhuw000393o0b0nniy5q" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/12/09/django-防御-csrf-源码分析/" data-id="ciwhfki9z0001nqo05lqao2sr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/django源码/">django源码</a></li></ul>
@@ -165,7 +164,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/05/用-python-提高效率之自如爬虫/" data-id="ciwhfbhx1000s93o09v7zvvt5" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/12/05/用-python-提高效率之自如爬虫/" data-id="ciwhfkidt000unqo0yx7cg9c6" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python-入门/">python 入门</a></li></ul>
@@ -211,7 +210,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/01/用-python-提高效率之豆瓣自动顶贴/" data-id="ciwhfbhx4000u93o0r2hcwac6" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/12/01/用-python-提高效率之豆瓣自动顶贴/" data-id="ciwhfkidc000qnqo0it7khxq4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python-入门/">python 入门</a></li></ul>
@@ -255,7 +254,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/01/用-python-提高效率之-SimpleHTTPServer-文件共享/" data-id="ciwhfbhwg000m93o0skgw801k" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/12/01/用-python-提高效率之-SimpleHTTPServer-文件共享/" data-id="ciwhfkict000knqo0svnjsknd" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python-入门/">python 入门</a></li></ul>
@@ -298,7 +297,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/01/用-python-提高效率之批量发邮件/" data-id="ciwhfbhwo000o93o0tflc34m1" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/12/01/用-python-提高效率之批量发邮件/" data-id="ciwhfkid6000onqo05l1wy8fr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python-入门/">python 入门</a></li></ul>
@@ -315,7 +314,7 @@
 
   <nav id="page-nav">
     
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">weiter &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -346,7 +345,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archiv</h3>
+    <h3 class="widget-title">Archives</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
@@ -356,7 +355,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">letzter Beitrag</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
         
