@@ -16,7 +16,7 @@
 
 
   
-  <title>django 防御 csrf 源码分析 | facert 的杂货店</title>
+  <title>django 安全之防御 csrf | facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="####本文主要介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解
 0x01一般问到如何防御 csrf, 很多人都会给这么个答案，请求的时候带一个 token，到服务器验证 token 的有效性。原理是没错，但是如果让你设计这个防御系统，需要考虑哪些呢，我觉得有这么几点
@@ -27,7 +27,7 @@ token 何时刷新
 
 存储和验">
 <meta property="og:type" content="article">
-<meta property="og:title" content="django 防御 csrf 源码分析">
+<meta property="og:title" content="django 安全之防御 csrf">
 <meta property="og:url" content="http://yoursite.com/2016/12/09/django-防御-csrf-源码分析/index.html">
 <meta property="og:site_name" content="facert 的杂货店">
 <meta property="og:description" content="####本文主要介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解
@@ -38,9 +38,9 @@ token 如何验证
 token 何时刷新
 
 存储和验">
-<meta property="og:updated_time" content="2016-12-09T06:40:31.000Z">
+<meta property="og:updated_time" content="2016-12-09T06:42:35.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="django 防御 csrf 源码分析">
+<meta name="twitter:title" content="django 安全之防御 csrf">
 <meta name="twitter:description" content="####本文主要介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解
 0x01一般问到如何防御 csrf, 很多人都会给这么个答案，请求的时候带一个 token，到服务器验证 token 的有效性。原理是没错，但是如果让你设计这个防御系统，需要考虑哪些呢，我觉得有这么几点
 
@@ -109,7 +109,7 @@ token 何时刷新
         
   
     <h1 class="article-title" itemprop="name">
-      django 防御 csrf 源码分析
+      django 安全之防御 csrf
     </h1>
   
 
@@ -168,7 +168,7 @@ token 何时刷新
 
 <section id="comments">
 <!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="post-django-防御-csrf-源码分析" data-title="django 防御 csrf 源码分析" data-url="http://yoursite.com/2016/12/09/django-防御-csrf-源码分析/"></div>
+<div class="ds-thread" data-thread-key="post-django-防御-csrf-源码分析" data-title="django 安全之防御 csrf" data-url="http://yoursite.com/2016/12/09/django-防御-csrf-源码分析/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -228,7 +228,7 @@ var duoshuoQuery = {short_name:'facert'};
       <ul>
         
           <li>
-            <a href="/2016/12/09/django-防御-csrf-源码分析/">django 防御 csrf 源码分析</a>
+            <a href="/2016/12/09/django-防御-csrf-源码分析/">django 安全之防御 csrf</a>
           </li>
         
           <li>
