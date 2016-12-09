@@ -94,7 +94,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>####本文主要介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解</p>
+        <p>####本文主要通过分析 django 源码 介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解</p>
 <h4 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h4><p>一般问到如何防御 csrf, 很多人都会给这么个答案，请求的时候带一个 token，到服务器验证 token 的有效性。原理是没错，但是如果让你设计这个防御系统，需要考虑哪些呢，我觉得有这么几点</p>
 <ul>
 <li>token 如何存储</li>
