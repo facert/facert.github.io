@@ -16,14 +16,39 @@
 
 
   
-  <title>facert 的杂货店</title>
+  <title>django 防御 csrf 源码分析 | facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="facert 的杂货店">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="####本文主要介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解
+0x01一般问到如何防御 csrf, 很多人都会给这么个答案，请求的时候带一个 token，到服务器验证 token 的有效性。原理是没错，但是如果让你设计这个防御系统，需要考虑哪些呢，我觉得有这么几点
+
+token 如何存储
+token 如何验证
+token 何时刷新
+
+存储和验">
+<meta property="og:type" content="article">
+<meta property="og:title" content="django 防御 csrf 源码分析">
+<meta property="og:url" content="http://yoursite.com/2016/12/09/django-防御-csrf-源码分析/index.html">
 <meta property="og:site_name" content="facert 的杂货店">
+<meta property="og:description" content="####本文主要介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解
+0x01一般问到如何防御 csrf, 很多人都会给这么个答案，请求的时候带一个 token，到服务器验证 token 的有效性。原理是没错，但是如果让你设计这个防御系统，需要考虑哪些呢，我觉得有这么几点
+
+token 如何存储
+token 如何验证
+token 何时刷新
+
+存储和验">
+<meta property="og:updated_time" content="2016-12-09T06:40:31.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="facert 的杂货店">
+<meta name="twitter:title" content="django 防御 csrf 源码分析">
+<meta name="twitter:description" content="####本文主要介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解
+0x01一般问到如何防御 csrf, 很多人都会给这么个答案，请求的时候带一个 token，到服务器验证 token 的有效性。原理是没错，但是如果让你设计这个防御系统，需要考虑哪些呢，我觉得有这么几点
+
+token 如何存储
+token 如何验证
+token 何时刷新
+
+存储和验">
   
     <link rel="alternate" href="/atom.xml" title="facert 的杂货店" type="application/atom+xml">
   
@@ -70,9 +95,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-django-防御-csrf-源码分析" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-django-防御-csrf-源码分析" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/12/09/django-防御-csrf-源码分析/" class="article-date">
   <time datetime="2016-12-09T10:28:39.000Z" itemprop="datePublished">2016-12-09</time>
@@ -85,8 +108,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/09/django-防御-csrf-源码分析/">django 防御 csrf 源码分析</a>
+    <h1 class="article-title" itemprop="name">
+      django 防御 csrf 源码分析
     </h1>
   
 
@@ -128,195 +151,39 @@
     </footer>
   </div>
   
-</article>
-
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-用-python-提高效率之自如爬虫" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/05/用-python-提高效率之自如爬虫/" class="article-date">
-  <time datetime="2016-12-05T09:45:17.000Z" itemprop="datePublished">2016-12-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/05/用-python-提高效率之自如爬虫/">用 python 提高效率之自如爬虫</a>
-    </h1>
+    <a href="/2016/12/05/用-python-提高效率之自如爬虫/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">用 python 提高效率之自如爬虫</div>
+    </a>
   
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>如果你想入门数据分析，但是苦于没有数据，那就看下文如何用 10 行代码写一个最简单的自如房源爬虫</p>
-<p>首先我们通过分析看到自如手机版有个 url 如下： <a href="http://m.ziroom.com/list/ajax-get-data" target="_blank" rel="external">http://m.ziroom.com/list/ajax-get-data</a> 能够返回 json 数据</p>
-<p><img src="/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-05%20%E4%B8%8B%E5%8D%885.46.47.png" alt="屏幕快照 2016-12-05 下午5.46.47"></p>
-<p>这个基本上包括了租房的一些重要信息，价格，小区，地铁沿线，朝向<br>所以要做的就是遍历这个地址得到所有的 json 数据</p>
-<p>下面是代码：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> requests</div><div class="line"><span class="keyword">import</span> time</div><div class="line"></div><div class="line"><span class="keyword">with</span> open(<span class="string">'ziroom.txt'</span>, <span class="string">'a+'</span>) <span class="keyword">as</span> f:</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">10</span>, <span class="number">9001</span>, <span class="number">10</span>):</div><div class="line">        payload = &#123;<span class="string">'step'</span>: i&#125;</div><div class="line">        res = requests.post(<span class="string">'http://m.ziroom.com/list/ajax-get-data'</span>, data=payload)</div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> res.json()[<span class="string">'data'</span>]:</div><div class="line">            <span class="keyword">print</span> i[<span class="string">'id'</span>]</div><div class="line">            f.write(str(i)+<span class="string">'\n'</span>)</div><div class="line">        time.sleep(<span class="number">3</span>)</div></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/05/用-python-提高效率之自如爬虫/" data-id="ciwhfbhx1000s93o09v7zvvt5" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python-入门/">python 入门</a></li></ul>
-
-    </footer>
-  </div>
   
 </article>
 
 
-
-  
-    <article id="post-用-python-提高效率之豆瓣自动顶贴" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/01/用-python-提高效率之豆瓣自动顶贴/" class="article-date">
-  <time datetime="2016-12-01T13:13:56.000Z" itemprop="datePublished">2016-12-01</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/01/用-python-提高效率之豆瓣自动顶贴/">用 python 提高效率之豆瓣自动顶贴</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>程序员喜欢是用代码解放双手，能懒则懒。举个例子，你在豆瓣上发布了一个帖子，希望过段时间就回复下来置顶，那么一个是手工回复，当然也可以写脚本来做</p>
-<h4 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h4><p>首先登录豆瓣，进入你需要回复的帖子页面，打开 chrome dev_tools, 当点击回复帖子的时候，查看 NetWork, 可以看到如下图<br><img src="/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-01%20%E4%B8%8A%E5%8D%8811.31.25.png" alt="屏幕快照 2016-12-01 上午11.31.25"></p>
-<p>这里面最重要的是 Cookie 这个东西，他记录了你的登录状态，所以用脚本其实只需要发送带这个 Cookie 的请求就行</p>
-<p>三行代码就能搞定</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># rv_comment 为你需要回复的字段</div><div class="line">payloads = &#123;&apos;ck&apos;: &apos;n1iQ&apos;, &apos;rv_comment&apos;: &apos;up&apos;, &apos;start&apos;: &apos;0&apos;, &apos;submit_btn&apos;: u&apos;加上去&apos;&#125;</div><div class="line"># Cookie 自己去填</div><div class="line">headers = &#123;&apos;User-Agent&apos;: &apos;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36&apos;, &apos;Cookie&apos;: &apos;******&apos;&#125;</div><div class="line">res = requests.post(&apos;https://www.douban.com/group/topic/93461964/add_comment&apos;, data=payloads, headers=headers)</div></pre></td></tr></table></figure>
-<p>代码见 <a href="https://github.com/facert/demo_tools/blob/master/auto_reply_douban.py" target="_blank" rel="external">github</a></p>
-<h4 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h4><p>这种方式去刷帖肯定是有风险的，所以请大家谨慎使用</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/01/用-python-提高效率之豆瓣自动顶贴/" data-id="ciwhfbhx4000u93o0r2hcwac6" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python-入门/">python 入门</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-用-python-提高效率之-SimpleHTTPServer-文件共享" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/01/用-python-提高效率之-SimpleHTTPServer-文件共享/" class="article-date">
-  <time datetime="2016-12-01T12:57:08.000Z" itemprop="datePublished">2016-12-01</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/01/用-python-提高效率之-SimpleHTTPServer-文件共享/">用 python 提高效率之 SimpleHTTPServer 文件共享</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>有时候你会想要跟一个局域网的人共享文件，如果文件太多，那么用微信一个一个传可能不太方便，这个时候就祭出 SimpleHTTPServer 这个杀器，一行代码都不用写，先 cd 到你需要共享的目录</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ cd /home/share/images</div></pre></td></tr></table></figure>
-<p>然后直接命令行输入</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python -m SimpleHTTPServer</div></pre></td></tr></table></figure>
-<p>接下来用 ifconfig (windows 下是 ipconfig)查看你的内网 ip, 假设是 192.168.0.11, 在浏览器输入<a href="http://192.168.0.11:8000" target="_blank" rel="external">http://192.168.0.11:8000</a> 即可看到<br><img src="/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-01%20%E4%B8%8A%E5%8D%8811.11.53.png" alt="屏幕快照 2016-12-01 上午11.11.53"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/01/用-python-提高效率之-SimpleHTTPServer-文件共享/" data-id="ciwhfbhwg000m93o0skgw801k" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python-入门/">python 入门</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-用-python-提高效率之批量发邮件" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/01/用-python-提高效率之批量发邮件/" class="article-date">
-  <time datetime="2016-12-01T09:04:52.000Z" itemprop="datePublished">2016-12-01</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/01/用-python-提高效率之批量发邮件/">用 python 提高效率之批量发邮件</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>如果有一天，老板过来给你一个很大的邮箱列表，要你给每个人发邮件，你该如何去做，最简单的就是写一个 python 程序</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">import smtplib</div><div class="line">from email.mime.text import MIMEText</div><div class="line"></div><div class="line">receiver = [&apos;***&apos;, &apos;***&apos;] # 设置邮件接收人，这里是我的公司邮箱</div><div class="line"></div><div class="line">host = &apos;smtp.163.com&apos;  # 设置发件服务器地址</div><div class="line">port = 25  # 设置发件服务器端口号</div><div class="line">sender = &apos;****&apos;  # 设置发件邮箱</div><div class="line">pwd = &apos;*****&apos;  # 设置发件邮箱的密码</div><div class="line">body = &apos;hello&apos; # 设置邮件正文，这里是支持HTML的</div><div class="line"></div><div class="line">msg = MIMEText(body, &apos;html&apos;) # 设置正文为符合邮件格式的HTML内容</div><div class="line">msg[&apos;subject&apos;] = &apos;Hello world&apos; # 设置邮件标题</div><div class="line">msg[&apos;from&apos;] = sender  # 设置发送人</div><div class="line">msg[&apos;to&apos;] = &apos;;&apos;.join(receiver)  # 设置接收人</div><div class="line"></div><div class="line">s = smtplib.SMTP(host, port) </div><div class="line">s.login(sender, pwd)  # 登陆邮箱</div><div class="line">s.sendmail(sender, receiver, msg.as_string())  # 发送邮件</div></pre></td></tr></table></figure>
-<p>不过由于每个垃圾邮件的屏蔽机制，很可能批量发送会被 spam 掉，所以可以使用 sendcloud 专门的发邮件服务接口。</p>
-<p>code 见 <a href="https://github.com/facert/demo_tools/blob/master/send_email.py" target="_blank" rel="external">github</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/01/用-python-提高效率之批量发邮件/" data-id="ciwhfbhwo000o93o0tflc34m1" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python-入门/">python 入门</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-
-
-  <nav id="page-nav">
-    
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">weiter &raquo;</a>
-  </nav>
+<section id="comments">
+<!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="post-django-防御-csrf-源码分析" data-title="django 防御 csrf 源码分析" data-url="http://yoursite.com/2016/12/09/django-防御-csrf-源码分析/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:'facert'};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+</section>
 
 </section>
         
