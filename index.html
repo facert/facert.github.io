@@ -94,28 +94,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h4 id="本文主要通过分析-django-源码-介绍-django-在-csrf-跨站请求伪造-的防御措施，-默认大家对-csrf-有一定的了解"><a href="#本文主要通过分析-django-源码-介绍-django-在-csrf-跨站请求伪造-的防御措施，-默认大家对-csrf-有一定的了解" class="headerlink" title="本文主要通过分析 django 源码 介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解"></a>本文主要通过分析 django 源码 介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解</h4><h4 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h4><p>一般问到如何防御 csrf, 很多人都会给这么个答案，请求的时候带一个 token，到服务器验证 token 的有效性。原理是没错，但是如果让你设计这个防御系统，需要考虑哪些呢，我觉得有这么几点</p>
-<ul>
-<li>token 如何存储</li>
-<li>token 如何验证</li>
-<li>token 何时刷新</li>
-</ul>
-<p>存储和验证相关联，有这么一种做法，每次用户登录生成随机值，存在数据库或者缓存中，请求的时候带上 token，每次去查询 token 有效性，这种方法其实就跟 session 验证用户是否登录一样。但问题是如果用户很多，验证的效率怎么保证。所以这种方法可行，但是成本不划算。第二种就是现在大多数的做法，cookie 里面带一个 csrf_token, 每次请求的时候也带上 token ,然后只要比较两者是否相同就行了，这样服务器没存任何东西，保证了效率。当然如果你的站点有 xss 之类的漏洞，cookie 也会泄露，同样不能保证这种方案的有效性。</p>
-<p>token 刷新其实可以只要登录的时候刷新下，因为除非泄露，一般情况下 token 被暴力破解的概率不大。</p>
-<h4 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h4><p>下面看 django 如何实现的<br>django 对于 csrf 的防御主要在 middleware 实现，默认是开始 csrf 防御的，当然也可以关闭，单独对一些 view 开启，不过不建议这么做</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">try</span>:</div><div class="line">    csrf_token = _sanitize_token(</div><div class="line">    request.COOKIES[settings.CSRF_COOKIE_NAME])</div><div class="line">    <span class="comment"># Use same token next time</span></div><div class="line">    request.META[<span class="string">'CSRF_COOKIE'</span>] = csrf_token</div><div class="line"><span class="keyword">except</span> KeyError:</div><div class="line">      csrf_token = <span class="keyword">None</span></div></pre></td></tr></table></figure>
-<p>这部分取得 cookie 里面的 csrf_token, 如果不存在则生成一个新的 csrf_token</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">request_csrf_token = request.POST.get(<span class="string">'csrfmiddlewaretoken'</span>, <span class="string">''</span>)</div></pre></td></tr></table></figure>
-<p>这个是取得 post 请求的 request_csrf_token</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">request_csrf_token = request.META.get(settings.CSRF_HEADER_NAME, <span class="string">''</span>)</div></pre></td></tr></table></figure>
-<p>对于 put delete 或者 ajax 请求来说，需要把 token 放到 headers 里面, 名字为 X-CSRFToken</p>
-<p>最后只要比较 csrf_token 和 request_csrf_token 就能有效的防御 csrf</p>
-<p>这里面有个特殊的地方，对于 http 来说，有可能存在中间人攻击，所以没法信任 HTTP_REFERER 这个 header ，但如果是 https, 做了下 HTTP_REFERER 的检查，只要 referer 不在信任域，一律拒绝。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">referer = force_text(</div><div class="line">    request.META.get(<span class="string">'HTTP_REFERER'</span>),</div><div class="line">    strings_only=<span class="keyword">True</span>,</div><div class="line">    errors=<span class="string">'replace'</span></div><div class="line">)</div><div class="line"><span class="keyword">if</span> referer <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">    <span class="keyword">return</span> self._reject(request, REASON_NO_REFERER)</div><div class="line"></div><div class="line"><span class="comment"># Here we generate a list of all acceptable HTTP referers,</span></div><div class="line"><span class="comment"># including the current host since that has been validated</span></div><div class="line"><span class="comment"># upstream.</span></div><div class="line">good_hosts = list(settings.CSRF_TRUSTED_ORIGINS)</div><div class="line"><span class="comment"># Note that request.get_host() includes the port.</span></div><div class="line">good_hosts.append(request.get_host())</div><div class="line">good_referers = [<span class="string">'https://&#123;0&#125;/'</span>.format(host) <span class="keyword">for</span> host <span class="keyword">in</span> good_hosts]</div><div class="line"><span class="keyword">if</span> <span class="keyword">not</span> any(same_origin(referer, host) <span class="keyword">for</span> host <span class="keyword">in</span> good_referers):</div><div class="line">    reason = REASON_BAD_REFERER % referer</div><div class="line">    <span class="keyword">return</span> self._reject(request, reason)</div></pre></td></tr></table></figure>
-<p>在登录的时候需要加上 rotate_token, 来刷新 token</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">rotate_token</span><span class="params">(request)</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    Changes the CSRF token in use for a request - should be done on login</div><div class="line">    for security purposes.</div><div class="line">    """</div><div class="line">    request.META.update(&#123;</div><div class="line">        <span class="string">"CSRF_COOKIE_USED"</span>: <span class="keyword">True</span>,</div><div class="line">        <span class="string">"CSRF_COOKIE"</span>: _get_new_csrf_key(),</div><div class="line">    &#125;)</div></pre></td></tr></table></figure>
-<h4 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h4><p>总结下，django 框架本身对于安全性这块做的挺好的，对于工程师来说是福也是祸，能够更专注逻辑实现，但是有时候也因为忽视导致安全事故的发生。所以安全研发意识其实很重要，形成一些好的习惯，防患于未然。</p>
-
+        <h4 id="本文主要通过分析-django-源码-介绍-django-在-csrf-跨站请求伪造-的防御措施，-默认大家对-csrf-有一定的了解"><a href="#本文主要通过分析-django-源码-介绍-django-在-csrf-跨站请求伪造-的防御措施，-默认大家对-csrf-有一定的了解" class="headerlink" title="本文主要通过分析 django 源码 介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解"></a>本文主要通过分析 django 源码 介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解</h4>
+        
+          <p class="article-more-link">
+            <a href="/2016/12/09/django-防御-csrf-源码分析/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
@@ -154,13 +138,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>如果你想入门数据分析，但是苦于没有数据，那就看下文如何用 10 行代码写一个最简单的自如房源爬虫</p>
-<p>首先我们通过分析看到自如手机版有个 url 如下： <a href="http://m.ziroom.com/list/ajax-get-data" target="_blank" rel="external">http://m.ziroom.com/list/ajax-get-data</a> 能够返回 json 数据</p>
-<p><img src="/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-05%20%E4%B8%8B%E5%8D%885.46.47.png" alt="屏幕快照 2016-12-05 下午5.46.47"></p>
-<p>这个基本上包括了租房的一些重要信息，价格，小区，地铁沿线，朝向<br>所以要做的就是遍历这个地址得到所有的 json 数据</p>
-<p>下面是代码：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> requests</div><div class="line"><span class="keyword">import</span> time</div><div class="line"></div><div class="line"><span class="keyword">with</span> open(<span class="string">'ziroom.txt'</span>, <span class="string">'a+'</span>) <span class="keyword">as</span> f:</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">10</span>, <span class="number">9001</span>, <span class="number">10</span>):</div><div class="line">        payload = &#123;<span class="string">'step'</span>: i&#125;</div><div class="line">        res = requests.post(<span class="string">'http://m.ziroom.com/list/ajax-get-data'</span>, data=payload)</div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> res.json()[<span class="string">'data'</span>]:</div><div class="line">            <span class="keyword">print</span> i[<span class="string">'id'</span>]</div><div class="line">            f.write(str(i)+<span class="string">'\n'</span>)</div><div class="line">        time.sleep(<span class="number">3</span>)</div></pre></td></tr></table></figure>
-
+        <p>如果你想入门数据分析，但是苦于没有数据，那就看下文如何用 10 行代码写一个最简单的自如房源爬虫<br>
+        
+          <p class="article-more-link">
+            <a href="/2016/12/05/用-python-提高效率之自如爬虫/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
@@ -199,14 +182,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>程序员喜欢是用代码解放双手，能懒则懒。举个例子，你在豆瓣上发布了一个帖子，希望过段时间就回复下来置顶，那么一个是手工回复，当然也可以写脚本来做</p>
-<h4 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h4><p>首先登录豆瓣，进入你需要回复的帖子页面，打开 chrome dev_tools, 当点击回复帖子的时候，查看 NetWork, 可以看到如下图<br><img src="/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-01%20%E4%B8%8A%E5%8D%8811.31.25.png" alt="屏幕快照 2016-12-01 上午11.31.25"></p>
-<p>这里面最重要的是 Cookie 这个东西，他记录了你的登录状态，所以用脚本其实只需要发送带这个 Cookie 的请求就行</p>
-<p>三行代码就能搞定</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># rv_comment 为你需要回复的字段</div><div class="line">payloads = &#123;&apos;ck&apos;: &apos;n1iQ&apos;, &apos;rv_comment&apos;: &apos;up&apos;, &apos;start&apos;: &apos;0&apos;, &apos;submit_btn&apos;: u&apos;加上去&apos;&#125;</div><div class="line"># Cookie 自己去填</div><div class="line">headers = &#123;&apos;User-Agent&apos;: &apos;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36&apos;, &apos;Cookie&apos;: &apos;******&apos;&#125;</div><div class="line">res = requests.post(&apos;https://www.douban.com/group/topic/93461964/add_comment&apos;, data=payloads, headers=headers)</div></pre></td></tr></table></figure>
-<p>代码见 <a href="https://github.com/facert/demo_tools/blob/master/auto_reply_douban.py" target="_blank" rel="external">github</a></p>
-<h4 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h4><p>这种方式去刷帖肯定是有风险的，所以请大家谨慎使用</p>
-
+        <p>程序员喜欢是用代码解放双手，能懒则懒。举个例子，你在豆瓣上发布了一个帖子，希望过段时间就回复下来置顶，那么一个是手工回复，当然也可以写脚本来做<br>
+        
+          <p class="article-more-link">
+            <a href="/2016/12/01/用-python-提高效率之豆瓣自动顶贴/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
@@ -245,12 +226,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>有时候你会想要跟一个局域网的人共享文件，如果文件太多，那么用微信一个一个传可能不太方便，这个时候就祭出 SimpleHTTPServer 这个杀器，一行代码都不用写，先 cd 到你需要共享的目录</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ cd /home/share/images</div></pre></td></tr></table></figure>
-<p>然后直接命令行输入</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python -m SimpleHTTPServer</div></pre></td></tr></table></figure>
-<p>接下来用 ifconfig (windows 下是 ipconfig)查看你的内网 ip, 假设是 192.168.0.11, 在浏览器输入<a href="http://192.168.0.11:8000" target="_blank" rel="external">http://192.168.0.11:8000</a> 即可看到<br><img src="/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-01%20%E4%B8%8A%E5%8D%8811.11.53.png" alt="屏幕快照 2016-12-01 上午11.11.53"></p>
-
+        <p>有时候你会想要跟一个局域网的人共享文件，如果文件太多，那么用微信一个一个传可能不太方便，这个时候就祭出 SimpleHTTPServer 这个杀器，一行代码都不用写，先 cd 到你需要共享的目录<br>
+        
+          <p class="article-more-link">
+            <a href="/2016/12/01/用-python-提高效率之-SimpleHTTPServer-文件共享/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
@@ -289,11 +270,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>如果有一天，老板过来给你一个很大的邮箱列表，要你给每个人发邮件，你该如何去做，最简单的就是写一个 python 程序</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">import smtplib</div><div class="line">from email.mime.text import MIMEText</div><div class="line"></div><div class="line">receiver = [&apos;***&apos;, &apos;***&apos;] # 设置邮件接收人，这里是我的公司邮箱</div><div class="line"></div><div class="line">host = &apos;smtp.163.com&apos;  # 设置发件服务器地址</div><div class="line">port = 25  # 设置发件服务器端口号</div><div class="line">sender = &apos;****&apos;  # 设置发件邮箱</div><div class="line">pwd = &apos;*****&apos;  # 设置发件邮箱的密码</div><div class="line">body = &apos;hello&apos; # 设置邮件正文，这里是支持HTML的</div><div class="line"></div><div class="line">msg = MIMEText(body, &apos;html&apos;) # 设置正文为符合邮件格式的HTML内容</div><div class="line">msg[&apos;subject&apos;] = &apos;Hello world&apos; # 设置邮件标题</div><div class="line">msg[&apos;from&apos;] = sender  # 设置发送人</div><div class="line">msg[&apos;to&apos;] = &apos;;&apos;.join(receiver)  # 设置接收人</div><div class="line"></div><div class="line">s = smtplib.SMTP(host, port) </div><div class="line">s.login(sender, pwd)  # 登陆邮箱</div><div class="line">s.sendmail(sender, receiver, msg.as_string())  # 发送邮件</div></pre></td></tr></table></figure>
-<p>不过由于每个垃圾邮件的屏蔽机制，很可能批量发送会被 spam 掉，所以可以使用 sendcloud 专门的发邮件服务接口。</p>
-<p>code 见 <a href="https://github.com/facert/demo_tools/blob/master/send_email.py" target="_blank" rel="external">github</a></p>
-
+        <p>如果有一天，老板过来给你一个很大的邮箱列表，要你给每个人发邮件，你该如何去做，最简单的就是写一个 python 程序<br>
+        
+          <p class="article-more-link">
+            <a href="/2016/12/01/用-python-提高效率之批量发邮件/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">

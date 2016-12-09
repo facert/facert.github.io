@@ -18,23 +18,17 @@
   
   <title>用 python 提高效率之豆瓣自动顶贴 | facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="程序员喜欢是用代码解放双手，能懒则懒。举个例子，你在豆瓣上发布了一个帖子，希望过段时间就回复下来置顶，那么一个是手工回复，当然也可以写脚本来做
-0x01首先登录豆瓣，进入你需要回复的帖子页面，打开 chrome dev_tools, 当点击回复帖子的时候，查看 NetWork, 可以看到如下图
-这里面最重要的是 Cookie 这个东西，他记录了你的登录状态，所以用脚本其实只需要发送带这个 Cook">
+  <meta name="description" content="程序员喜欢是用代码解放双手，能懒则懒。举个例子，你在豆瓣上发布了一个帖子，希望过段时间就回复下来置顶，那么一个是手工回复，当然也可以写脚本来做">
 <meta property="og:type" content="article">
 <meta property="og:title" content="用 python 提高效率之豆瓣自动顶贴">
 <meta property="og:url" content="http://yoursite.com/2016/12/01/用-python-提高效率之豆瓣自动顶贴/index.html">
 <meta property="og:site_name" content="facert 的杂货店">
-<meta property="og:description" content="程序员喜欢是用代码解放双手，能懒则懒。举个例子，你在豆瓣上发布了一个帖子，希望过段时间就回复下来置顶，那么一个是手工回复，当然也可以写脚本来做
-0x01首先登录豆瓣，进入你需要回复的帖子页面，打开 chrome dev_tools, 当点击回复帖子的时候，查看 NetWork, 可以看到如下图
-这里面最重要的是 Cookie 这个东西，他记录了你的登录状态，所以用脚本其实只需要发送带这个 Cook">
+<meta property="og:description" content="程序员喜欢是用代码解放双手，能懒则懒。举个例子，你在豆瓣上发布了一个帖子，希望过段时间就回复下来置顶，那么一个是手工回复，当然也可以写脚本来做">
 <meta property="og:image" content="http://yoursite.com/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-01%20%E4%B8%8A%E5%8D%8811.31.25.png">
-<meta property="og:updated_time" content="2016-12-01T09:50:11.000Z">
+<meta property="og:updated_time" content="2016-12-09T13:31:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用 python 提高效率之豆瓣自动顶贴">
-<meta name="twitter:description" content="程序员喜欢是用代码解放双手，能懒则懒。举个例子，你在豆瓣上发布了一个帖子，希望过段时间就回复下来置顶，那么一个是手工回复，当然也可以写脚本来做
-0x01首先登录豆瓣，进入你需要回复的帖子页面，打开 chrome dev_tools, 当点击回复帖子的时候，查看 NetWork, 可以看到如下图
-这里面最重要的是 Cookie 这个东西，他记录了你的登录状态，所以用脚本其实只需要发送带这个 Cook">
+<meta name="twitter:description" content="程序员喜欢是用代码解放双手，能懒则懒。举个例子，你在豆瓣上发布了一个帖子，希望过段时间就回复下来置顶，那么一个是手工回复，当然也可以写脚本来做">
 <meta name="twitter:image" content="http://yoursite.com/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-01%20%E4%B8%8A%E5%8D%8811.31.25.png">
   
     <link rel="alternate" href="/atom.xml" title="facert 的杂货店" type="application/atom+xml">
@@ -104,7 +98,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>程序员喜欢是用代码解放双手，能懒则懒。举个例子，你在豆瓣上发布了一个帖子，希望过段时间就回复下来置顶，那么一个是手工回复，当然也可以写脚本来做</p>
+        <p>程序员喜欢是用代码解放双手，能懒则懒。举个例子，你在豆瓣上发布了一个帖子，希望过段时间就回复下来置顶，那么一个是手工回复，当然也可以写脚本来做<br><a id="more"></a></p>
 <h4 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h4><p>首先登录豆瓣，进入你需要回复的帖子页面，打开 chrome dev_tools, 当点击回复帖子的时候，查看 NetWork, 可以看到如下图<br><img src="/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-01%20%E4%B8%8A%E5%8D%8811.31.25.png" alt="屏幕快照 2016-12-01 上午11.31.25"></p>
 <p>这里面最重要的是 Cookie 这个东西，他记录了你的登录状态，所以用脚本其实只需要发送带这个 Cookie 的请求就行</p>
 <p>三行代码就能搞定</p>

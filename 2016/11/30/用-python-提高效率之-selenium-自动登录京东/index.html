@@ -18,32 +18,17 @@
   
   <title>用 python 提高效率之 selenium 自动登录京东 | facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="还记得前段时间阿里月饼事件，当事人因为用 js 脚本刷月饼被开除。直接编写 js 代码可能不够直观，所以本文我们用 selenium 来模拟浏览器执行自动化脚本，同样可以达到效果，比如自动登录京东。
-0x01安装 selenium
-1pip install selenium
-0x02打开京东登录页，用 chrome devtools 查看元素
-
-我们需要做的步骤就是输入用户名和密码，点击登录按钮。">
+  <meta name="description" content="还记得前段时间阿里月饼事件，当事人因为用 js 脚本刷月饼被开除。直接编写 js 代码可能不够直观，所以本文我们用 selenium 来模拟浏览器执行自动化脚本，同样可以达到效果，比如自动登录京东。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="用 python 提高效率之 selenium 自动登录京东">
 <meta property="og:url" content="http://yoursite.com/2016/11/30/用-python-提高效率之-selenium-自动登录京东/index.html">
 <meta property="og:site_name" content="facert 的杂货店">
-<meta property="og:description" content="还记得前段时间阿里月饼事件，当事人因为用 js 脚本刷月饼被开除。直接编写 js 代码可能不够直观，所以本文我们用 selenium 来模拟浏览器执行自动化脚本，同样可以达到效果，比如自动登录京东。
-0x01安装 selenium
-1pip install selenium
-0x02打开京东登录页，用 chrome devtools 查看元素
-
-我们需要做的步骤就是输入用户名和密码，点击登录按钮。">
+<meta property="og:description" content="还记得前段时间阿里月饼事件，当事人因为用 js 脚本刷月饼被开除。直接编写 js 代码可能不够直观，所以本文我们用 selenium 来模拟浏览器执行自动化脚本，同样可以达到效果，比如自动登录京东。">
 <meta property="og:image" content="http://yoursite.com/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-01%20%E4%B8%8A%E5%8D%8810.37.43.png">
-<meta property="og:updated_time" content="2016-12-01T09:50:19.000Z">
+<meta property="og:updated_time" content="2016-12-09T13:31:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用 python 提高效率之 selenium 自动登录京东">
-<meta name="twitter:description" content="还记得前段时间阿里月饼事件，当事人因为用 js 脚本刷月饼被开除。直接编写 js 代码可能不够直观，所以本文我们用 selenium 来模拟浏览器执行自动化脚本，同样可以达到效果，比如自动登录京东。
-0x01安装 selenium
-1pip install selenium
-0x02打开京东登录页，用 chrome devtools 查看元素
-
-我们需要做的步骤就是输入用户名和密码，点击登录按钮。">
+<meta name="twitter:description" content="还记得前段时间阿里月饼事件，当事人因为用 js 脚本刷月饼被开除。直接编写 js 代码可能不够直观，所以本文我们用 selenium 来模拟浏览器执行自动化脚本，同样可以达到效果，比如自动登录京东。">
 <meta name="twitter:image" content="http://yoursite.com/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-01%20%E4%B8%8A%E5%8D%8810.37.43.png">
   
     <link rel="alternate" href="/atom.xml" title="facert 的杂货店" type="application/atom+xml">
@@ -113,7 +98,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>还记得前段时间阿里月饼事件，当事人因为用 js 脚本刷月饼被开除。直接编写 js 代码可能不够直观，所以本文我们用 selenium 来模拟浏览器执行自动化脚本，同样可以达到效果，比如自动登录京东。</p>
+        <p>还记得前段时间阿里月饼事件，当事人因为用 js 脚本刷月饼被开除。直接编写 js 代码可能不够直观，所以本文我们用 selenium 来模拟浏览器执行自动化脚本，同样可以达到效果，比如自动登录京东。<br><a id="more"></a></p>
 <h4 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h4><p>安装 selenium</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install selenium</div></pre></td></tr></table></figure>
 <h4 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h4><p>打开京东登录页，用 chrome devtools 查看元素</p>

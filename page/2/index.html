@@ -94,19 +94,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>这是一个很无聊的需求，哈哈，如果你想通过摩尔斯密码聊天的话</p>
-<p><img src="/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-01%20%E4%B8%8B%E5%8D%881.20.53.png" alt="屏幕快照 2016-12-01 下午1.20.53"></p>
-<p>说下 python 实现</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install morse-talk</div></pre></td></tr></table></figure>
-<p>将文字编码成摩尔斯密码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">import morse_talk as mtalk</div><div class="line">content = &apos;i love you&apos;</div><div class="line">mo_content = mtalk.encode(content)</div><div class="line">print mo_content</div></pre></td></tr></table></figure>
-<p>输出</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">..       .-..   ---   ...-   .       -.--   ---   ..-</div></pre></td></tr></table></figure>
-<p>解摩尔斯码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">import morse_talk as mtalk</div><div class="line">mo_content = &apos;-.--   ---   ..-&apos;</div><div class="line">content = mtalk.decode(mo_content)</div><div class="line">print content</div></pre></td></tr></table></figure>
-<p>输出</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&apos;YOU&apos;</div></pre></td></tr></table></figure>
-
+        <p>这是一个很无聊的需求，哈哈，如果你想通过摩尔斯密码聊天的话<br>
+        
+          <p class="article-more-link">
+            <a href="/2016/12/01/用-python-提高效率之摩尔斯密码/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
@@ -145,17 +138,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>还记得前段时间阿里月饼事件，当事人因为用 js 脚本刷月饼被开除。直接编写 js 代码可能不够直观，所以本文我们用 selenium 来模拟浏览器执行自动化脚本，同样可以达到效果，比如自动登录京东。</p>
-<h4 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h4><p>安装 selenium</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install selenium</div></pre></td></tr></table></figure>
-<h4 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h4><p>打开京东登录页，用 chrome devtools 查看元素</p>
-<p><img src="/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-12-01%20%E4%B8%8A%E5%8D%8810.37.43.png" alt="屏幕快照 2016-12-01 上午10.37.43"></p>
-<p>我们需要做的步骤就是输入用户名和密码，点击登录按钮。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">name = &apos;****&apos;</div><div class="line">password = &apos;****&apos;</div><div class="line"></div><div class="line"># 使用火狐作为默认打开的浏览器，确认已经安装火狐</div><div class="line">driver = webdriver.Firefox()</div><div class="line">driver.get(&quot;https://passport.jd.com/new/login.aspx&quot;)</div><div class="line"></div><div class="line">elem_account = driver.find_element_by_name(&quot;loginname&quot;)</div><div class="line">elem_password = driver.find_element_by_name(&quot;nloginpwd&quot;)</div><div class="line"></div><div class="line">elem_account.clear()</div><div class="line">elem_password.clear()</div><div class="line"></div><div class="line">elem_account.send_keys(name)</div><div class="line">elem_password.send_keys(password)</div><div class="line"></div><div class="line">driver.find_element_by_id(&quot;loginsubmit&quot;).click()</div></pre></td></tr></table></figure>
-<p>只需要更改上面的用户名和密码就能运行脚本</p>
-<p>代码 <a href="https://github.com/facert/demo_tools/blob/master/auto_login_jd.py" target="_blank" rel="external">github</a></p>
-<h4 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h4><p>其实 selenium 用来秒杀，抢手机，抢火车票。有验证码的时候，自动识别可能有误差，可以手工输入或者一些其他方式。。。</p>
-
+        <p>还记得前段时间阿里月饼事件，当事人因为用 js 脚本刷月饼被开除。直接编写 js 代码可能不够直观，所以本文我们用 selenium 来模拟浏览器执行自动化脚本，同样可以达到效果，比如自动登录京东。<br>
+        
+          <p class="article-more-link">
+            <a href="/2016/11/30/用-python-提高效率之-selenium-自动登录京东/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
@@ -194,16 +182,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>经常有人说我应该学一门语言，比如 Python 之类，但是却不知道如何入门。这个时候很多人会推荐学各种 web 框架，scrapy 爬虫之类，门槛虽然不高，但是对于新人来说可能就半途而废了。我在想大家需要的或许是通过编程来解决平时遇到的问题，将工作自动化。所以想写一个系列，通过简单的例子来说下 Python 如何提高效率，减少重复劳动的。</p>
-<p>废话不多说，进入正题，首先安装 Python 和 pip, 教程网上很多，比如<br><a href="http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000/001374738150500472fd5785c194ebea336061163a8a974000" target="_blank" rel="external">廖雪峰的官方网站</a>， pip 可以理解为安装第三方库的软件包，另外教程里面没有特别说明以 Python2.7 版本为例子。</p>
-<ol>
-<li><a href="https://facert.github.io/2016/11/30/%E7%94%A8-python-%E6%8F%90%E9%AB%98%E6%95%88%E7%8E%87%E4%B9%8B-selenium-%E8%87%AA%E5%8A%A8%E7%99%BB%E5%BD%95%E4%BA%AC%E4%B8%9C/" target="_blank" rel="external">用 python 提高效率之 selenium 自动登录京东</a></li>
-<li><a href="https://facert.github.io/2016/12/01/%E7%94%A8-python-%E6%8F%90%E9%AB%98%E6%95%88%E7%8E%87%E4%B9%8B-SimpleHTTPServer-%E6%96%87%E4%BB%B6%E5%85%B1%E4%BA%AB/" target="_blank" rel="external">用 python 提高效率之 SimpleHTTPServer 文件共享</a></li>
-<li><a href="https://facert.github.io/2016/12/01/%E7%94%A8-python-%E6%8F%90%E9%AB%98%E6%95%88%E7%8E%87%E4%B9%8B%E8%B1%86%E7%93%A3%E8%87%AA%E5%8A%A8%E9%A1%B6%E8%B4%B4/" target="_blank" rel="external">用 python 提高效率之豆瓣自动顶贴</a></li>
-<li><a href="https://facert.github.io/2016/12/01/%E7%94%A8-python-%E6%8F%90%E9%AB%98%E6%95%88%E7%8E%87%E4%B9%8B%E6%91%A9%E5%B0%94%E6%96%AF%E5%AF%86%E7%A0%81/" target="_blank" rel="external">用 python 提高效率之摩尔斯密码</a></li>
-<li><a href="https://facert.github.io/2016/12/01/%E7%94%A8-python-%E6%8F%90%E9%AB%98%E6%95%88%E7%8E%87%E4%B9%8B%E6%89%B9%E9%87%8F%E5%8F%91%E9%82%AE%E4%BB%B6/" target="_blank" rel="external">用 python 提高效率之批量发邮件</a></li>
-</ol>
-
+        <p>经常有人说我应该学一门语言，比如 Python 之类，但是却不知道如何入门。这个时候很多人会推荐学各种 web 框架，scrapy 爬虫之类，门槛虽然不高，但是对于新人来说可能就半途而废了。我在想大家需要的或许是通过编程来解决平时遇到的问题，将工作自动化。所以想写一个系列，通过简单的例子来说下 Python 如何提高效率，减少重复劳动的。<br>
+        
+          <p class="article-more-link">
+            <a href="/2016/11/30/用-python-提高效率/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
