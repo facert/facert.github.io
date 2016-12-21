@@ -26,7 +26,7 @@
 <meta property="og:site_name" content="facert 的杂货店">
 <meta property="og:description" content="在用 ghost 博客的时候，发现一直没有合适的搜索插件，主要是官方没提供相应的 search api, ghostHunter 采用 api 获取所有文章的方式，然后用 lunir 做全文搜索。但是 lunir 本身不支持中文分词，虽然有小伙伴提供了中文分词的方案，但是为了一个简单的搜索加了好大一堆库，感觉还是不怎么经济。
 所以鉴于此，根据 ghsotHunter 改了个简单的插件，为了效率，a">
-<meta property="og:updated_time" content="2016-12-21T10:58:51.000Z">
+<meta property="og:updated_time" content="2016-12-21T11:06:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ghost 博客中文搜索插件">
 <meta name="twitter:description" content="在用 ghost 博客的时候，发现一直没有合适的搜索插件，主要是官方没提供相应的 search api, ghostHunter 采用 api 获取所有文章的方式，然后用 lunir 做全文搜索。但是 lunir 本身不支持中文分词，虽然有小伙伴提供了中文分词的方案，但是为了一个简单的搜索加了好大一堆库，感觉还是不怎么经济。
@@ -68,7 +68,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -100,10 +100,10 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>在用 ghost 博客的时候，发现一直没有合适的搜索插件，主要是官方没提供相应的 search api, <a href="https://github.com/dreampiggy/ghostHunter" target="_blank" rel="external">ghostHunter</a> 采用 api 获取所有文章的方式，然后用 lunir 做全文搜索。但是 lunir 本身不支持中文分词，虽然有小伙伴提供了中文分词的方案，但是为了一个简单的搜索加了好大一堆库，感觉还是不怎么经济。</p>
-<p>所以鉴于此，根据 ghsotHunter 改了个简单的插件，为了效率，api 获取的时候只取 title, 所以只支持简单的 title 匹配搜索</p>
+<p>所以鉴于此，根据 ghsotHunter 改了个简单的插件，为了效率，api 获取的时候只取 title, 所以只支持简单的 title 匹配搜索, 代码如下：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> searchResult = [];</div><div class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>; i &lt; <span class="keyword">this</span>.blogData.length; i++) &#123;</div><div class="line">    <span class="keyword">if</span>(value &amp;&amp; <span class="keyword">this</span>.blogData[i].title.toLowerCase().search(value.toLowerCase()) != <span class="number">-1</span>)&#123;</div><div class="line">    searchResult.push(<span class="keyword">this</span>.blogData[i]);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$(&quot;#search-field&quot;).ghostHunter(&#123;</div><div class="line">    results         : &quot;#results&quot;,</div><div class="line">    info_template   : &quot;&lt;p&gt;Number of posts found: &#123;&#123;amount&#125;&#125;&lt;/p&gt;&quot;,</div><div class="line">    result_template : &quot;&lt;a href=&apos;&#123;&#123;link&#125;&#125;&apos;&gt;&lt;p&gt;&lt;h2&gt;&#123;&#123;title&#125;&#125;&lt;/h2&gt;&#123;&#123;description&#125;&#125;&lt;/p&gt;&lt;p&gt;&lt;h4&gt;&#123;&#123;pubDate&#125;&#125;&lt;/h4&gt;&lt;h4&gt;Tags: &#123;&#123;category&#125;&#125;&lt;/h4&gt;&lt;/p&gt;&lt;/a&gt;&quot;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 <p>如果你想要自定义 info_template, result_template, 由于和 ghost 默认的模板冲突，所以可以改下模板定义</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$(&quot;#search-field&quot;).ghostHunter(&#123;</div><div class="line">    results         : &quot;#results&quot;,</div><div class="line">    info_template   : &quot;&lt;p&gt;Number of posts found: &#123;&#123;amount&#125;&#125;&lt;/p&gt;&quot;,</div><div class="line">    result_template : &quot;&lt;a href=&apos;&#123;&#123;link&#125;&#125;&apos;&gt;&lt;p&gt;&lt;h2&gt;&#123;&#123;title&#125;&#125;&lt;/h2&gt;&#123;&#123;description&#125;&#125;&lt;/p&gt;&lt;p&gt;&lt;h4&gt;&#123;&#123;pubDate&#125;&#125;&lt;/h4&gt;&lt;h4&gt;Tags: &#123;&#123;category&#125;&#125;&lt;/h4&gt;&lt;/p&gt;&lt;/a&gt;&quot;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">format: function (t, d) &#123;</div><div class="line">return t.replace(/&#123;#([^&#123;&#125;]*)#&#125;/g, function (a, b) &#123;</div><div class="line">        var r = d[b];</div><div class="line">        return typeof r === &apos;string&apos; || typeof r === &apos;number&apos; ? r : a;</div><div class="line">        &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;a href=&apos;&#123;#link#&#125;&apos;&gt;&lt;p&gt;&lt;h2&gt;&#123;#title#&#125;&lt;/h2&gt;&#123;#description#&#125;&lt;/p&gt;&lt;p&gt;&lt;h4&gt;&#123;#pubDate#&#125;&lt;/h4&gt;&lt;h4&gt;Tags: &#123;#category#&#125;&lt;/h4&gt;&lt;/p&gt;&lt;/a&gt;</div></pre></td></tr></table></figure>
 <p>github 地址 <a href="https://github.com/facert/ghostHunter" target="_blank" rel="external">https://github.com/facert/ghostHunter</a></p>
@@ -111,7 +111,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/21/ghost-博客中文搜索插件/" data-id="ciwytzlvk0004epo03x38olvx" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/12/21/ghost-博客中文搜索插件/" data-id="ciwytzlvk0004epo03x38olvx" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ghost/">ghost</a></li></ul>
@@ -124,7 +124,7 @@
   
   
     <a href="/2016/12/15/2016-关于技术和人生的一些碎碎念/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Älter</strong>
+      <strong class="article-nav-caption">Older</strong>
       <div class="article-nav-title">2016 关于技术和人生的一些碎碎念</div>
     </a>
   
@@ -181,7 +181,7 @@ var duoshuoQuery = {short_name:'facert'};
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archiv</h3>
+    <h3 class="widget-title">Archives</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
@@ -191,7 +191,7 @@ var duoshuoQuery = {short_name:'facert'};
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">letzter Beitrag</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
         
