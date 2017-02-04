@@ -24,7 +24,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/index.html">
 <meta property="og:site_name" content="facert 的杂货店">
 <meta property="og:description" content="前段时间写过一篇 过滤豆瓣租房小组中介贴之 python 实现余弦相似度（一）, 这里面使用 jieba 将文档分词，然后计算对分词的结果向量化计算相似度。比如 我的房子在方庄地铁附近的芳城园一区 会被分词为 方庄 芳城园 一区 地铁 房子 附近，我们发现少了 我 的 在 这些词，在自然语言处理的过程中，称这些词为停用词，简单的说就是这些词对于分词结果没有多少帮助，所以需要直接过滤掉。因为我们直接">
-<meta property="og:updated_time" content="2017-02-04T09:40:49.000Z">
+<meta property="og:updated_time" content="2017-02-04T09:41:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）">
 <meta name="twitter:description" content="前段时间写过一篇 过滤豆瓣租房小组中介贴之 python 实现余弦相似度（一）, 这里面使用 jieba 将文档分词，然后计算对分词的结果向量化计算相似度。比如 我的房子在方庄地铁附近的芳城园一区 会被分词为 方庄 芳城园 一区 地铁 房子 附近，我们发现少了 我 的 在 这些词，在自然语言处理的过程中，称这些词为停用词，简单的说就是这些词对于分词结果没有多少帮助，所以需要直接过滤掉。因为我们直接">
@@ -65,7 +65,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -104,13 +104,13 @@
 <p>对于租房子来说，地点确实最关键，然后是地铁，所以效果不错，当然只拿一个例子说明肯定是不够的，另外对于一些特殊的行业，自定义语料很重要，比如租房的话，可以爬取租房帖子，然后分词，制作自己的语料库，最后得出的结果会更好。</p>
 <p>自定义语料简单代码如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">all_dict = &#123;&#125;</div><div class="line">for line in lines:</div><div class="line">    temp_dict = &#123;&#125;</div><div class="line">    total += 1</div><div class="line">    cut_line = jieba.cut(line, cut_all=False)</div><div class="line">    for word in cut_line:</div><div class="line">        temp_dict[word] = 1</div><div class="line">    for key in temp_dict:</div><div class="line">        num = all_dict.get(key, 0)</div><div class="line">        all_dict[key] = num + 1</div><div class="line">for key in all_dict:</div><div class="line">    w = key.encode(&apos;utf-8&apos;)</div><div class="line">    p = &apos;%.10f&apos; % (math.log10(total/(all_dict[key] + 1)))</div></pre></td></tr></table></figure>
-<p>引用自：<a href="https://github.com/fxsjy/jieba/issues/393" target="_blank" rel="external">https://github.com/fxsjy/jieba/issues/393</a></p>
+<p>代码引用自：<a href="https://github.com/fxsjy/jieba/issues/393" target="_blank" rel="external">https://github.com/fxsjy/jieba/issues/393</a></p>
 <p>最后，<code>TF-IDF 算法</code> 应用非常广泛，比如你用搜索引擎搜索的时候，如何确定你一句话的搜索关键词是什么，它功不可没。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/" data-id="ciyr1tpo10000jpo07zvgv4gf" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/" data-id="ciyr1tpo10000jpo07zvgv4gf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
@@ -123,7 +123,7 @@
   
   
     <a href="/2016/12/21/ghost-博客中文搜索插件/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Älter</strong>
+      <strong class="article-nav-caption">Older</strong>
       <div class="article-nav-title">ghost 博客中文搜索插件</div>
     </a>
   
@@ -180,7 +180,7 @@ var duoshuoQuery = {short_name:'facert'};
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archiv</h3>
+    <h3 class="widget-title">Archives</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
@@ -190,7 +190,7 @@ var duoshuoQuery = {short_name:'facert'};
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">letzter Beitrag</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
         
