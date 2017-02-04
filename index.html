@@ -61,7 +61,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -94,22 +94,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>前段时间写过一篇 <a href="https://facert.github.io/2016/11/24/%E8%BF%87%E6%BB%A4%E8%B1%86%E7%93%A3%E7%A7%9F%E6%88%BF%E5%B0%8F%E7%BB%84%E4%B8%AD%E4%BB%8B%E8%B4%B4%E4%B9%8B%20python%20%E5%AE%9E%E7%8E%B0%E4%BD%99%E5%BC%A6%E7%9B%B8%E4%BC%BC%E5%BA%A6%EF%BC%88%E4%B8%80%EF%BC%89/" target="_blank" rel="external">过滤豆瓣租房小组中介贴之 python 实现余弦相似度（一）</a>, 这里面使用 <code>jieba</code> 将文档分词，然后计算对分词的结果向量化计算相似度。比如 <code>我的房子在方庄地铁附近的芳城园一区</code> 会被分词为 <code>方庄 芳城园 一区 地铁 房子 附近</code>，我们发现少了 <code>我 的 在</code> 这些词，在自然语言处理的过程中，称这些词为停用词，简单的说就是这些词对于分词结果没有多少帮助，所以需要直接过滤掉。因为我们直接调用 <code>jieba.analyse</code> 方法，所以停用词被直接过滤了，如果只是调用 <code>jieba.cut</code>，会将返回包含停用词的结果。</p>
-<p>再回到刚才的例子， <code>方庄 芳城园 一区 地铁 房子 附近</code> 这个结果中到底哪个词需要重点关注，就是所谓的关键词。这个时候我们就引出了今天的主角，<code>TF-IDF 算法</code>， 具体原理可以参见这篇通俗易懂的文章，<a href="http://www.ruanyifeng.com/blog/2013/03/tf-idf.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2013/03/tf-idf.html</a> 。至于为什么一步步的得出这种算法，也可以参考数学之美第 11 章。</p>
-<p>那么如何用 python 实现这种算法呢，看过原理的发现其实这个算法不难，我们发现 jieba 已经自带这个算法了， 基于 TF-IDF 算法的关键词抽取，代码示例： <a href="https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py，" target="_blank" rel="external">https://github.com/fxsjy/jieba/blob/master/test/extract_tags.py，</a> 试一下</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">content = <span class="string">u'我的房子在方庄地铁附近的芳城园一区'</span></div><div class="line"><span class="keyword">for</span> i  <span class="keyword">in</span> jieba.analyse.extract_tags(content, topK=<span class="number">20</span>, withWeight=<span class="keyword">True</span>):</div><div class="line">    <span class="keyword">print</span> i</div></pre></td></tr></table></figure>
-<p>结果如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">(u&apos;\u65b9\u5e84&apos;, 2.0485399565833333)</div><div class="line">(u&apos;\u82b3\u57ce\u56ed&apos;, 1.9924612504833332)</div><div class="line">(u&apos;\u4e00\u533a&apos;, 1.7444484079166667)</div><div class="line">(u&apos;\u5730\u94c1&apos;, 1.3667056797650001)</div><div class="line">(u&apos;\u623f\u5b50&apos;, 1.0526507623933334)</div><div class="line">(u&apos;\u9644\u8fd1&apos;, 0.8615568819066667)</div><div class="line"></div><div class="line">方庄</div><div class="line">芳城园</div><div class="line">一区</div><div class="line">地铁</div><div class="line">房子</div><div class="line">附近</div></pre></td></tr></table></figure>
-<p>对于租房子来说，地点确实最关键，然后是地铁，所以效果不错，当然只拿一个例子说明肯定是不够的，另外对于一些特殊的行业，自定义语料很重要，比如租房的话，可以爬取租房帖子，然后分词，制作自己的语料库，最后得出的结果会更好。</p>
-<p>自定义语料简单代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">all_dict = &#123;&#125;</div><div class="line">for line in lines:</div><div class="line">    temp_dict = &#123;&#125;</div><div class="line">    total += 1</div><div class="line">    cut_line = jieba.cut(line, cut_all=False)</div><div class="line">    for word in cut_line:</div><div class="line">        temp_dict[word] = 1</div><div class="line">    for key in temp_dict:</div><div class="line">        num = all_dict.get(key, 0)</div><div class="line">        all_dict[key] = num + 1</div><div class="line">for key in all_dict:</div><div class="line">    w = key.encode(&apos;utf-8&apos;)</div><div class="line">    p = &apos;%.10f&apos; % (math.log10(total/(all_dict[key] + 1)))</div></pre></td></tr></table></figure>
-<p>引用自：<a href="https://github.com/fxsjy/jieba/issues/393" target="_blank" rel="external">https://github.com/fxsjy/jieba/issues/393</a></p>
-<p>最后，<code>TF-IDF 算法</code> 应用非常广泛，比如你用搜索引擎搜索的时候，如何确定你一句话的搜索关键词是什么，它功不可没。</p>
-
+        <p>前段时间写过一篇 <a href="https://facert.github.io/2016/11/24/%E8%BF%87%E6%BB%A4%E8%B1%86%E7%93%A3%E7%A7%9F%E6%88%BF%E5%B0%8F%E7%BB%84%E4%B8%AD%E4%BB%8B%E8%B4%B4%E4%B9%8B%20python%20%E5%AE%9E%E7%8E%B0%E4%BD%99%E5%BC%A6%E7%9B%B8%E4%BC%BC%E5%BA%A6%EF%BC%88%E4%B8%80%EF%BC%89/">过滤豆瓣租房小组中介贴之 python 实现余弦相似度（一）</a>, 这里面使用 <code>jieba</code> 将文档分词，然后计算对分词的结果向量化计算相似度。比如 <code>我的房子在方庄地铁附近的芳城园一区</code> 会被分词为 <code>方庄 芳城园 一区 地铁 房子 附近</code>，我们发现少了 <code>我 的 在</code> 这些词，在自然语言处理的过程中，称这些词为停用词，简单的说就是这些词对于分词结果没有多少帮助，所以需要直接过滤掉。因为我们直接调用 <code>jieba.analyse</code> 方法，所以停用词被直接过滤了，如果只是调用 <code>jieba.cut</code>，会将返回包含停用词的结果。<br>
+        
+          <p class="article-more-link">
+            <a href="/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/" data-id="ciyr1tpo10000jpo07zvgv4gf" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/" data-id="ciyr1tpo10000jpo07zvgv4gf" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
@@ -156,7 +150,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/21/ghost-博客中文搜索插件/" data-id="ciwyu3r9n0008koo0xh6pgsu1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/12/21/ghost-博客中文搜索插件/" data-id="ciwyu3r9n0008koo0xh6pgsu1" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ghost/">ghost</a></li></ul>
@@ -199,7 +193,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/15/2016-关于技术和人生的一些碎碎念/" data-id="ciwyu3r8x0000koo0qaog55er" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/12/15/2016-关于技术和人生的一些碎碎念/" data-id="ciwyu3r8x0000koo0qaog55er" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/思考/">思考</a></li></ul>
@@ -243,7 +237,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/09/django-防御-csrf-源码分析/" data-id="ciwyu3r9b0003koo0mxnxph53" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/12/09/django-防御-csrf-源码分析/" data-id="ciwyu3r9b0003koo0mxnxph53" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/django源码/">django源码</a></li></ul>
@@ -287,7 +281,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/05/用-python-提高效率之自如爬虫/" data-id="ciwyu3ral000ukoo0zhtn54t8" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/12/05/用-python-提高效率之自如爬虫/" data-id="ciwyu3ral000ukoo0zhtn54t8" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python-入门/">python 入门</a></li></ul>
@@ -304,7 +298,7 @@
 
   <nav id="page-nav">
     
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">weiter &raquo;</a>
   </nav>
 
 </section>
@@ -335,7 +329,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Archiv</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
@@ -345,7 +339,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
         
