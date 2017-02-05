@@ -24,7 +24,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）/index.html">
 <meta property="og:site_name" content="facert 的杂货店">
 <meta property="og:description" content="其实这篇文章跟过滤中介贴没什么关系，只是在爬豆瓣小组的时候遇到的一点思考，我们知道，其实爬虫就是循环的爬取网站的 url，但是怎么判断爬取的 url 是否重复呢，最简单的，维护一个列表，每次循环查找，很明显效率很低。进阶的，采用哈希表，每次查询都是 O(1), 看上去不错。不过如果一旦 url 大到一定程度时，单台机器的内存肯定吃不消，这个时候分布式方案就呼之欲出，变得越来越复杂。那么能不能在牺牲">
-<meta property="og:updated_time" content="2017-02-05T03:15:29.000Z">
+<meta property="og:updated_time" content="2017-02-05T07:05:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）">
 <meta name="twitter:description" content="其实这篇文章跟过滤中介贴没什么关系，只是在爬豆瓣小组的时候遇到的一点思考，我们知道，其实爬虫就是循环的爬取网站的 url，但是怎么判断爬取的 url 是否重复呢，最简单的，维护一个列表，每次循环查找，很明显效率很低。进阶的，采用哈希表，每次查询都是 O(1), 看上去不错。不过如果一旦 url 大到一定程度时，单台机器的内存肯定吃不消，这个时候分布式方案就呼之欲出，变得越来越复杂。那么能不能在牺牲">
@@ -96,8 +96,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>其实这篇文章跟过滤中介贴没什么关系，只是在爬豆瓣小组的时候遇到的一点思考，我们知道，其实爬虫就是循环的爬取网站的 url，但是怎么判断爬取的 url 是否重复呢，最简单的，维护一个列表，每次循环查找，很明显效率很低。进阶的，采用哈希表，每次查询都是 O(1), 看上去不错。不过如果一旦 url 大到一定程度时，单台机器的内存肯定吃不消，这个时候分布式方案就呼之欲出，变得越来越复杂。那么能不能在牺牲一点点精确性的前提下，有简单的方案呢，答案是肯定的。这就是 布隆过滤器。</p>
-<p>布隆过滤器的原理是，当一个元素被加入集合时，通过 K 个散列函数将这个元素映射成一个位数组中的 K 个点，把它们置为1。检索时，我们只要看看这些点是不是都是 1 就（大约）知道集合中有没有它了：如果这些点有任何一个 0 ，则被检元素一定不在；如果都是 1 ，则被检元素很可能在。这就是布隆过滤器的基本思想。（引用自维基百科）。布隆过滤器可以看成是 bitmap 的扩展，它的优点是空间和时间复杂度都是常数，缺点是有一定的误算率。<br>具体还可以参考：<a href="https://segmentfault.com/a/1190000002729689" target="_blank" rel="external">https://segmentfault.com/a/1190000002729689</a><br><a href="https://zh.wikipedia.org/wiki/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8" target="_blank" rel="external">维基百科</a></p>
+        <p>其实这篇文章跟过滤中介贴没什么关系，只是在爬豆瓣小组的时候遇到的一点思考，我们知道，其实爬虫就是循环的爬取网站的 url，但是怎么判断爬取的 url 是否重复呢，最简单的，维护一个列表，每次循环查找，很明显效率很低。进阶的，采用哈希表，每次查询都是 O(1), 看上去不错。不过如果一旦 url 大到一定程度时，单台机器的内存肯定吃不消，这个时候分布式方案就呼之欲出，变得越来越复杂。那么能不能在牺牲一点点精确性的前提下，有简单的方案呢，答案是肯定的。这就是 布隆过滤器。<br><a id="more"></a><br>布隆过滤器的原理是，当一个元素被加入集合时，通过 K 个散列函数将这个元素映射成一个位数组中的 K 个点，把它们置为1。检索时，我们只要看看这些点是不是都是 1 就（大约）知道集合中有没有它了：如果这些点有任何一个 0 ，则被检元素一定不在；如果都是 1 ，则被检元素很可能在。这就是布隆过滤器的基本思想。（引用自维基百科）。布隆过滤器可以看成是 bitmap 的扩展，它的优点是空间和时间复杂度都是常数，缺点是有一定的误算率。<br>具体还可以参考：<a href="https://segmentfault.com/a/1190000002729689" target="_blank" rel="external">https://segmentfault.com/a/1190000002729689</a><br><a href="https://zh.wikipedia.org/wiki/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8" target="_blank" rel="external">维基百科</a></p>
 <p>我们写爬虫很多时候会使用 redis 作为各种队列来提高性能。同样，这次我们将用 redis 和 python 结合起来写个布隆过滤器。</p>
 <p>首先需要实现一个求 hash 的函数，这里采用 murmurhash 算法。然后算出 k 个点的位置（这里是 7 个点）。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">BIT_SIZE = <span class="number">5000000</span></div><div class="line">SEEDS = [<span class="number">50</span>, <span class="number">51</span>, <span class="number">52</span>, <span class="number">53</span>, <span class="number">54</span>, <span class="number">55</span>, <span class="number">56</span>]</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">cal_offsets</span><span class="params">(self, content)</span>:</span></div><div class="line">        <span class="keyword">return</span> [mmh3.hash(content, seed) % BIT_SIZE <span class="keyword">for</span> seed <span class="keyword">in</span> SEEDS]</div></pre></td></tr></table></figure>
