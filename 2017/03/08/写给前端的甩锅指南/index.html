@@ -27,7 +27,7 @@
 <meta property="og:image" content="http://yoursite.com/media/QQ20170308-1.png">
 <meta property="og:image" content="http://yoursite.com/media/QQ20170308-2.png">
 <meta property="og:image" content="http://yoursite.com/media/QQ20170308-3.png">
-<meta property="og:updated_time" content="2017-03-08T14:22:26.000Z">
+<meta property="og:updated_time" content="2017-03-08T14:32:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="写给前端的甩锅指南">
 <meta name="twitter:description" content="123456789前端小白，“老王，你的接口不能用了”后端老王一脸不屑，“怎么可能，刚刚还能用，你看看参数传对了没有。” 前端小白吭哧吭哧检查了几遍，“参数没问题啊，你看看是不是有 username, id。。。”后端老王顿了许久， “参数应该没问题，你再清下浏览器缓存试试”前端小白摁着 &amp;quot;ctr + f5&amp;quot; 刷新了好多次， 一脸苦逼的说：“清完浏览器缓存了，还是有问题”后端老">
@@ -101,7 +101,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">前端小白，“老王，你的接口不能用了”</div><div class="line">后端老王一脸不屑，“怎么可能，刚刚还能用，你看看参数传对了没有。” </div><div class="line">前端小白吭哧吭哧检查了几遍，“参数没问题啊，你看看是不是有 username, id。。。”</div><div class="line">后端老王顿了许久， “参数应该没问题，你再清下浏览器缓存试试”</div><div class="line">前端小白摁着 &quot;ctr + f5&quot; 刷新了好多次， 一脸苦逼的说：“清完浏览器缓存了，还是有问题”</div><div class="line">后端老王略过一丝疑虑，难道是我接口出问题了，不该啊，刚还能用，都测试好几遍了，说道：“你看看是不是数据库存的测试数据有问题，删了再试试，或者换个浏览器，重启下 server。”</div><div class="line">前端小白照着老王的方法逐一尝试着。。。</div><div class="line">突然老王拍了下脑瓜，一脸尴尬的说：“小白，我刚 fix 一个线上 bug, 测试环境换了分支，所以接口出问题了。”</div><div class="line">小白一脸生无可恋的望着老王头顶的地中海发呆。。。</div></pre></td></tr></table></figure>
-<p>上面情节纯属虚构，作为一个后端开发人员，我怎么忍心这么黑自己的同行呢 😭。不过思考下这么一个问题，前端如何能够快速的定位问题呢。这里面跟很多因素有关，比如前后端协作流程是否完善，前后端人员的经验。</p>
+<p>上面情节纯属虚构，作为一个后端开发人员，我怎么忍心这么黑自己的同行呢 😭。不过思考下这么一个问题，前端如何能够快速的定位问题呢。这里面跟很多因素有关，比如前后端协作流程是否完善，前后端人员的经验。<br><a id="more"></a></p>
 <p>我经常看见前端工程师的招聘贴上会有这么一个要求：了解一门后台语言，有后台开发经验者优先。很多人可能心里嘀咕：这是准备拿我当全栈去用啊。先不说这个算不算全栈，就说这个要求具体指什么。其实它指的是对于 web 开发流程的熟悉，你需要理解一个 ajax post 请求最后如何变成一条数据库记录的。流程其实很复杂，本文就说一个重点，前后端信息交互的信使，http 请求。</p>
 <p>说到这，很多朋友觉得没意思，后端的同学会说不就是处理个请求吗，写个方法，拿到数据，存个数据库，返回个 success ，完事。前端的也说 ajax 我用的可溜了，post 一下，拿到后端返回的 success，弹个窗，皆大欢喜。</p>
 <p>好吧，其实确实是这个道理。但如果不 success 了，怎么能够知道问题在哪。我相信大家对下面那张图都很熟悉，chrome 的 devtool ，一般情况下大家在这里看请求传递的参数，返回的结果。但是很多人都会忽略一些默认传递的 headers，比如 cookie，content-type</p>
