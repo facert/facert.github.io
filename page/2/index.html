@@ -72,6 +72,57 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-由浅入深写代理-6-http-代理-md" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/20/由浅入深写代理-6-http-代理-md/" class="article-date">
+  <time datetime="2017-08-20T07:26:36.000Z" itemprop="datePublished">2017-08-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/20/由浅入深写代理-6-http-代理-md/">由浅入深写代理(6)-http-代理.md</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文讲 http 代理，顾名思义，http 代理代理的是 http 请求，其实这里面分两类</p>
+<pre><code>* 普通代理 这种代理扮演的是「中间人」角色，对于连接到它的客户端来说，它是服务端；对于要连接的服务端来说，它是客户端。它就负责在两端之间来回传送 HTTP 报文。
+* 隧道代理。它通过 HTTP 协议正文部分（Body）完成通讯，以 HTTP 的方式实现任意基于 TCP 的应用层协议代理。这种代理使用 HTTP 的 CONNECT 方法建立连接。
+</code></pre><p>通俗一点讲，普通代理解析 http 包，然后将请求转发到目标地址，但是没法解析 https 的包，所以也就没法代理 https 的请求，但是隧道代理可以代理 https 的请求或者其他的一些协议请求。</p>
+<h3 id="0x01-普通代理"><a href="#0x01-普通代理" class="headerlink" title="0x01 普通代理"></a>0x01 普通代理</h3><p>代码很简单</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> socket</div><div class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> urlparse</div><div class="line"><span class="keyword">from</span> http.server <span class="keyword">import</span> BaseHTTPRequestHandler, HTTPServer</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProxyHandler</span><span class="params">(BaseHTTPRequestHandler)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_recv_data_from_remote</span><span class="params">(self, sock)</span>:</span></div><div class="line">        data = <span class="string">b''</span></div><div class="line">        <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">            recv_data = sock.recv(<span class="number">4096</span>)</div><div class="line">            <span class="keyword">if</span> <span class="keyword">not</span> recv_data:</div><div class="line">                <span class="keyword">break</span></div><div class="line">            data += recv_data</div><div class="line">        sock.close()</div><div class="line">        <span class="keyword">return</span> data</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">do_GET</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="comment"># 解析 GET 请求信息</span></div><div class="line">        uri = urlparse(self.path)</div><div class="line">        scheme, host, path = uri.scheme, uri.hostname, uri.path</div><div class="line">        host_ip = socket.gethostbyname(host)</div><div class="line">        port = <span class="number">443</span> <span class="keyword">if</span> scheme == <span class="string">"https"</span> <span class="keyword">else</span> <span class="number">80</span></div><div class="line"></div><div class="line">        <span class="comment"># 为了简单起见，Connection 都为 close, 也就不需要 Proxy-Connection 判断了</span></div><div class="line">        <span class="keyword">del</span> self.headers[<span class="string">'Proxy-Connection'</span>]</div><div class="line">        self.headers[<span class="string">'Connection'</span>] = <span class="string">'close'</span></div><div class="line"></div><div class="line">        <span class="comment"># 构造新的 http 请求</span></div><div class="line">        send_data = <span class="string">"GET &#123;path&#125; &#123;protocol_version&#125;\r\n"</span>.format(path=path, protocol_version=self.protocol_version)</div><div class="line">        headers = <span class="string">''</span></div><div class="line">        <span class="keyword">for</span> key, value <span class="keyword">in</span> self.headers.items():</div><div class="line">            headers += <span class="string">"&#123;key&#125;: &#123;value&#125;\r\n"</span>.format(key=key, value=value)</div><div class="line">        headers += <span class="string">'\r\n'</span></div><div class="line">        send_data += headers</div><div class="line"></div><div class="line">        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">        sock.connect((host_ip, port))</div><div class="line">        <span class="comment"># 发送请求到目标地址</span></div><div class="line">        sock.sendall(send_data.encode())</div><div class="line">        data = self._recv_data_from_remote(sock)</div><div class="line"></div><div class="line">        self.wfile.write(data)</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        server = HTTPServer((<span class="string">''</span>, <span class="number">8888</span>), ProxyHandler)</div><div class="line">        server.serve_forever()</div><div class="line">    <span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">        server.socket.close()</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    main()</div></pre></td></tr></table></figure>
+<p>这里面就实现了 get 请求的转发，只用单线程的方式来处理，其他的有兴趣的同学可以自己扩展下。<br>看下效果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python3 http_server.py</div></pre></td></tr></table></figure>
+<p><img src="/media/15032177986462.jpg" alt=""></p>
+<p>配置完代理后可以发现 http 的请求都能正常转发，但是 https 的都没法识别。</p>
+<p>下篇教程看如何通过隧道代理解决这个问题。</p>
+<p>参考资料</p>
+<pre><code>* https://imququ.com/post/web-proxy.html
+* http://www.lyyyuna.com/2016/01/16/http-proxy-get1/
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-6-http-代理-md/" data-id="cj8qwp57y001ez6o09n8cpkfh" class="article-share-link">Teilen</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-由浅入深写代理-5-socks5-代理-md" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/08/20/由浅入深写代理-5-socks5-代理-md/" class="article-date">
@@ -109,7 +160,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-5-socks5-代理-md/" data-id="cj6u5abmf00151jo0n3u3ov52" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-5-socks5-代理-md/" data-id="cj8qwp57r001cz6o0kaj2arx3" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -160,7 +211,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-4-socks5-代理-md/" data-id="cj6u5abmu001f1jo0e9jxmqrm" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-4-socks5-代理-md/" data-id="cj8qwp57k001az6o0h5cddcj0" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -302,7 +353,7 @@ remote -&gt; server -&gt; client
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/19/由浅入深写代理-3-socks5-代理/" data-id="cj6u5abms001d1jo0s18a9ri8" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/19/由浅入深写代理-3-socks5-代理/" data-id="cj8qwp57f0018z6o0srf2kkm8" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代理/">代理</a></li></ul>
@@ -366,59 +417,7 @@ remote -&gt; server -&gt; client
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/14/由浅入深写代理-2-socket-编程/" data-id="cj6u5abm400111jo06fge1vb3" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代理/">代理</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-由浅入深写代理-1-介绍" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/08/14/由浅入深写代理-1-介绍/" class="article-date">
-  <time datetime="2017-08-14T15:16:27.000Z" itemprop="datePublished">2017-08-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/14/由浅入深写代理-1-介绍/">由浅入深写代理(1)-介绍</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>代理作为现代人上网必备的一个工具，但是大家其实对其中的原理也不是特别了解，所以写了一个系列的教程，由浅入深的讲解下。</p>
-<p>代理可以分为正向代理和反向代理。</p>
-<ul>
-<li>正向代理是一个位于客户端和目标服务器之间的代理服务器，用来把客户端的请求代理到目标服务器，比如科学上网。</li>
-<li>反向代理就好像是目标服务器，客户端并不知道这个请求具体会被转发到哪里，由反向代理自己判断，比如负载均衡。</li>
-</ul>
-<p>这次主要教程跟正向代理有关，目前已更新如下</p>
-<p>由浅入深写代理(2)- socket 编程<br>由浅入深写代理(3) -socks5 代理<br>由浅入深写代理(4)-socks5-代理<br>由浅入深写代理(5)-socks5-代理<br>由浅入深写代理(6)-http-代理<br>由浅入深写代理(7)-https-代理<br>由浅入深写代理(8)-ss-代理<br>由浅入深写代理(9)-ssh-代理<br>由浅入深写代理(10)-内网穿透</p>
-<p>tips</p>
-<ol>
-<li>这次教程的所有资源的 github 地址为 <a href="https://github.com/facert/socket-example" target="_blank" rel="external">https://github.com/facert/socket-example</a><br>（除了 ss-local.py 和 ss-server.py 以外，其他都用 python3 编写）</li>
-<li>公众号 程序化思维 , 欢迎关注</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/14/由浅入深写代理-1-介绍/" data-id="cj6u5abla00101jo0i69ucdvj" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/14/由浅入深写代理-2-socket-编程/" data-id="cj8qwp57c0016z6o0cv2m8jt0" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代理/">代理</a></li></ul>
@@ -449,7 +448,7 @@ remote -&gt; server -&gt; client
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
     </div>
   </div>
 
@@ -459,7 +458,7 @@ remote -&gt; server -&gt; client
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
@@ -468,7 +467,7 @@ remote -&gt; server -&gt; client
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
   </div>
 
@@ -479,6 +478,10 @@ remote -&gt; server -&gt; client
     <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2017/10/11/谈谈-django-应用实践/">谈谈 django 应用实践</a>
+          </li>
         
           <li>
             <a href="/2017/08/26/由浅入深写代理-10-反向代理/">由浅入深写代理(10)-内网穿透</a>
@@ -494,10 +497,6 @@ remote -&gt; server -&gt; client
         
           <li>
             <a href="/2017/08/20/由浅入深写代理-7-http-代理-md/">由浅入深写代理(7)-https-代理.md</a>
-          </li>
-        
-          <li>
-            <a href="/2017/08/20/由浅入深写代理-6-http-代理-md/">由浅入深写代理(6)-http-代理.md</a>
           </li>
         
       </ul>

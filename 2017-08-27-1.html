@@ -18,25 +18,34 @@
   
   <title>facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="lazy-loading (懒加载），它能在程序真正需要的时候执行，加载进内存，如 
+  <meta name="description" content="lazy-loading (懒加载），利用了 Python 的描述符机制，它能在程序真正需要的时候执行，加载进内存。如 
 
 django orm query_set 查询数据库的时候，会在真正需要数据的时候才执行数据库查询。
-werkzeug 的 cache_property，第一次">
+werkzeug 的 cached_property
+
+cached_property 源码
+1234567891011121314151617181920212223242">
 <meta property="og:type" content="website">
 <meta property="og:title" content="facert 的杂货店">
 <meta property="og:url" content="http://yoursite.com/2017-08-27-1.html">
 <meta property="og:site_name" content="facert 的杂货店">
-<meta property="og:description" content="lazy-loading (懒加载），它能在程序真正需要的时候执行，加载进内存，如 
+<meta property="og:description" content="lazy-loading (懒加载），利用了 Python 的描述符机制，它能在程序真正需要的时候执行，加载进内存。如 
 
 django orm query_set 查询数据库的时候，会在真正需要数据的时候才执行数据库查询。
-werkzeug 的 cache_property，第一次">
-<meta property="og:updated_time" content="2017-08-27T02:55:13.000Z">
+werkzeug 的 cached_property
+
+cached_property 源码
+1234567891011121314151617181920212223242">
+<meta property="og:updated_time" content="2017-08-27T05:04:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="facert 的杂货店">
-<meta name="twitter:description" content="lazy-loading (懒加载），它能在程序真正需要的时候执行，加载进内存，如 
+<meta name="twitter:description" content="lazy-loading (懒加载），利用了 Python 的描述符机制，它能在程序真正需要的时候执行，加载进内存。如 
 
 django orm query_set 查询数据库的时候，会在真正需要数据的时候才执行数据库查询。
-werkzeug 的 cache_property，第一次">
+werkzeug 的 cached_property
+
+cached_property 源码
+1234567891011121314151617181920212223242">
   
     <link rel="alternate" href="/atom.xml" title="facert 的杂货店" type="application/atom+xml">
   
@@ -86,7 +95,7 @@ werkzeug 的 cache_property，第一次">
         <section id="main"><article id="page-undefined" class="article article-type-page" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017-08-27-1.html" class="article-date">
-  <time datetime="2017-08-27T02:55:13.000Z" itemprop="datePublished">2017-08-27</time>
+  <time datetime="2017-08-27T05:04:41.000Z" itemprop="datePublished">2017-08-27</time>
 </a>
     
   </div>
@@ -95,16 +104,27 @@ werkzeug 的 cache_property，第一次">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>lazy-loading (懒加载），它能在程序真正需要的时候执行，加载进内存，<br>如 </p>
+        <p>lazy-loading (懒加载），利用了 Python 的描述符机制，它能在程序真正需要的时候执行，加载进内存。<br>如 </p>
 <ol>
 <li>django orm query_set 查询数据库的时候，会在真正需要数据的时候才执行数据库查询。</li>
-<li>werkzeug 的 cache_property，第一次</li>
+<li>werkzeug 的 cached_property</li>
 </ol>
+<p>cached_property 源码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">class cached_property(property):</div><div class="line"></div><div class="line">    &quot;&quot;&quot;A decorator that converts a function into a lazy property.  The</div><div class="line">    function wrapped is called the first time to retrieve the result</div><div class="line">    and then that calculated result is used the next time you access</div><div class="line">    the value::</div><div class="line">        class Foo(object):</div><div class="line">            @cached_property</div><div class="line">            def foo(self):</div><div class="line">                # calculate something important here</div><div class="line">                return 42</div><div class="line">    The class has to have a `__dict__` in order for this property to</div><div class="line">    work.</div><div class="line">    &quot;&quot;&quot;</div><div class="line"></div><div class="line">    # implementation detail: A subclass of python&apos;s builtin property</div><div class="line">    # decorator, we override __get__ to check for a cached value. If one</div><div class="line">    # choses to invoke __get__ by hand the property will still work as</div><div class="line">    # expected because the lookup logic is replicated in __get__ for</div><div class="line">    # manual invocation.</div><div class="line"></div><div class="line">    def __init__(self, func, name=None, doc=None):</div><div class="line">        self.__name__ = name or func.__name__</div><div class="line">        self.__module__ = func.__module__</div><div class="line">        self.__doc__ = doc or func.__doc__</div><div class="line">        self.func = func</div><div class="line"></div><div class="line">    def __set__(self, obj, value):</div><div class="line">        obj.__dict__[self.__name__] = value</div><div class="line"></div><div class="line">    def __get__(self, obj, type=None):</div><div class="line">        if obj is None:</div><div class="line">            return self</div><div class="line">        value = obj.__dict__.get(self.__name__, _missing)</div><div class="line">        if value is _missing:</div><div class="line">            value = self.func(obj)</div><div class="line">            obj.__dict__[self.__name__] = value</div><div class="line">        return value</div></pre></td></tr></table></figure>
+<p>view 函数的懒加载应用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">from werkzeug import import_string, cached_property</div><div class="line"></div><div class="line">class LazyView(object):</div><div class="line"></div><div class="line">    def __init__(self, import_name):</div><div class="line">        self.__module__, self.__name__ = import_name.rsplit(&apos;.&apos;, 1)</div><div class="line">        self.import_name = import_name</div><div class="line"></div><div class="line">    @cached_property</div><div class="line">    def view(self):</div><div class="line">        return import_string(self.import_name)</div><div class="line"></div><div class="line">    def __call__(self, *args, **kwargs):</div><div class="line">        return self.view(*args, **kwargs)</div></pre></td></tr></table></figure>
+<p>其实平时做开发的时候经常会遇到这种问题，因为题主是后端开发，所以从后端的角度去思考下。现在一般有两种前后端交互的模式 </p>
+<ol>
+<li>api 交互，也就是前后端分离，前端 ajax 异步获取数据，然后在页面渲染。这种方式前后端都互不干涉，只需要协商好数据格式就行。</li>
+<li>模板渲染方式交互，这种方式对 seo 友好，所以用的还是挺多的，不过这个就需要前端去改模板页面，django 有自己的模板语言，虽然简单，但前端不一定乐意去学。所以我一般可能是这个流程，前端写完 html 页面，然后后端把它改成模板页面，再给前端去微调具体的细节。</li>
+</ol>
+<p>总体来说前后端分离的模式越来越受欢迎，如果条件允许的话，可以采用 api 交互。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">import socket</div><div class="line">import functools</div><div class="line"></div><div class="line">s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">conn = s.connect((&apos;localhost&apos;, 80))</div><div class="line">msgs = []</div><div class="line"></div><div class="line"># 普通写法</div><div class="line"># while True:</div><div class="line">#    msg = coon.recv(1024)</div><div class="line">#    if msg:</div><div class="line">#        msgs.append(msg)</div><div class="line">#    else:  </div><div class="line">#        break</div><div class="line"></div><div class="line"># iter and functools.partial 的写法</div><div class="line">for msg in iter(functools.partial(conn.recv, 1024), b&apos;&apos;):</div><div class="line">    msgs.append(msg)</div></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017-08-27-1.html" data-id="cj6u5abfl00001jo0la5sties" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017-08-27-1.html" data-id="cj8qwp4z40002z6o0jde75d9o" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -145,7 +165,7 @@ var duoshuoQuery = {short_name:'facert'};
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
     </div>
   </div>
 
@@ -155,7 +175,7 @@ var duoshuoQuery = {short_name:'facert'};
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
@@ -164,7 +184,7 @@ var duoshuoQuery = {short_name:'facert'};
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
   </div>
 
@@ -175,6 +195,10 @@ var duoshuoQuery = {short_name:'facert'};
     <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2017/10/11/谈谈-django-应用实践/">谈谈 django 应用实践</a>
+          </li>
         
           <li>
             <a href="/2017/08/26/由浅入深写代理-10-反向代理/">由浅入深写代理(10)-内网穿透</a>
@@ -190,10 +214,6 @@ var duoshuoQuery = {short_name:'facert'};
         
           <li>
             <a href="/2017/08/20/由浅入深写代理-7-http-代理-md/">由浅入深写代理(7)-https-代理.md</a>
-          </li>
-        
-          <li>
-            <a href="/2017/08/20/由浅入深写代理-6-http-代理-md/">由浅入深写代理(6)-http-代理.md</a>
           </li>
         
       </ul>

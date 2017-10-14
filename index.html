@@ -72,6 +72,125 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-谈谈-django-应用实践" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/11/谈谈-django-应用实践/" class="article-date">
+  <time datetime="2017-10-11T15:56:33.000Z" itemprop="datePublished">2017-10-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/11/谈谈-django-应用实践/">谈谈 django 应用实践</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>python 的 web 框架非常多，比较出名的有 django, flask, tornado。django 作为一个老牌框架，无论是文档还是代码质量都非常高，另外他自带的 admin 后台和一些有用的 app，如果你的需求是做 cms 之类的 web 应用的话，基本上不用开发多少代码就能出一个成品。不过很多新手可能一开始不太适应他的设计模式，遇到问题后基本就懵了，所以这里我按照自己用 django 的经验，写一下 django 的一些应用实践，可能写的比较零散，大家见谅。</p>
+<h3 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程"></a>整体流程</h3><p><img src="/media/15077390149599.png" alt=""></p>
+<p>首先我们得了解下 django 这个框架整体的处理流程，假设我们采用 nginx + uwsgi + django 的 web server 模式</p>
+<ol>
+<li>一个请求过来后，首先经过 nginx 做反向代理，将请求转发到 uwsgi (python 用 wsgi 这种协议来解析 http 请求，uwsgi 是一个 解析 wsgi 的应用)，uwsgi 再将解析过的数据传到 django。</li>
+<li>django 收到请求后，首先会经过一组全局的中间件 (middleware)，调用 process_request 作为预处理，比如解析用户状态，检验 csrf_token (post 请求)，如果有问题，则直接返回 response，不再调用 view 函数。否则，调用 process_view ，如果没问题进入 view 函数。</li>
+<li>进入 view 函数后开发者可以写自己的逻辑，比如操作数据库，更新缓存，最后返回一个 response。</li>
+<li>接下来 跳出 view 函数，重新进入 middleware，调用 process_response，对 response 做些最后的修饰，返回给用户。</li>
+</ol>
+<h3 id="views-模块"><a href="#views-模块" class="headerlink" title="views 模块"></a>views 模块</h3><ol>
+<li>view 不仅可以用函数，也可以用通用视图类（generic_view），好处是：代码更加清晰，可以复用继承，并且结合 mixin 能够开发更加灵活的 view 模块</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">def hello_fn(request, name=&quot;World&quot;):</div><div class="line">        return HttpResponse(&quot;Hellp &#123;&#125;!&quot;.format(name))</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">class FeedMixin(object):</div><div class="line">        def get_context_data(self, **kwargs):</div><div class="line">            context = super().get_context_data(**kwargs)</div><div class="line">            context[&quot;feed&quot;] = models.Post.objects.viewable_posts(self.request.user)</div><div class="line">            return context</div><div class="line">            </div><div class="line">class MyFeed(FeedMixin, generic.CreateView):</div><div class="line">        model = models.Post</div><div class="line">        template_name = &quot;myfeed.html&quot;</div><div class="line">        success_url = reverse_lazy(&quot;my_feed&quot;)</div></pre></td></tr></table></figure>
+<ol>
+<li>python 的装饰器很好用，也可以用于 views 函数， 比如下面的装饰器用于登录用户的检测</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@login_required</div><div class="line">def simple_view(request):</div><div class="line">       return HttpResponse()</div></pre></td></tr></table></figure>
+<h3 id="urls-模块"><a href="#urls-模块" class="headerlink" title="urls 模块"></a>urls 模块</h3><ol>
+<li>urls.py 这个文件将访问的 url 跟 view 模块对应起来，按从上到下的顺序匹配</li>
+<li>采用 include 函数可以包含其他 app 的 urls，namespace 参数定义后可以在模板中直接调用，比如 <figure class="highlight plain"><figcaption><span>url 'articles'%&#125;```</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>url(r’^articles/$’, include(articles.urls), namespace=”articles”),<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### models 模块</div><div class="line"></div><div class="line"></div><div class="line">1. model 是具有处理数据库的一种面向对象的方法的类，能够让不熟悉数据库语句的程序员也能快速操作数据库</div><div class="line">2. 采用面向对象的方式创建类，加上 `abstract = True` 则为抽象类</div></pre></td></tr></table></figure></p>
+<p>class Postable(models.Model):<br>    created = models.DateTimeField(auto_now_add=True)<br>    modified = modified.DateTimeField(auto_now=True)<br>    message = models.TextField(max_length=500)</p>
+<pre><code>class Meta:
+    abstract = True
+</code></pre><p>class Post(Postable):<br>    …</p>
+<p>class Comment(Postable):<br>   ···<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">3. django 表对应关系有一对一（OneToOneField），一对多 (ForeignKey)，多对多 (ManyToManyField)，其中 多对多的模式通过创建一个中间表来实现。</div></pre></td></tr></table></figure></p>
+<p>class Book(models.Model):<br>    place = models.OneToOneField(Place, primary_key=True)<br>    pub=models.ForeignKey(Publisher)<br>    authors=models.ManyToManyField(Author)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">上面的例子中间表包括 author_id 和 book_id </div><div class="line"></div><div class="line">4. django 的 signal 实现 hook 数据库写行为，比如，pre_save, post_save，pre_delete, post_delete，你也可以自定义 signal, hook 其他行为。</div></pre></td></tr></table></figure></p>
+<p>@receiver(post_save, sender=TransactionDetail, dispatch_uid=”update_stock_count”)<br>def update_stock(sender, instance, **kwargs):<br>     instance.product.stock -= instance.amount<br>     instance.product.save()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">5. Person.objects.all(), 这里面的 objects 其实是个 manager， 实现了 all, filter 等函数，可以自定义。</div></pre></td></tr></table></figure></p>
+<p>class Person(models.Model):</p>
+<pre><code>#...
+object = models.Manager()
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">6. django 的 queryset 是惰性的，只有在真正用的时候才会去数据库查询，并且查询一次后，会有缓存，当再次遍历这个 queryset 的时候，不会再去查询。</div></pre></td></tr></table></figure>
+<p>person_set = Person.objects.filter(first_name=”Dave”)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">7. 数据库第一次创建后，会有再次更新字段的需求。django 在 1.4 版本前并没有这个功能，得用第三方库 south 来更新，后来的版本 django 自带了 migration 功能，能够将最新的 model 版本和数据库的字段作对比，自动生成 migration 文件</div></pre></td></tr></table></figure></p>
+<p>   python manage.py makemigrations # 生成 migration 文件<br>   python manage.py migrate # 将更改应用到数据库<br>   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">8. orm 不能直接看到 raw sql 语句，可以通过如下语句查看 sql</div></pre></td></tr></table></figure></p>
+<p>from django.db import connection<br>connection.queries<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">9. 可以使用 django-debug-toolbar 插件查看慢查询，也能对对哪些页面载入较慢有个大致的了解。</div><div class="line"></div><div class="line">10. 在 orm 中使用 select_related() 减少查询数据库次数:，select_related() 会自动扩展外键关系</div></pre></td></tr></table></figure></p>
+<p>class Province(models.Model):<br>    name = models.CharField(max_length=10)</p>
+<p>class City(models.Model):<br>    name = models.CharField(max_length=5)<br>    province = models.ForeignKey(Province)</p>
+<p>citys = City.objects.select_related().all()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">不过对于高并发的应用来说外键不是很推荐。</div><div class="line"></div><div class="line">### forms 模块</div><div class="line"></div><div class="line">1. 前端传上来一个表单的值，但是没法确认这些值是不是为空，是不是类型正确，这个时候当然可以自己一个个值判断，也可以采用 forms 模块去做验证，用过 django-rest-framework 的同学会知道和里面的 serializers 是同一个概念</div></pre></td></tr></table></figure>
+<p>class PersonDetailsForm(forms.Form):<br>       name = forms.CharField(max_length=100)<br>       age = forms.IntegerField()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">2. 如果你用的是模板渲染的方式，那么展示的时候更简单，表单能自动生成 html 的表单。</div></pre></td></tr></table></figure></p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>f = PersonDetailsForm()<br>print(f.as_p())</p>
+<p></p><p><label for="id_name">Name:</label> <input id="id_name" maxlength="100" name="name" type="text"></p><p></p>
+<p></p><p><label for="id_age">Age:</label> <input id="id_age" name="age" type="number"></p><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### admin 模块</div><div class="line"></div><div class="line">1. admin 基本上开箱即用，如果需要定制的话，也能做一些组件的定制，不过这些东西得看文档去详细了解了。</div><div class="line"></div><div class="line">### commands 模块</div><div class="line">1. django 提供了后台脚本模块，可以自己集成 BaseCommand 类去自定义脚本</div></pre></td></tr></table></figure><p></p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>python mannage.py -h<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">这个命令就能看到所有的 commands 命令</div><div class="line"></div><div class="line">2. 如果不想用他的模块，又想引入 django 项目的一些模块，可以采用下面的方法解决</div></pre></td></tr></table></figure></p>
+<p>os.environ.setdefault(“DJANGO_SETTINGS_MODULE”, “myproject.settings”)<br>django.setup()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### settings 模块</div><div class="line"></div><div class="line">1. 所有的 settings 默认值都在这里面能找到，https://github.com/django/django/blob/master/django/conf/global_settings.py</div><div class="line">2. 上线的时候记得把 DEBUG 改成 False, 然后加上 ALLOWED_HOSTS </div><div class="line">3. MEDIA_ROOT， MEDIA_URL， STATIC_ROOT， STATIC_URL 这几个之前经常搞混，其实可以分为两类，MEDIA_ROOT 指的是上传文件的目录，MEDIA_URL 指的是前缀名，http://example.com/media/， 其中的media 就是 MEDIA_URL， 同样，STATIC_ROOT 指的是静态文件的目录，一般放 css, js 之类，STATIC_URL 值得是前缀名，http://example.com/static/。</div><div class="line">4. 一般部署上线的时候，用 nginx 直接渲染静态文件</div></pre></td></tr></table></figure></p>
+<pre><code>location /media  {
+    alias /root/example_project/public/media;
+}
+
+location /static {
+    alias /root/example_project/static;
+}
+</code></pre><p>```</p>
+<h3 id="contrib-模块"><a href="#contrib-模块" class="headerlink" title="contrib 模块"></a>contrib 模块</h3><ol>
+<li>这里面的模块是 django 自带的 apps，用的比较多的有 admin, auth, sessions</li>
+<li>admin 模块其实就是 django 的后台</li>
+<li>auth 模块就是用户模块，功能上比较齐全，基本上可以基于这个模块做扩展。</li>
+<li>session 模块结合 auth ，用来做用户的登录状态，对于大型网站来说，session 的存储可能是个问题，django 也提供了不同的 backends，支持 db, cache, file 等存储方式。</li>
+</ol>
+<h3 id="middleware-模块"><a href="#middleware-模块" class="headerlink" title="middleware 模块"></a>middleware 模块</h3><ol>
+<li>django 自带的 middlreware 对于普通网站的需求已经蛮完善了，比如 CsrfMiddleware ， HttpMiddleware。</li>
+<li>如果有自己的需求，也可以自定义，比如记录详细 log 信息，LogMiddleware，还有跨域的 CorsMiddleware。</li>
+</ol>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ol>
+<li>网上有人说 django 只能做小网站，不支持大的并发，其实这个说法还是很片面的。django 自身只是一个框架，如果网站请求处理慢，很多情况下是自己写的逻辑没有优化。确认是 django 框架问题的话，django 虽然设计上略复杂，但是很多模块还是可以拆分去自定义的。最后实在不济，靠增加机器数量也能顶一阵。</li>
+<li>django 的国际化模块做的很不错</li>
+<li>setting 文件可分成 product, 和 dev 两份，根据开发环境和生产环境不同引入不同的 setting 文件。</li>
+<li>django-celery 用来执行异步任务</li>
+<li>django 的插件非常多，<a href="https://github.com/rosarior/awesome-django" target="_blank" rel="external">https://github.com/rosarior/awesome-django</a></li>
+<li>其他想到的再更新。。。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/10/11/谈谈-django-应用实践/" data-id="cj8qwp580001gz6o0smwe2enn" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web-django/">web, django</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-由浅入深写代理-10-反向代理" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/08/26/由浅入深写代理-10-反向代理/" class="article-date">
@@ -118,7 +237,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/26/由浅入深写代理-10-反向代理/" data-id="cj6u5abmq001b1jo0n0pn3uff" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/26/由浅入深写代理-10-反向代理/" data-id="cj8qwp5790015z6o01h2yfyuz" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -165,7 +284,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-8-shadowsocks-代理-md/" data-id="cj6u5abmx001h1jo07io3jk26" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-8-shadowsocks-代理-md/" data-id="cj8qwp589001jz6o0aa6q1h47" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -210,7 +329,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-9-ssh-代理-md/" data-id="cj6u5abn1001i1jo0qhzp0odl" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-9-ssh-代理-md/" data-id="cj8qwp58d001mz6o0ezq3p4i9" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -265,58 +384,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-7-http-代理-md/" data-id="cj6u5abmi00191jo07jwbr0v3" class="article-share-link">Teilen</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-由浅入深写代理-6-http-代理-md" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/08/20/由浅入深写代理-6-http-代理-md/" class="article-date">
-  <time datetime="2017-08-20T07:26:36.000Z" itemprop="datePublished">2017-08-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/20/由浅入深写代理-6-http-代理-md/">由浅入深写代理(6)-http-代理.md</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本文讲 http 代理，顾名思义，http 代理代理的是 http 请求，其实这里面分两类</p>
-<pre><code>* 普通代理 这种代理扮演的是「中间人」角色，对于连接到它的客户端来说，它是服务端；对于要连接的服务端来说，它是客户端。它就负责在两端之间来回传送 HTTP 报文。
-* 隧道代理。它通过 HTTP 协议正文部分（Body）完成通讯，以 HTTP 的方式实现任意基于 TCP 的应用层协议代理。这种代理使用 HTTP 的 CONNECT 方法建立连接。
-</code></pre><p>通俗一点讲，普通代理解析 http 包，然后将请求转发到目标地址，但是没法解析 https 的包，所以也就没法代理 https 的请求，但是隧道代理可以代理 https 的请求或者其他的一些协议请求。</p>
-<h3 id="0x01-普通代理"><a href="#0x01-普通代理" class="headerlink" title="0x01 普通代理"></a>0x01 普通代理</h3><p>代码很简单</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> socket</div><div class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> urlparse</div><div class="line"><span class="keyword">from</span> http.server <span class="keyword">import</span> BaseHTTPRequestHandler, HTTPServer</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProxyHandler</span><span class="params">(BaseHTTPRequestHandler)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_recv_data_from_remote</span><span class="params">(self, sock)</span>:</span></div><div class="line">        data = <span class="string">b''</span></div><div class="line">        <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">            recv_data = sock.recv(<span class="number">4096</span>)</div><div class="line">            <span class="keyword">if</span> <span class="keyword">not</span> recv_data:</div><div class="line">                <span class="keyword">break</span></div><div class="line">            data += recv_data</div><div class="line">        sock.close()</div><div class="line">        <span class="keyword">return</span> data</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">do_GET</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="comment"># 解析 GET 请求信息</span></div><div class="line">        uri = urlparse(self.path)</div><div class="line">        scheme, host, path = uri.scheme, uri.hostname, uri.path</div><div class="line">        host_ip = socket.gethostbyname(host)</div><div class="line">        port = <span class="number">443</span> <span class="keyword">if</span> scheme == <span class="string">"https"</span> <span class="keyword">else</span> <span class="number">80</span></div><div class="line"></div><div class="line">        <span class="comment"># 为了简单起见，Connection 都为 close, 也就不需要 Proxy-Connection 判断了</span></div><div class="line">        <span class="keyword">del</span> self.headers[<span class="string">'Proxy-Connection'</span>]</div><div class="line">        self.headers[<span class="string">'Connection'</span>] = <span class="string">'close'</span></div><div class="line"></div><div class="line">        <span class="comment"># 构造新的 http 请求</span></div><div class="line">        send_data = <span class="string">"GET &#123;path&#125; &#123;protocol_version&#125;\r\n"</span>.format(path=path, protocol_version=self.protocol_version)</div><div class="line">        headers = <span class="string">''</span></div><div class="line">        <span class="keyword">for</span> key, value <span class="keyword">in</span> self.headers.items():</div><div class="line">            headers += <span class="string">"&#123;key&#125;: &#123;value&#125;\r\n"</span>.format(key=key, value=value)</div><div class="line">        headers += <span class="string">'\r\n'</span></div><div class="line">        send_data += headers</div><div class="line"></div><div class="line">        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">        sock.connect((host_ip, port))</div><div class="line">        <span class="comment"># 发送请求到目标地址</span></div><div class="line">        sock.sendall(send_data.encode())</div><div class="line">        data = self._recv_data_from_remote(sock)</div><div class="line"></div><div class="line">        self.wfile.write(data)</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        server = HTTPServer((<span class="string">''</span>, <span class="number">8888</span>), ProxyHandler)</div><div class="line">        server.serve_forever()</div><div class="line">    <span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">        server.socket.close()</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    main()</div></pre></td></tr></table></figure>
-<p>这里面就实现了 get 请求的转发，只用单线程的方式来处理，其他的有兴趣的同学可以自己扩展下。<br>看下效果</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python3 http_server.py</div></pre></td></tr></table></figure>
-<p><img src="/media/15032177986462.jpg" alt=""></p>
-<p>配置完代理后可以发现 http 的请求都能正常转发，但是 https 的都没法识别。</p>
-<p>下篇教程看如何通过隧道代理解决这个问题。</p>
-<p>参考资料</p>
-<pre><code>* https://imququ.com/post/web-proxy.html
-* http://www.lyyyuna.com/2016/01/16/http-proxy-get1/
-</code></pre>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-6-http-代理-md/" data-id="cj6u5abmg00171jo08iv679h1" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-7-http-代理-md/" data-id="cj8qwp586001iz6o036orj018" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -345,7 +413,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
     </div>
   </div>
 
@@ -355,7 +423,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
@@ -364,7 +432,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
   </div>
 
@@ -375,6 +443,10 @@
     <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2017/10/11/谈谈-django-应用实践/">谈谈 django 应用实践</a>
+          </li>
         
           <li>
             <a href="/2017/08/26/由浅入深写代理-10-反向代理/">由浅入深写代理(10)-内网穿透</a>
@@ -390,10 +462,6 @@
         
           <li>
             <a href="/2017/08/20/由浅入深写代理-7-http-代理-md/">由浅入深写代理(7)-https-代理.md</a>
-          </li>
-        
-          <li>
-            <a href="/2017/08/20/由浅入深写代理-6-http-代理-md/">由浅入深写代理(6)-http-代理.md</a>
           </li>
         
       </ul>
