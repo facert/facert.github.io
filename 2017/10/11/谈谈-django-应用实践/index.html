@@ -25,7 +25,7 @@
 <meta property="og:site_name" content="facert 的杂货店">
 <meta property="og:description" content="python 的 web 框架非常多，比较出名的有 django, flask, tornado。django 作为一个老牌框架，无论是文档还是代码质量都非常高，另外他自带的 admin 后台和一些有用的 app，如果你的需求是做 cms 之类的 web 应用的话，基本上不用开发多少代码就能出一个成品。不过很多新手可能一开始不太适应他的设计模式，遇到问题后基本就懵了，所以这里我按照自己用 djan">
 <meta property="og:image" content="http://yoursite.com/media/15077390149599.png">
-<meta property="og:updated_time" content="2017-10-14T05:58:05.000Z">
+<meta property="og:updated_time" content="2017-10-14T06:01:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="谈谈 django 应用实践">
 <meta name="twitter:description" content="python 的 web 框架非常多，比较出名的有 django, flask, tornado。django 作为一个老牌框架，无论是文档还是代码质量都非常高，另外他自带的 admin 后台和一些有用的 app，如果你的需求是做 cms 之类的 web 应用的话，基本上不用开发多少代码就能出一个成品。不过很多新手可能一开始不太适应他的设计模式，遇到问题后基本就懵了，所以这里我按照自己用 djan">
@@ -118,24 +118,40 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@login_required</div><div class="line">def simple_view(request):</div><div class="line">       return HttpResponse()</div></pre></td></tr></table></figure>
 <h3 id="urls-模块"><a href="#urls-模块" class="headerlink" title="urls 模块"></a>urls 模块</h3><ol>
 <li>urls.py 这个文件将访问的 url 跟 view 模块对应起来，按从上到下的顺序匹配</li>
-<li>采用 include 函数可以包含其他 app 的 urls，namespace 参数定义后可以在模板中直接调用，比如 <figure class="highlight plain"><figcaption><span>url 'articles'%&#125;```</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure>
+<li>采用 include 函数可以包含其他 app 的 urls，namespace 参数定义后可以在模板中直接调用，比如 </li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;% url &apos;articles&apos;%&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^articles/$&apos;, include(articles.urls), namespace=&quot;articles&quot;),</div></pre></td></tr></table></figure>
+<h3 id="models-模块"><a href="#models-模块" class="headerlink" title="models 模块"></a>models 模块</h3><ol>
+<li>model 是具有处理数据库的一种面向对象的方法的类，能够让不熟悉数据库语句的程序员也能快速操作数据库</li>
+<li>采用面向对象的方式创建类，加上 <code>abstract = True</code> 则为抽象类</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">class Postable(models.Model):</div><div class="line">    created = models.DateTimeField(auto_now_add=True)</div><div class="line">    modified = modified.DateTimeField(auto_now=True)</div><div class="line">    message = models.TextField(max_length=500)</div><div class="line"></div><div class="line">    class Meta:</div><div class="line">        abstract = True</div><div class="line">        </div><div class="line">        </div><div class="line">class Post(Postable):</div><div class="line">    ...</div><div class="line"></div><div class="line"></div><div class="line">class Comment(Postable):</div><div class="line">   ···</div></pre></td></tr></table></figure>
+<ol>
+<li>django 表对应关系有一对一（OneToOneField），一对多 (ForeignKey)，多对多 (ManyToManyField)，其中 多对多的模式通过创建一个中间表来实现。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class Book(models.Model):</div><div class="line">    place = models.OneToOneField(Place, primary_key=True)</div><div class="line">    pub=models.ForeignKey(Publisher)</div><div class="line">    authors=models.ManyToManyField(Author)</div></pre></td></tr></table></figure>
+<p>上面的例子中间表包括 author_id 和 book_id </p>
+<ol>
+<li>django 的 signal 实现 hook 数据库写行为，比如，pre_save, post_save，pre_delete, post_delete，你也可以自定义 signal, hook 其他行为。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@receiver(post_save, sender=TransactionDetail, dispatch_uid=&quot;update_stock_count&quot;)</div><div class="line">def update_stock(sender, instance, **kwargs):</div><div class="line">     instance.product.stock -= instance.amount</div><div class="line">     instance.product.save()</div></pre></td></tr></table></figure>
+<ol>
+<li>Person.objects.all(), 这里面的 objects 其实是个 manager， 实现了 all, filter 等函数，可以自定义。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">class Person(models.Model):</div><div class="line">    #...</div><div class="line">    object = models.Manager()</div></pre></td></tr></table></figure>
+<ol>
+<li>django 的 queryset 是惰性的，只有在真正用的时候才会去数据库查询，并且查询一次后，会有缓存，当再次遍历这个 queryset 的时候，不会再去查询。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">person_set = Person.objects.filter(first_name=&quot;Dave&quot;)</div></pre></td></tr></table></figure>
+<ol>
+<li><p>数据库第一次创建后，会有再次更新字段的需求。django 在 1.4 版本前并没有这个功能，得用第三方库 south 来更新，后来的版本 django 自带了 migration 功能，能够将最新的 model 版本和数据库的字段作对比，自动生成 migration 文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">python manage.py makemigrations # 生成 migration 文件</div><div class="line">python manage.py migrate # 将更改应用到数据库</div></pre></td></tr></table></figure>
+</li>
+<li><p>orm 不能直接看到 raw sql 语句，可以通过如下语句查看 sql</p>
 </li>
 </ol>
-<p>url(r’^articles/$’, include(articles.urls), namespace=”articles”),<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### models 模块</div><div class="line"></div><div class="line"></div><div class="line">1. model 是具有处理数据库的一种面向对象的方法的类，能够让不熟悉数据库语句的程序员也能快速操作数据库</div><div class="line">2. 采用面向对象的方式创建类，加上 `abstract = True` 则为抽象类</div></pre></td></tr></table></figure></p>
-<p>class Postable(models.Model):<br>    created = models.DateTimeField(auto_now_add=True)<br>    modified = modified.DateTimeField(auto_now=True)<br>    message = models.TextField(max_length=500)</p>
-<pre><code>class Meta:
-    abstract = True
-</code></pre><p>class Post(Postable):<br>    …</p>
-<p>class Comment(Postable):<br>   ···<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">3. django 表对应关系有一对一（OneToOneField），一对多 (ForeignKey)，多对多 (ManyToManyField)，其中 多对多的模式通过创建一个中间表来实现。</div></pre></td></tr></table></figure></p>
-<p>class Book(models.Model):<br>    place = models.OneToOneField(Place, primary_key=True)<br>    pub=models.ForeignKey(Publisher)<br>    authors=models.ManyToManyField(Author)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">上面的例子中间表包括 author_id 和 book_id </div><div class="line"></div><div class="line">4. django 的 signal 实现 hook 数据库写行为，比如，pre_save, post_save，pre_delete, post_delete，你也可以自定义 signal, hook 其他行为。</div></pre></td></tr></table></figure></p>
-<p>@receiver(post_save, sender=TransactionDetail, dispatch_uid=”update_stock_count”)<br>def update_stock(sender, instance, **kwargs):<br>     instance.product.stock -= instance.amount<br>     instance.product.save()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">5. Person.objects.all(), 这里面的 objects 其实是个 manager， 实现了 all, filter 等函数，可以自定义。</div></pre></td></tr></table></figure></p>
-<p>class Person(models.Model):</p>
-<pre><code>#...
-object = models.Manager()
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">6. django 的 queryset 是惰性的，只有在真正用的时候才会去数据库查询，并且查询一次后，会有缓存，当再次遍历这个 queryset 的时候，不会再去查询。</div></pre></td></tr></table></figure>
-<p>person_set = Person.objects.filter(first_name=”Dave”)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">7. 数据库第一次创建后，会有再次更新字段的需求。django 在 1.4 版本前并没有这个功能，得用第三方库 south 来更新，后来的版本 django 自带了 migration 功能，能够将最新的 model 版本和数据库的字段作对比，自动生成 migration 文件</div></pre></td></tr></table></figure></p>
-<p>   python manage.py makemigrations # 生成 migration 文件<br>   python manage.py migrate # 将更改应用到数据库<br>   <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">8. orm 不能直接看到 raw sql 语句，可以通过如下语句查看 sql</div></pre></td></tr></table></figure></p>
-<p>from django.db import connection<br>connection.queries<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">9. 可以使用 django-debug-toolbar 插件查看慢查询，也能对对哪些页面载入较慢有个大致的了解。</div><div class="line"></div><div class="line">10. 在 orm 中使用 select_related() 减少查询数据库次数:，select_related() 会自动扩展外键关系</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">from django.db import connection</div><div class="line">connection.queries</div><div class="line">```   </div><div class="line"></div><div class="line">9. 可以使用 django-debug-toolbar 插件查看慢查询，也能对对哪些页面载入较慢有个大致的了解。</div><div class="line"></div><div class="line">10. 在 orm 中使用 select_related() 减少查询数据库次数:，select_related() 会自动扩展外键关系</div></pre></td></tr></table></figure>
 <p>class Province(models.Model):<br>    name = models.CharField(max_length=10)</p>
 <p>class City(models.Model):<br>    name = models.CharField(max_length=5)<br>    province = models.ForeignKey(Province)</p>
 <p>citys = City.objects.select_related().all()</p>
