@@ -25,7 +25,7 @@
 <meta property="og:site_name" content="facert 的杂货店">
 <meta property="og:description" content="python 的 web 框架非常多，比较出名的有 django, flask, tornado。django 作为一个老牌框架，无论是文档还是代码质量都非常高，另外他自带的 admin 后台和一些有用的 app，如果你的需求是做 cms 之类的 web 应用的话，基本上不用开发多少代码就能出一个成品。不过很多新手可能一开始不太适应他的设计模式，遇到问题后基本就懵了，所以这里我按照自己用 djan">
 <meta property="og:image" content="http://yoursite.com/media/15077390149599.png">
-<meta property="og:updated_time" content="2017-10-14T06:01:33.000Z">
+<meta property="og:updated_time" content="2017-10-14T06:02:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="谈谈 django 应用实践">
 <meta name="twitter:description" content="python 的 web 框架非常多，比较出名的有 django, flask, tornado。django 作为一个老牌框架，无论是文档还是代码质量都非常高，另外他自带的 admin 后台和一些有用的 app，如果你的需求是做 cms 之类的 web 应用的话，基本上不用开发多少代码就能出一个成品。不过很多新手可能一开始不太适应他的设计模式，遇到问题后基本就懵了，所以这里我按照自己用 djan">
@@ -100,6 +100,7 @@
       
         <p>python 的 web 框架非常多，比较出名的有 django, flask, tornado。django 作为一个老牌框架，无论是文档还是代码质量都非常高，另外他自带的 admin 后台和一些有用的 app，如果你的需求是做 cms 之类的 web 应用的话，基本上不用开发多少代码就能出一个成品。不过很多新手可能一开始不太适应他的设计模式，遇到问题后基本就懵了，所以这里我按照自己用 django 的经验，写一下 django 的一些应用实践，可能写的比较零散，大家见谅。</p>
 <h3 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程"></a>整体流程</h3><p><img src="/media/15077390149599.png" alt=""></p>
+<a id="more"></a>
 <p>首先我们得了解下 django 这个框架整体的处理流程，假设我们采用 nginx + uwsgi + django 的 web server 模式</p>
 <ol>
 <li>一个请求过来后，首先经过 nginx 做反向代理，将请求转发到 uwsgi (python 用 wsgi 这种协议来解析 http 请求，uwsgi 是一个 解析 wsgi 的应用)，uwsgi 再将解析过的数据传到 django。</li>
