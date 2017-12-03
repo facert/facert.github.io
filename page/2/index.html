@@ -72,6 +72,106 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-由浅入深写代理-9-ssh-代理-md" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/20/由浅入深写代理-9-ssh-代理-md/" class="article-date">
+  <time datetime="2017-08-20T10:07:41.000Z" itemprop="datePublished">2017-08-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/20/由浅入深写代理-9-ssh-代理-md/">由浅入深写代理(9)-ssh-代理.md</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>其实 ssh 不算是代理，只是一种能实现代理的工具，不过因为 ssh 功能强大，所以单独拿出来说一下。</p>
+<h3 id="0x01-本地端口转发"><a href="#0x01-本地端口转发" class="headerlink" title="0x01 本地端口转发"></a>0x01 本地端口转发</h3><p>举个例子，远程有个 mongo 服务器需要连接，但是 mongo 不允许远程连接，只能通过和它同一个局域网的跳板机 A （x.x.x.x）连接。这个时候可以通过端口转发的方法直接连接。<br>命令格式是：<br><figure class="highlight plain"><figcaption><span>-L <local port="">:<remote host="">:<remote port=""> <ssh hostname="">```</ssh></remote></remote></local></span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">例如本地开启了 8000 端口监听， mongo 服务器地址为 192.168.0.2 端口  27017, 跳板机地址 192.168.0.1：</div><div class="line">``` ssh -N -L 8000:192.168.0.2:27017  192.168.0.1</div></pre></td></tr></table></figure></p>
+<p>开启完端口转发后，连接 mongo 可以直接通过命令 mongo –host localhost –port 8000</p>
+<h3 id="0x02-远程端口转发"><a href="#0x02-远程端口转发" class="headerlink" title="0x02 远程端口转发"></a>0x02 远程端口转发</h3><p>远程端口转发和本地端口转发功能一样，唯一的区别在于 ssh client 端和 server 端相反。举上面的例子，本地 client 无法通过 ssh 连接 A, 但是 A 能 ssh 连接本地。这种情况下可以通过远程端口转发<br>命令格式：<br><figure class="highlight plain"><figcaption><span>-R <local port="">:<remote host="">:<remote port=""> <ssh hostname=""></ssh></remote></remote></local></span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">```</div><div class="line">上例可以在本地运行</div><div class="line">``` ssh -R 8000:192.168.0.2:27017  192.168.0.1</div></pre></td></tr></table></figure></p>
+<h3 id="0x03-动态转发"><a href="#0x03-动态转发" class="headerlink" title="0x03 动态转发"></a>0x03 动态转发</h3><p>动态端口允许通过配置一个本地端口，把通过隧道的数据转发到远端的所有地址。本地的应用程序需要使用 Socks 协议与本地端口通讯。此时 SSH 充当 Socks 代理服务器的角色。</p>
+<p><img src="/media/15032247248211.jpg" alt=""></p>
+<p>简单的说就是和 ss 功能一样，只是中间的加密有 openssl 来做。</p>
+<p>命令如下<br><figure class="highlight plain"><figcaption><span>-D <local port=""> <ssh server="">```</ssh></local></span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">上面的例子可以如下设置</div><div class="line">``` ssh -f -N -D 10.1.1.1:8000 B@192.168.0.1</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-9-ssh-代理-md/" data-id="cjaqw51fx001n91o09t7p32ni" class="article-share-link">Teilen</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-由浅入深写代理-7-http-代理-md" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/20/由浅入深写代理-7-http-代理-md/" class="article-date">
+  <time datetime="2017-08-20T08:36:06.000Z" itemprop="datePublished">2017-08-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/20/由浅入深写代理-7-http-代理-md/">由浅入深写代理(7)-https-代理.md</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文主要实现隧道代理，让 https 请求也能代理。</p>
+<p>隧道代理的原理是：<br><code>HTTP 客户端通过 CONNECT 方法请求隧道代理创建一条到达任意目的服务器和端口的 TCP 连接，并对客户端和服务器之间的后继数据进行盲转发。</code></p>
+<p><img src="/media/15032206534564.jpg" alt=""></p>
+<p>步骤如下</p>
+<ol>
+<li><p>客户端发送一个 http CONNECT 请求<br><code>CONNECT baidu.com:443 HTTP/1.1</code></p>
+</li>
+<li><p>代理收到这样的请求后，拿到目标服务器域名及端口，与目标服务端建立 TCP 连接，并响应给浏览器这样一个 HTTP 报文：<br> <code>HTTP/1.1 200 Connection Established</code></p>
+</li>
+<li>建立完隧道以后，客户端与目标服务器照之前的方式发送请求，代理节点只是做转发功能，无从知道转发的流量具体是什么    </li>
+</ol>
+<p>看代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> socket</div><div class="line"><span class="keyword">import</span> select</div><div class="line"><span class="keyword">from</span> http.server <span class="keyword">import</span> BaseHTTPRequestHandler, HTTPServer</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProxyHandler</span><span class="params">(BaseHTTPRequestHandler)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">send_data</span><span class="params">(self, sock, data)</span>:</span></div><div class="line">        print(data)</div><div class="line">        bytes_sent = <span class="number">0</span></div><div class="line">        <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">            r = sock.send(data[bytes_sent:])</div><div class="line">            <span class="keyword">if</span> r &lt; <span class="number">0</span>:</div><div class="line">                <span class="keyword">return</span> r</div><div class="line">            bytes_sent += r</div><div class="line">            <span class="keyword">if</span> bytes_sent == len(data):</div><div class="line">                <span class="keyword">return</span> bytes_sent</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">handle_tcp</span><span class="params">(self, sock, remote)</span>:</span></div><div class="line">        <span class="comment"># 处理 client socket 和 remote socket 的数据流</span></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            fdset = [sock, remote]</div><div class="line">            <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">                <span class="comment"># 用 IO 多路复用 select 监听套接字是否有数据流</span></div><div class="line">                r, w, e = select.select(fdset, [], [])</div><div class="line">                <span class="keyword">if</span> sock <span class="keyword">in</span> r:</div><div class="line">                    data = sock.recv(<span class="number">4096</span>)</div><div class="line">                    <span class="keyword">if</span> len(data) &lt;= <span class="number">0</span>:</div><div class="line">                        <span class="keyword">break</span></div><div class="line">                    result = self.send_data(remote, data)</div><div class="line">                    <span class="keyword">if</span> result &lt; len(data):</div><div class="line">                        <span class="keyword">raise</span> Exception(<span class="string">'failed to send all data'</span>)</div><div class="line"></div><div class="line">                <span class="keyword">if</span> remote <span class="keyword">in</span> r:</div><div class="line">                    data = remote.recv(<span class="number">4096</span>)</div><div class="line">                    <span class="keyword">if</span> len(data) &lt;= <span class="number">0</span>:</div><div class="line">                        <span class="keyword">break</span></div><div class="line">                    result = self.send_data(sock, data)</div><div class="line">                    <span class="keyword">if</span> result &lt; len(data):</div><div class="line">                        <span class="keyword">raise</span> Exception(<span class="string">'failed to send all data'</span>)</div><div class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</div><div class="line">            <span class="keyword">raise</span>(e)</div><div class="line">        <span class="keyword">finally</span>:</div><div class="line">            sock.close()</div><div class="line">            remote.close()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">do_CONNECT</span><span class="params">(self)</span>:</span></div><div class="line"></div><div class="line">        <span class="comment"># 解析出 host 和 port</span></div><div class="line">        uri = self.path.split(<span class="string">":"</span>)</div><div class="line">        host, port = uri[<span class="number">0</span>], int(uri[<span class="number">1</span>])</div><div class="line">        host_ip = socket.gethostbyname(host)</div><div class="line"></div><div class="line">        remote_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">        remote_sock.connect((host_ip, port))</div><div class="line">        <span class="comment"># 告诉客户端 CONNECT 成功</span></div><div class="line">        self.wfile.write(<span class="string">"&#123;protocol_version&#125; 200 Connection Established\r\n\r\n"</span>.format(protocol_version=self.protocol_version).encode())</div><div class="line"></div><div class="line">        <span class="comment"># 转发请求</span></div><div class="line">        self.handle_tcp(self.connection, remote_sock)</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        server = HTTPServer((<span class="string">''</span>, <span class="number">8888</span>), ProxyHandler)</div><div class="line">        server.serve_forever()</div><div class="line">    <span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">        server.socket.close()</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    main()</div></pre></td></tr></table></figure>
+<p>有一个 <code>do_CONNECT</code> 函数的处理，实现之前隧道的建立，然后 <code>handle_tcp</code> ，代码和之前 socks5 代理是一样的。</p>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://imququ.com/post/web-proxy.html" target="_blank" rel="external">https://imququ.com/post/web-proxy.html</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-7-http-代理-md/" data-id="cjaqw51ft001j91o0pyh4gc32" class="article-share-link">Teilen</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-由浅入深写代理-6-http-代理-md" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/08/20/由浅入深写代理-6-http-代理-md/" class="article-date">
@@ -112,7 +212,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-6-http-代理-md/" data-id="cj8qwp57y001ez6o09n8cpkfh" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-6-http-代理-md/" data-id="cjaqw51fq001i91o06e6yg7kn" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -160,7 +260,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-5-socks5-代理-md/" data-id="cj8qwp57r001cz6o0kaj2arx3" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-5-socks5-代理-md/" data-id="cjaqw51fm001g91o0z4ztoo7o" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -211,217 +311,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-4-socks5-代理-md/" data-id="cj8qwp57k001az6o0h5cddcj0" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-4-socks5-代理-md/" data-id="cjaqw51fh001e91o07g714z8t" class="article-share-link">Teilen</a>
       
       
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-由浅入深写代理-3-socks5-代理" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/08/19/由浅入深写代理-3-socks5-代理/" class="article-date">
-  <time datetime="2017-08-19T07:34:32.000Z" itemprop="datePublished">2017-08-19</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/19/由浅入深写代理-3-socks5-代理/">由浅入深写代理(3) -socks5 代理</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本文讲的是如何写一个 socks5 代理，其实 shadowsocks 的代理也是 socks5 协议的，所以 socks5 代理也是本系列教程的一个重点。</p>
-<p>首先放出 socks5 协议的 <a href="https://www.ietf.org/rfc/rfc1928.txt" target="_blank" rel="external">rfc</a>，socks5 协议很简单，SOCKS5 协议并不负责代理服务器的数据传输环节，此协议只是在 C/S 两端真实交互之间，建立起一条从客户端到代理服务器的授信连接。</p>
-<h3 id="sock5-代理结构图"><a href="#sock5-代理结构图" class="headerlink" title="sock5 代理结构图"></a>sock5 代理结构图</h3><p><img src="/media/15032089114950.jpg" alt=""></p>
-<h3 id="0x02-socks5-协议分析"><a href="#0x02-socks5-协议分析" class="headerlink" title="0x02 socks5 协议分析"></a>0x02 socks5 协议分析</h3><h5 id="认证阶段"><a href="#认证阶段" class="headerlink" title="认证阶段"></a>认证阶段</h5><p>首先客户端需要和服务端有个握手认证的过程，可以采用 <strong>用户名/密码</strong> 认证或者无需认证方式。</p>
-<p>格式如下 （<em>数字表示位数</em>）</p>
-<pre><code>+----+----------+----------+
-|VER | NMETHODS | METHODS  |
-+----+----------+----------+
-| 1  |    1     |  1~255   |
-+----+----------+----------+
-</code></pre><ul>
-<li>VER 字段是当前协议的版本号，也就是 5；</li>
-<li>NMETHODS 字段是 METHODS 字段占用的字节数；</li>
-<li><p>METHODS 字段的每一个字节表示一种认证方式，表示客户端支持的全部认证方式。</p>
-<pre><code>0x00: NO AUTHENTICATION REQUIRED
-0x01: GSSAPI
-0x02: USERNAME/PASSWORD
-0x03: to X’7F’ IANA ASSIGNED
-0x80: to X’FE’ RESERVED FOR PRIVATE METHODS
-0xFF: NO ACCEPTABLE METHODS
-</code></pre></li>
-</ul>
-<p>服务端返回格式</p>
-<pre><code>+----+--------+
-|VER | METHOD |
-+----+--------+
-| 1  |   1    |
-+----+--------+
-</code></pre><p>一般情况下服务端返回两种情况</p>
-<pre><code>0x05 0x00：告诉客户端采用无认证的方式建立连接；
-0x05 0xff：客户端的任意一种认证方式服务器都不支持。
-</code></pre><p>举个例子， 服务器无需认证的情况如下</p>
-<pre><code>client -&gt; server: 0x05 0x01 0x00
-server -&gt; client: 0x05 0x00
-</code></pre><h5 id="连接阶段"><a href="#连接阶段" class="headerlink" title="连接阶段"></a>连接阶段</h5><p>认证完成，客户端向服务端发送请求：</p>
-<pre><code>+----+-----+-------+------+----------+----------+
-|VER | CMD |  RSV  | ATYP | DST.ADDR | DST.PORT |
-+----+-----+-------+------+----------+----------+
-| 1  |  1  |   1   |  1   | Variable |    2     |
-+----+-----+-------+------+----------+----------+
-</code></pre><ul>
-<li>CMD 字段 command 的缩写：<ul>
-<li>0x01：CONNECT 建立 TCP 连接</li>
-<li>0x02: BIND 上报反向连接地址</li>
-<li>0x03：关联 UDP 请求</li>
-</ul>
-</li>
-<li>RSV 字段：保留字段，值为 0x00</li>
-<li>ATYP 字段：address type 的缩写，取值为：<ul>
-<li>0x01：IPv4        </li>
-<li>0x03：域名</li>
-<li>0x04：IPv6</li>
-</ul>
-</li>
-<li>DST.ADDR 字段：destination address 的缩写，取值随 ATYP 变化：<ul>
-<li>ATYP == 0x01：4 个字节的 IPv4 地址</li>
-<li>ATYP == 0x03：1 个字节表示域名长度，紧随其后的是对应的域名</li>
-<li>ATYP == 0x04：16 个字节的 IPv6 地址</li>
-<li>DST.PORT 字段：目的服务器的端口</li>
-</ul>
-</li>
-</ul>
-<p>服务端返回格式</p>
-<pre><code>+----+-----+-------+------+----------+----------+
-|VER | REP |  RSV  | ATYP | BND.ADDR | BND.PORT |
-+----+-----+-------+------+----------+----------+
-| 1  |  1  |   1   |  1   | Variable |    2     |
-+----+-----+-------+------+----------+----------+
-</code></pre><ul>
-<li>REP 字段<ul>
-<li>X’00’ succeeded</li>
-<li>X’01’ general SOCKS server failure</li>
-<li>X’02’ connection not allowed by ruleset</li>
-<li>X’03’ Network unreachable</li>
-<li>X’04’ Host unreachable</li>
-<li>X’05’ Connection refused</li>
-<li>X’06’ TTL expired</li>
-<li>X’07’ Command not supported</li>
-<li>X’08’ Address type not supported</li>
-<li>X’09’ to X’FF’ unassigned</li>
-</ul>
-</li>
-</ul>
-<p>举个例子，客户端通过 127.0.0.1:8000 的代理发送请求</p>
-<pre><code># request:        VER  CMD  RSV  ATYP DST.ADDR            DST.PORT
-client -&gt; server: 0x05 0x01 0x00 0x01 0x7f 0x00 0x00 0x01 0x1f 0x40
-# response:       VER  REP  RSV  ATYP BND.ADDR            BND.PORT
-server -&gt; client: 0x05 0x00 0x00 0x01 0x00 0x00 0x00 0x00 0x10 0x10
-</code></pre><h4 id="传输阶段"><a href="#传输阶段" class="headerlink" title="传输阶段"></a>传输阶段</h4><p>接下来就开始传输数据，socks5 服务器只做单纯的转发功能</p>
-<p>整个过程如下</p>
-<pre><code># 认证阶段
-client -&gt; server: 0x05 0x01 0x00
-server -&gt; client: 0x05 0x00
-# 连接阶段
-client -&gt; server: 0x05 0x01 0x00 0x03 0x0a b&apos;google.com&apos;  0x00 0x50
-server -&gt; client: 0x05 0x00 0x00 0x01 0x00 0x00 0x00 0x00 0x10 0x10
-# 传输阶段
-client -&gt; server -&gt; remote
-remote -&gt; server -&gt; client
-...    
-</code></pre><p>下篇教程用代码实现下 socks5 代理</p>
-<p>参考链接：</p>
-<pre><code>* https://loggerhead.me/posts/shadowsocks-yuan-ma-fen-xi-xie-yi-yu-jie-gou.html#fn:bnd.addr
-* https://www.ietf.org/rfc/rfc1928.txt
-* http://www.moye.me/2017/08/03/analyze-socks5-protocol/
-</code></pre>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/19/由浅入深写代理-3-socks5-代理/" data-id="cj8qwp57f0018z6o0srf2kkm8" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代理/">代理</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-由浅入深写代理-2-socket-编程" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/08/14/由浅入深写代理-2-socket-编程/" class="article-date">
-  <time datetime="2017-08-14T15:21:04.000Z" itemprop="datePublished">2017-08-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/14/由浅入深写代理-2-socket-编程/">由浅入深写代理(2)- socket 编程</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>说到代理，那肯定会跟网络协议有关，包括（tcp, ip, http），网络中的进程需要通过 socket 来通信，socket 可以认为是操作系统抽象出来的一类接口，供使用者能够更加方便的与底层的网络协议打交道。</p>
-<p>0x01<br>我们先来看看 tcp 的 socket 编程。</p>
-<p>服务端</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> socket</div><div class="line"><span class="keyword">import</span> threading</div><div class="line"></div><div class="line"><span class="comment"># AF_INET: 基于 IPV4 的网络通信 SOCK_STREAM: 基于 TCP 的流式 socket 通信</span></div><div class="line">s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line"><span class="comment"># 将套接字绑定到地址</span></div><div class="line">s.bind((<span class="string">'127.0.0.1'</span>, <span class="number">8888</span>))</div><div class="line"><span class="comment"># 监听TCP传入连接</span></div><div class="line">s.listen(<span class="number">5</span>)</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle_tcp</span><span class="params">(sock, addr)</span>:</span></div><div class="line">    print(<span class="string">"new connection from %s:%s"</span> % addr)</div><div class="line">    sock.send(<span class="string">b'Welcome!'</span>)</div><div class="line"></div><div class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">        data = sock.recv(<span class="number">1024</span>)</div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> data:</div><div class="line">            <span class="keyword">break</span></div><div class="line">        sock.send(<span class="string">b'Hello, %s!'</span> % data)</div><div class="line">    sock.close()</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">    sock, addr = s.accept()</div><div class="line">    t = threading.Thread(target=handle_tcp, args=(sock, addr))</div><div class="line">    t.start()</div></pre></td></tr></table></figure>
-<p>客户端</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> socket</div><div class="line"></div><div class="line">s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">s.connect((<span class="string">'127.0.0.1'</span>, <span class="number">8888</span>))</div><div class="line">print(s.recv(<span class="number">1024</span>))</div><div class="line"></div><div class="line"><span class="keyword">for</span> data <span class="keyword">in</span> [<span class="string">b'dog'</span>]:</div><div class="line">    s.send(data)</div><div class="line">    print(s.recv(<span class="number">1024</span>))</div><div class="line">s.close()</div></pre></td></tr></table></figure>
-<p>上面是个很简单的客户端和服务端的例子，服务器端用了线程，主要是为了能够同时处理多个请求。不然每次处理请求的时候整个程序就会处于阻塞状态。</p>
-<p>通过 wireshark 捕获请求，可以看到客户端经过三次握手和服务端连接成功，接下来双方开始发送数据，发送完成后，四次挥手断开连接。 </p>
-<p><img src="/media/15029009030503.jpg" alt=""></p>
-<p>具体说下过程吧</p>
-<ol>
-<li>首先服务器端初始化一个 socket 对象，将 socket 绑定到 (127.0.0.1, 8888) 这个地址上(bind)，然后开始监听(listen)，并阻塞在 accept 函数上，直到有连接过来。</li>
-<li>客户端也初始化一个 socket 对象，调用 connect 和服务端建立连接。</li>
-<li>服务端 accept 函数返回了一个新的 sock 套接字对象，传入到新线程中和客户端交互数据。</li>
-<li>接下来就是 socket 的 recv 和 send 函数进行数据的交互。</li>
-<li>最后 socket close 关闭套接字。</li>
-</ol>
-<p>由于 tcp 传递的数据属于 stream, 也就是调用 recv 和 send 的次数都没有限制，对数据的发送和边界也没有限制。这个和下文的 udp 编程有区别，发送端每执行一次写操作，udp 模块就会将它封装成一个 udp 包发送，接收端也对每个 udp 包执行一次读操作，每次都得完整取出来，如果没有足够的应用缓冲区来读取 udp 数据包，则会被截断。</p>
-<p>0x02</p>
-<p>再简单看下 udp 的 socket 编程</p>
-<p>服务端</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> socket</div><div class="line"></div><div class="line"><span class="comment"># AF_INET: 基于 IPV4 的网络通信 SOCK_DGRAM: 基于 udp 的流式 socket 通信</span></div><div class="line">s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</div><div class="line"><span class="comment"># 将套接字绑定到地址</span></div><div class="line">s.bind((<span class="string">'127.0.0.1'</span>, <span class="number">8888</span>))</div><div class="line"></div><div class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">    data, addr = s.recvfrom(<span class="number">1024</span>)</div><div class="line">    print(<span class="string">'Received from %s:%s.'</span> % addr)</div><div class="line">    s.sendto(<span class="string">b'Hello, %s!'</span> % data, addr)</div></pre></td></tr></table></figure>
-<p>客户端</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> socket</div><div class="line"></div><div class="line">s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</div><div class="line"></div><div class="line"><span class="keyword">for</span> data <span class="keyword">in</span> [<span class="string">b'dog'</span>]:</div><div class="line">    s.sendto(data, (<span class="string">'127.0.0.1'</span>, <span class="number">8888</span>))</div><div class="line">    print(s.recv(<span class="number">1024</span>))</div><div class="line">s.close()</div></pre></td></tr></table></figure>
-<p>由于 udp 不需要建立连接，只需要知道对方的 IP 地址和端口号，就可以直接发数据包。但是，能不能到达就不知道了。所以客户端直接通过 sendto() 给服务器发数据，服务端调用 recvfrom() 就能拿到数据。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/14/由浅入深写代理-2-socket-编程/" data-id="cj8qwp57c0016z6o0cv2m8jt0" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代理/">代理</a></li></ul>
-
     </footer>
   </div>
   
@@ -434,7 +326,7 @@ remote -&gt; server -&gt; client
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/">&laquo; zurück</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/">weiter &raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo; zurück</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/">weiter &raquo;</a>
   </nav>
 
 </section>
@@ -467,7 +359,7 @@ remote -&gt; server -&gt; client
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
   </div>
 
@@ -480,6 +372,14 @@ remote -&gt; server -&gt; client
       <ul>
         
           <li>
+            <a href="/2017/12/03/xpath-使用教程/">xpath 使用教程</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/03/动态可配置化 Python 爬虫教程/">动态可配置化 Python 爬虫教程</a>
+          </li>
+        
+          <li>
             <a href="/2017/10/11/谈谈-django-应用实践/">谈谈 django 应用实践</a>
           </li>
         
@@ -489,14 +389,6 @@ remote -&gt; server -&gt; client
         
           <li>
             <a href="/2017/08/20/由浅入深写代理-8-shadowsocks-代理-md/">由浅入深写代理(8)-ss-代理.md</a>
-          </li>
-        
-          <li>
-            <a href="/2017/08/20/由浅入深写代理-9-ssh-代理-md/">由浅入深写代理(9)-ssh-代理.md</a>
-          </li>
-        
-          <li>
-            <a href="/2017/08/20/由浅入深写代理-7-http-代理-md/">由浅入深写代理(7)-https-代理.md</a>
           </li>
         
       </ul>
