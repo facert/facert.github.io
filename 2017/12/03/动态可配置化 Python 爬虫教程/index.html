@@ -34,7 +34,7 @@
 <meta property="og:image" content="http://yoursite.com/media/15123005270324.jpg">
 <meta property="og:image" content="http://yoursite.com/media/15123045039778.jpg">
 <meta property="og:image" content="http://yoursite.com/media/15123045808565.jpg">
-<meta property="og:updated_time" content="2017-12-03T12:56:24.000Z">
+<meta property="og:updated_time" content="2017-12-03T15:01:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="动态可配置化 Python 爬虫教程">
 <meta name="twitter:description" content="爬虫大家都很熟悉，像 scrapy 这种 Python 爬虫框架也很成熟，不过每写一个爬虫都得重新复制一份代码，这部分如果做成可配置的话，能相应减少一些工作量，对新手也会友好些，所以我花了点时间，开发了一个动态可配置的爬虫网站 http://www.anycrawl.info ，基于 scrapy ，提供一些配置项，5分钟就可生成一个通用爬虫，并可直接下载代码使用。
@@ -126,7 +126,7 @@
 <li>规则列表分成两部分，链接正则 和 xpath 规则，必须先配置链接正则，链接正则对应的概念是 scrapy 的 Rule 的概念，意思是根据你给定的链接正则去匹配，如果匹配的到，则执行回调函数 callback, callback 可以为空，如果为空，则放入队列中。</li>
 </ol>
 <p><img src="/media/15123005270324.jpg" alt=""></p>
-<p>如上面 <code>/group/\w+/discussion\?start=[0-9]{0,4}$</code> 这个对应的是小组分页的链接正则，遇到这些链接，只要丢到队列中，由 scrapy 下次处理，<code>/group/topic/\d+/</code> 这个对应的是话题的详情链接，遇到这些，则执行 parse_topic 函数，那么这个函数具体执行什么内容，这就看下面配置的 xpath 规则，<a href="http://www.w3school.com.cn/xpath/" target="_blank" rel="external">xpath 教程</a> ，如我们需要 title, author, description, create_time, image_urls 这几个字段，直接配置即可，只要能通过 xpath 语法找到。</p>
+<p>如上面 <code>/group/\w+/discussion\?start=[0-9]{0,4}$</code> 这个对应的是小组分页的链接正则，遇到这些链接，只要丢到队列中，由 scrapy 下次处理，<code>/group/topic/\d+/</code> 这个对应的是话题的详情链接，遇到这些，则执行 parse_topic 函数，那么这个函数具体执行什么内容，这就看下面配置的 xpath 规则，<a href="https://zhuanlan.zhihu.com/p/31659319" target="_blank" rel="external">xpath 教程</a> ，如我们需要 title, author, description, create_time, image_urls 这几个字段，直接配置即可，只要能通过 xpath 语法找到。</p>
 <p>配置完成后，会对应生成如下的源码：</p>
 <p><img src="/media/15123045039778.jpg" alt=""></p>
 <h4 id="0x03-爬取状态"><a href="#0x03-爬取状态" class="headerlink" title="0x03 爬取状态"></a>0x03 爬取状态</h4><p>点击提交后，就跳转到下载页面</p>
