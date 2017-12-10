@@ -72,6 +72,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-由浅入深写代理-8-shadowsocks-代理-md" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/20/由浅入深写代理-8-shadowsocks-代理-md/" class="article-date">
+  <time datetime="2017-08-20T11:20:39.000Z" itemprop="datePublished">2017-08-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/20/由浅入深写代理-8-shadowsocks-代理-md/">由浅入深写代理(8)-ss-代理.md</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>ss 作用是科学上网，因为怕关键词会让文章被干掉，所以用了别名。本文纯粹是分析技术的角度出发。因为 ss 现在的版本已经很复杂了，eventloop, 状态机，支持 udp 。为了简单讲原理，我们用 0.9 的版本来说明。</p>
+<p>首先上图</p>
+<p><img src="/media/15032288280119.jpg" alt=""></p>
+<p>client 和 ss_local 主要通过 socks5 协议通信，而 ss_local 和 ss_server 之间就是对称加密的 tcp 数据。</p>
+<p>ss_local 主要代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div></pre></td><td class="code"><pre><div class="line">class Socks5Server(SocketServer.StreamRequestHandler):</div><div class="line">    &apos;&apos;&apos; RequesHandlerClass Definition &apos;&apos;&apos;</div><div class="line">    def handle_tcp(self, sock, remote):</div><div class="line">        try:</div><div class="line">            fdset = [sock, remote]</div><div class="line">            while True:</div><div class="line">                r, w, e = select.select(fdset, [], [])      # use select I/O multiplexing model</div><div class="line">                if sock in r:                               # if local socket is ready for reading</div><div class="line">                    data = sock.recv(4096)</div><div class="line">                    if len(data) &lt;= 0:                      # received all data</div><div class="line">                        break</div><div class="line">                    result = send_all(remote, self.encrypt(data))   # send data after encrypting</div><div class="line">                    if result &lt; len(data):</div><div class="line">                        raise Exception(&apos;failed to send all data&apos;)</div><div class="line"></div><div class="line">                if remote in r:                             # remote socket(proxy) ready for reading</div><div class="line">                    data = remote.recv(4096)</div><div class="line">                    if len(data) &lt;= 0:</div><div class="line">                        break</div><div class="line">                    result = send_all(sock, self.decrypt(data))     # send to local socket(application)</div><div class="line">                    if result &lt; len(data):</div><div class="line">                        raise Exception(&apos;failed to send all data&apos;)</div><div class="line">        finally:</div><div class="line">            sock.close()</div><div class="line">            remote.close()</div><div class="line"></div><div class="line">    def encrypt(self, data):</div><div class="line">        return data.translate(encrypt_table)</div><div class="line"></div><div class="line">    def decrypt(self, data):</div><div class="line">        return data.translate(decrypt_table)</div><div class="line"></div><div class="line">    def send_encrypt(self, sock, data):</div><div class="line">        sock.send(self.encrypt(data))</div><div class="line"></div><div class="line">    def handle(self):</div><div class="line">        try:</div><div class="line">            sock = self.connection        # local socket [127.1:port]</div><div class="line">            sock.recv(262)                # Sock5 Verification packet</div><div class="line">            sock.send(&quot;\x05\x00&quot;)         # Sock5 Response: &apos;0x05&apos; Version 5; &apos;0x00&apos; NO AUTHENTICATION REQUIRED</div><div class="line">            # After Authentication negotiation</div><div class="line">            data = self.rfile.read(4)     # Forward request format: VER CMD RSV ATYP (4 bytes)</div><div class="line">            mode = ord(data[1])           # CMD == 0x01 (connect)</div><div class="line">            if mode != 1:</div><div class="line">                logging.warn(&apos;mode != 1&apos;)</div><div class="line">                return</div><div class="line">            addrtype = ord(data[3])       # indicate destination address type</div><div class="line">            addr_to_send = data[3]</div><div class="line">            if addrtype == 1:             # IPv4</div><div class="line">                addr_ip = self.rfile.read(4)            # 4 bytes IPv4 address (big endian)</div><div class="line">                addr = socket.inet_ntoa(addr_ip)</div><div class="line">                addr_to_send += addr_ip</div><div class="line">            elif addrtype == 3:           # FQDN (Fully Qualified Domain Name)</div><div class="line">                addr_len = self.rfile.read(1)           # Domain name&apos;s Length</div><div class="line">                addr = self.rfile.read(ord(addr_len))   # Followed by domain name(e.g. www.google.com)</div><div class="line">                addr_to_send += addr_len + addr</div><div class="line">            else:</div><div class="line">                logging.warn(&apos;addr_type not support&apos;)</div><div class="line">                # not support</div><div class="line">                return</div><div class="line">            addr_port = self.rfile.read(2)</div><div class="line">            addr_to_send += addr_port                   # addr_to_send = ATYP + [Length] + dst addr/domain name + port</div><div class="line">            port = struct.unpack(&apos;&gt;H&apos;, addr_port)       # prase the big endian port number. Note: The result is a tuple even if it contains exactly one item.</div><div class="line">            try:</div><div class="line">                reply = &quot;\x05\x00\x00\x01&quot;              # VER REP RSV ATYP</div><div class="line">                reply += socket.inet_aton(&apos;0.0.0.0&apos;) + struct.pack(&quot;&gt;H&quot;, 2222)  # listening on 2222 on all addresses of the machine, including the loopback(127.0.0.1)</div><div class="line">                self.wfile.write(reply)                 # response packet</div><div class="line">                # reply immediately</div><div class="line">                if &apos;-6&apos; in sys.argv[1:]:                # IPv6 support</div><div class="line">                    remote = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)</div><div class="line">                else:</div><div class="line">                    remote = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">                remote.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)       # turn off Nagling</div><div class="line">                remote.connect((SERVER, REMOTE_PORT))</div><div class="line">                self.send_encrypt(remote, addr_to_send)      # encrypted</div><div class="line">                logging.info(&apos;connecting %s:%d&apos; % (addr, port[0]))</div><div class="line">            except socket.error, e:</div><div class="line">                logging.warn(e)</div><div class="line">                return</div><div class="line">            self.handle_tcp(sock, remote)</div><div class="line">        except socket.error, e:</div><div class="line">            logging.warn(e)</div></pre></td></tr></table></figure>
+<p>其中和 socks5 交互的部分 <code>handle</code> 在前面 socks5 教程已经讲过，唯一的区别是 <code>send_encrypt</code> 函数，每次 send 的时候都会 encrypt 一次，拿到数据后再 decrypt 一次。</p>
+<p>ss_server 的代码也和 local 差不多，少了和 socks5 打交道</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">def handle(self):</div><div class="line">        try:</div><div class="line">            sock = self.connection</div><div class="line">            addrtype = ord(self.decrypt(sock.recv(1)))      # receive addr type</div><div class="line">            if addrtype == 1:</div><div class="line">                addr = socket.inet_ntoa(self.decrypt(self.rfile.read(4)))   # get dst addr</div><div class="line">            elif addrtype == 3:</div><div class="line">                addr = self.decrypt(</div><div class="line">                    self.rfile.read(ord(self.decrypt(sock.recv(1)))))       # read 1 byte of len, then get &apos;len&apos; bytes name</div><div class="line">            else:</div><div class="line">                # not support</div><div class="line">                logging.warn(&apos;addr_type not support&apos;)</div><div class="line">                return</div><div class="line">            port = struct.unpack(&apos;&gt;H&apos;, self.decrypt(self.rfile.read(2)))    # get dst port into small endian</div><div class="line">            try:</div><div class="line">                logging.info(&apos;connecting %s:%d&apos; % (addr, port[0]))</div><div class="line">                remote = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">                remote.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)</div><div class="line">                remote.connect((addr, port[0]))         # connect to dst</div><div class="line">            except socket.error, e:</div><div class="line">                # Connection refused</div><div class="line">                logging.warn(e)</div><div class="line">                return</div><div class="line">            self.handle_tcp(sock, remote)</div><div class="line">        except socket.error, e:</div><div class="line">            logging.warn(e)</div></pre></td></tr></table></figure>
+<p>所以本质上 ss 很简单，就是做了流量的转发，只不过为了避免流量被检测，加密并且还有混淆的功能。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-8-shadowsocks-代理-md/" data-id="cjb0eoray001ppay5d53gm353" class="article-share-link">Teilen</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-由浅入深写代理-9-ssh-代理-md" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/08/20/由浅入深写代理-9-ssh-代理-md/" class="article-date">
@@ -106,7 +153,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-9-ssh-代理-md/" data-id="cjaqw51fx001n91o09t7p32ni" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-9-ssh-代理-md/" data-id="cjb0eorax001npay5hpq0xz9v" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -161,7 +208,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-7-http-代理-md/" data-id="cjaqw51ft001j91o0pyh4gc32" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-7-http-代理-md/" data-id="cjb0eorau001mpay5qcz60jqh" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -212,7 +259,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-6-http-代理-md/" data-id="cjaqw51fq001i91o06e6yg7kn" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-6-http-代理-md/" data-id="cjb0eoraq001jpay56gxup4is" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -260,58 +307,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-5-socks5-代理-md/" data-id="cjaqw51fm001g91o0z4ztoo7o" class="article-share-link">Teilen</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-由浅入深写代理-4-socks5-代理-md" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/08/20/由浅入深写代理-4-socks5-代理-md/" class="article-date">
-  <time datetime="2017-08-20T06:06:55.000Z" itemprop="datePublished">2017-08-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/20/由浅入深写代理-4-socks5-代理-md/">由浅入深写代理(4)-socks5-代理.md</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>接下来我们用 python 写下 socks5 服务端的实现</p>
-<h3 id="0x03-socks5-实现"><a href="#0x03-socks5-实现" class="headerlink" title="0x03 socks5 实现"></a>0x03 socks5 实现</h3><p>先看下整体代码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> logging</div><div class="line"><span class="keyword">import</span> socket</div><div class="line"><span class="keyword">import</span> struct</div><div class="line"><span class="keyword">import</span> select</div><div class="line"><span class="keyword">import</span> threading</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">send_data</span><span class="params">(sock, data)</span>:</span></div><div class="line">    print(data)</div><div class="line">    bytes_sent = <span class="number">0</span></div><div class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">        r = sock.send(data[bytes_sent:])</div><div class="line">        <span class="keyword">if</span> r &lt; <span class="number">0</span>:</div><div class="line">            <span class="keyword">return</span> r</div><div class="line">        bytes_sent += r</div><div class="line">        <span class="keyword">if</span> bytes_sent == len(data):</div><div class="line">            <span class="keyword">return</span> bytes_sent</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle_tcp</span><span class="params">(sock, remote)</span>:</span></div><div class="line">    <span class="comment"># 处理 client socket 和 remote socket 的数据流</span></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        fdset = [sock, remote]</div><div class="line">        <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">            <span class="comment"># 用 IO 多路复用 select 监听套接字是否有数据流</span></div><div class="line">            r, w, e = select.select(fdset, [], [])</div><div class="line">            <span class="keyword">if</span> sock <span class="keyword">in</span> r:</div><div class="line">                data = sock.recv(<span class="number">4096</span>)</div><div class="line">                <span class="keyword">if</span> len(data) &lt;= <span class="number">0</span>:</div><div class="line">                    <span class="keyword">break</span></div><div class="line">                result = send_data(remote, data)</div><div class="line">                <span class="keyword">if</span> result &lt; len(data):</div><div class="line">                    <span class="keyword">raise</span> Exception(<span class="string">'failed to send all data'</span>)</div><div class="line"></div><div class="line">            <span class="keyword">if</span> remote <span class="keyword">in</span> r:</div><div class="line">                data = remote.recv(<span class="number">4096</span>)</div><div class="line">                <span class="keyword">if</span> len(data) &lt;= <span class="number">0</span>:</div><div class="line">                    <span class="keyword">break</span></div><div class="line">                result = send_data(sock, data)</div><div class="line">                <span class="keyword">if</span> result &lt; len(data):</div><div class="line">                    <span class="keyword">raise</span> Exception(<span class="string">'failed to send all data'</span>)</div><div class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</div><div class="line">        <span class="keyword">raise</span>(e)</div><div class="line">    <span class="keyword">finally</span>:</div><div class="line">        sock.close()</div><div class="line">        remote.close()</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle_con</span><span class="params">(sock, addr)</span>:</span></div><div class="line">    <span class="comment"># 接受客户端来的请求，socks5 的 认证和连接过程</span></div><div class="line"></div><div class="line">    sock.recv(<span class="number">256</span>)</div><div class="line">    <span class="comment"># 无需进一步认证信息</span></div><div class="line">    sock.send(<span class="string">b"\x05\x00"</span>)</div><div class="line">    data = sock.recv(<span class="number">4</span>) <span class="keyword">or</span> <span class="string">'\x00'</span> * <span class="number">4</span></div><div class="line">    <span class="comment"># CMD 为 0x01 也就是 CONNECT 继续</span></div><div class="line">    mode = data[<span class="number">1</span>]</div><div class="line">    <span class="keyword">if</span> mode != <span class="number">1</span>:</div><div class="line">        <span class="keyword">return</span></div><div class="line">    <span class="comment"># DST.ADDR 有三种形式，分别做判断</span></div><div class="line">    addr_type = data[<span class="number">3</span>]</div><div class="line">    <span class="keyword">if</span> addr_type == <span class="number">1</span>:</div><div class="line">        addr_ip = sock.recv(<span class="number">4</span>)</div><div class="line">        remote_addr = socket.inet_ntoa(addr_ip)</div><div class="line">    <span class="keyword">elif</span> addr_type == <span class="number">3</span>:</div><div class="line">        addr_len = int.from_bytes(sock.recv(<span class="number">1</span>), byteorder=<span class="string">'big'</span>)</div><div class="line">        remote_addr = sock.recv(addr_len)</div><div class="line">    <span class="keyword">elif</span> addr_type == <span class="number">4</span>:</div><div class="line">        addr_ip = sock.recv(<span class="number">16</span>)</div><div class="line">        remote_addr = socket.inet_ntop(socket.AF_INET6, addr_ip)</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        <span class="keyword">return</span></div><div class="line">    <span class="comment"># DST.PORT</span></div><div class="line">    remote_addr_port = struct.unpack(<span class="string">'&gt;H'</span>, sock.recv(<span class="number">2</span>))</div><div class="line"></div><div class="line">    <span class="comment"># 返回给客户端 success</span></div><div class="line">    reply = <span class="string">b"\x05\x00\x00\x01"</span></div><div class="line">    reply += socket.inet_aton(<span class="string">'0.0.0.0'</span>) + struct.pack(<span class="string">"&gt;H"</span>, <span class="number">8888</span>)</div><div class="line">    sock.send(reply)</div><div class="line"></div><div class="line">    <span class="comment"># 拿到 remote address 的信息后，建立连接</span></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        remote = socket.create_connection((remote_addr, remote_addr_port[<span class="number">0</span>]))</div><div class="line">        logging.info(<span class="string">'connecting %s:%d'</span> % (remote_addr, remote_addr_port[<span class="number">0</span>]))</div><div class="line">    <span class="keyword">except</span> socket.error <span class="keyword">as</span> e:</div><div class="line">        logging.error(e)</div><div class="line">        <span class="keyword">return</span></div><div class="line"></div><div class="line">    handle_tcp(sock, remote)</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    socketServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">    socketServer.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, <span class="number">1</span>)</div><div class="line"></div><div class="line">    socketServer.bind((<span class="string">''</span>, <span class="number">8888</span>))</div><div class="line">    socketServer.listen(<span class="number">5</span>)</div><div class="line"></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">            sock, addr = socketServer.accept()</div><div class="line">            t = threading.Thread(target=handle_con, args=(sock, addr))</div><div class="line">            t.start()</div><div class="line">    <span class="keyword">except</span> socket.error <span class="keyword">as</span> e:</div><div class="line">        logging.error(e)</div><div class="line">    <span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">        socketServer.close()</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    main()</div></pre></td></tr></table></figure>
-<p>首先，上面只是个 socks5 服务器的简单实现，处理 TCP 的转发，无需密码认证。</p>
-<p>接下来我们分开来看，主要是三个部分 <code>main()</code>, <code>handle_con()</code>, <code>handle_tcp()</code> </p>
-<ul>
-<li><code>main()</code> 函数大家其实挺熟悉的，就是前面教程介绍的 socket 编程的线程方法，绑定套接字监听，然后有客户端请求后，调用 <code>handle_con()</code></li>
-<li><code>handle_con</code> 实现了 socks5 的 认证和连接过程，大家对照下注释和前面的 socks5 协议，应该挺容易看懂。</li>
-<li>认证完成后，就开始转发请求了， <code>handle_tcp()</code> 实现了这个功能，这里面用到了 <code>select</code> ，IO 多路复用模式。其实一开始怕大家不理解，也想用线程来实现，不过发现 IO 多路复用在一个线程中就能监听多个套接字，代码比多线程方式更加简洁，索性就这么用了。这里面没有根据平台去判断用 select, poll 还是 epoll，感兴趣的话可以直接看 shadowsocks 的实现 <a href="https://github.com/shadowsocks/shadowsocks/blob/master/shadowsocks/eventloop.py" target="_blank" rel="external">eventloop</a></li>
-</ul>
-<p>下篇我们看看 socks5 服务器如何和 client 端交互。</p>
-<p>参考链接：</p>
-<pre><code>* https://github.com/felix021/ssocks5/blob/master/ssocks5.py
-* https://github.com/RicterZ/reprocks/blob/master/server/reprocks_server.py
-</code></pre>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-4-socks5-代理-md/" data-id="cjaqw51fh001e91o07g714z8t" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/08/20/由浅入深写代理-5-socks5-代理-md/" data-id="cjb0eorah001gpay5rkkoubc3" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -340,7 +336,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊，区块链/">以太坊，区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
     </div>
   </div>
 
@@ -350,7 +346,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊，区块链/" style="font-size: 10px;">以太坊，区块链</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
@@ -372,6 +368,10 @@
       <ul>
         
           <li>
+            <a href="/2017/12/10/以太坊云撸猫教程/">以太坊云撸猫教程</a>
+          </li>
+        
+          <li>
             <a href="/2017/12/03/xpath-使用教程/">xpath 使用教程</a>
           </li>
         
@@ -385,10 +385,6 @@
         
           <li>
             <a href="/2017/08/26/由浅入深写代理-10-反向代理/">由浅入深写代理(10)-内网穿透</a>
-          </li>
-        
-          <li>
-            <a href="/2017/08/20/由浅入深写代理-8-shadowsocks-代理-md/">由浅入深写代理(8)-ss-代理.md</a>
           </li>
         
       </ul>
