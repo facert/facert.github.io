@@ -21,16 +21,16 @@
   <meta name="description" content="其实 ssh 不算是代理，只是一种能实现代理的工具，不过因为 ssh 功能强大，所以单独拿出来说一下。 0x01 本地端口转发举个例子，远程有个 mongo 服务器需要连接，但是 mongo 不允许远程连接，只能通过和它同一个局域网的跳板机 A （x.x.x.x）连接。这个时候可以通过端口转发的方法直接连接。命令格式是：-L :: ```123例如本地开启了 8000 端口监听， mongo 服务">
 <meta property="og:type" content="article">
 <meta property="og:title" content="由浅入深写代理(9)-ssh-代理.md">
-<meta property="og:url" content="https://facert.github.io/2017/08/20/由浅入深写代理-9-ssh-代理-md/index.html">
+<meta property="og:url" content="http://yousite.com/2017/08/20/由浅入深写代理-9-ssh-代理-md/index.html">
 <meta property="og:site_name" content="facert 的杂货店">
 <meta property="og:description" content="其实 ssh 不算是代理，只是一种能实现代理的工具，不过因为 ssh 功能强大，所以单独拿出来说一下。 0x01 本地端口转发举个例子，远程有个 mongo 服务器需要连接，但是 mongo 不允许远程连接，只能通过和它同一个局域网的跳板机 A （x.x.x.x）连接。这个时候可以通过端口转发的方法直接连接。命令格式是：-L :: ```123例如本地开启了 8000 端口监听， mongo 服务">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://facert.github.io/media/15032247248211.jpg">
+<meta property="og:image" content="http://yousite.com/media/15032247248211.jpg">
 <meta property="og:updated_time" content="2018-01-27T14:47:38.688Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="由浅入深写代理(9)-ssh-代理.md">
 <meta name="twitter:description" content="其实 ssh 不算是代理，只是一种能实现代理的工具，不过因为 ssh 功能强大，所以单独拿出来说一下。 0x01 本地端口转发举个例子，远程有个 mongo 服务器需要连接，但是 mongo 不允许远程连接，只能通过和它同一个局域网的跳板机 A （x.x.x.x）连接。这个时候可以通过端口转发的方法直接连接。命令格式是：-L :: ```123例如本地开启了 8000 端口监听， mongo 服务">
-<meta name="twitter:image" content="https://facert.github.io/media/15032247248211.jpg">
+<meta name="twitter:image" content="http://yousite.com/media/15032247248211.jpg">
   
     <link rel="alternate" href="/atom.xml" title="facert 的杂货店" type="application/atom+xml">
   
@@ -68,10 +68,10 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://facert.github.io"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yousite.com"></form>
       </div>
     </div>
   </div>
@@ -111,7 +111,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2017/08/20/由浅入深写代理-9-ssh-代理-md/" data-id="cjcxj2lwf001radol0qhaauug" class="article-share-link">Teilen</a>
+      <a data-url="http://yousite.com/2017/08/20/由浅入深写代理-9-ssh-代理-md/" data-id="cjcxj2lwf001radol0qhaauug" class="article-share-link">Share</a>
       
       
     </footer>
@@ -121,7 +121,7 @@
 <nav id="article-nav">
   
     <a href="/2017/08/20/由浅入深写代理-8-shadowsocks-代理-md/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Neuer</strong>
+      <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
           由浅入深写代理(8)-ss-代理.md
@@ -131,7 +131,7 @@
   
   
     <a href="/2017/08/20/由浅入深写代理-7-http-代理-md/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Älter</strong>
+      <strong class="article-nav-caption">Older</strong>
       <div class="article-nav-title">由浅入深写代理(7)-https-代理.md</div>
     </a>
   
@@ -169,7 +169,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archiv</h3>
+    <h3 class="widget-title">Archives</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
@@ -179,7 +179,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">letzter Beitrag</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
         
