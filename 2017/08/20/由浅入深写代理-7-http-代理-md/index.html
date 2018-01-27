@@ -18,18 +18,20 @@
   
   <title>由浅入深写代理(7)-https-代理.md | facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本文主要实现隧道代理，让 https 请求也能代理。 隧道代理的原理是：HTTP 客户端通过 CONNECT 方法请求隧道代理创建一条到达任意目的服务器和端口的 TCP 连接，并对客户端和服务器之间的后继数据进行盲转发。">
+  <meta name="description" content="本文主要实现隧道代理，让 https 请求也能代理。
+隧道代理的原理是：HTTP 客户端通过 CONNECT 方法请求隧道代理创建一条到达任意目的服务器和端口的 TCP 连接，并对客户端和服务器之间的后继数据进行盲转发。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="由浅入深写代理(7)-https-代理.md">
 <meta property="og:url" content="https://facert.github.io/2017/08/20/由浅入深写代理-7-http-代理-md/index.html">
 <meta property="og:site_name" content="facert 的杂货店">
-<meta property="og:description" content="本文主要实现隧道代理，让 https 请求也能代理。 隧道代理的原理是：HTTP 客户端通过 CONNECT 方法请求隧道代理创建一条到达任意目的服务器和端口的 TCP 连接，并对客户端和服务器之间的后继数据进行盲转发。">
-<meta property="og:locale" content="zh-Hans">
+<meta property="og:description" content="本文主要实现隧道代理，让 https 请求也能代理。
+隧道代理的原理是：HTTP 客户端通过 CONNECT 方法请求隧道代理创建一条到达任意目的服务器和端口的 TCP 连接，并对客户端和服务器之间的后继数据进行盲转发。">
 <meta property="og:image" content="https://facert.github.io/media/15032206534564.jpg">
 <meta property="og:updated_time" content="2018-01-27T14:48:02.965Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="由浅入深写代理(7)-https-代理.md">
-<meta name="twitter:description" content="本文主要实现隧道代理，让 https 请求也能代理。 隧道代理的原理是：HTTP 客户端通过 CONNECT 方法请求隧道代理创建一条到达任意目的服务器和端口的 TCP 连接，并对客户端和服务器之间的后继数据进行盲转发。">
+<meta name="twitter:description" content="本文主要实现隧道代理，让 https 请求也能代理。
+隧道代理的原理是：HTTP 客户端通过 CONNECT 方法请求隧道代理创建一条到达任意目的服务器和端口的 TCP 连接，并对客户端和服务器之间的后继数据进行盲转发。">
 <meta name="twitter:image" content="https://facert.github.io/media/15032206534564.jpg">
   
     <link rel="alternate" href="/atom.xml" title="facert 的杂货店" type="application/atom+xml">
@@ -71,7 +73,7 @@
         <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://facert.github.io"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://facert.github.io"></form>
       </div>
     </div>
   </div>

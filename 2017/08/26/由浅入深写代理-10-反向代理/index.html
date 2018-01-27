@@ -18,18 +18,20 @@
   
   <title>由浅入深写代理(10)-内网穿透 | facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本篇主要介绍代理的一个常用的功能：内网穿透很多人经常会有这么一个需求，需要将本地开发的 web 项目给外网的人看下，再搭一遍到 vps 太麻烦，于是就有借助拥有公网 ip 的主机来中转。 有专门的软件做这件事，如 ngrok, frp。">
+  <meta name="description" content="本篇主要介绍代理的一个常用的功能：内网穿透很多人经常会有这么一个需求，需要将本地开发的 web 项目给外网的人看下，再搭一遍到 vps 太麻烦，于是就有借助拥有公网 ip 的主机来中转。
+有专门的软件做这件事，如 ngrok, frp。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="由浅入深写代理(10)-内网穿透">
 <meta property="og:url" content="https://facert.github.io/2017/08/26/由浅入深写代理-10-反向代理/index.html">
 <meta property="og:site_name" content="facert 的杂货店">
-<meta property="og:description" content="本篇主要介绍代理的一个常用的功能：内网穿透很多人经常会有这么一个需求，需要将本地开发的 web 项目给外网的人看下，再搭一遍到 vps 太麻烦，于是就有借助拥有公网 ip 的主机来中转。 有专门的软件做这件事，如 ngrok, frp。">
-<meta property="og:locale" content="zh-Hans">
+<meta property="og:description" content="本篇主要介绍代理的一个常用的功能：内网穿透很多人经常会有这么一个需求，需要将本地开发的 web 项目给外网的人看下，再搭一遍到 vps 太麻烦，于是就有借助拥有公网 ip 的主机来中转。
+有专门的软件做这件事，如 ngrok, frp。">
 <meta property="og:image" content="https://facert.github.io/media/15037300977077.jpg">
 <meta property="og:updated_time" content="2018-01-27T14:47:34.395Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="由浅入深写代理(10)-内网穿透">
-<meta name="twitter:description" content="本篇主要介绍代理的一个常用的功能：内网穿透很多人经常会有这么一个需求，需要将本地开发的 web 项目给外网的人看下，再搭一遍到 vps 太麻烦，于是就有借助拥有公网 ip 的主机来中转。 有专门的软件做这件事，如 ngrok, frp。">
+<meta name="twitter:description" content="本篇主要介绍代理的一个常用的功能：内网穿透很多人经常会有这么一个需求，需要将本地开发的 web 项目给外网的人看下，再搭一遍到 vps 太麻烦，于是就有借助拥有公网 ip 的主机来中转。
+有专门的软件做这件事，如 ngrok, frp。">
 <meta name="twitter:image" content="https://facert.github.io/media/15037300977077.jpg">
   
     <link rel="alternate" href="/atom.xml" title="facert 的杂货店" type="application/atom+xml">
@@ -71,7 +73,7 @@
         <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://facert.github.io"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://facert.github.io"></form>
       </div>
     </div>
   </div>

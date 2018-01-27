@@ -18,18 +18,19 @@
   
   <title>django 防爬虫实现 | facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="基本防爬策略 一般的，像 nginx 这种 web 服务器都有防爬虫模块，基于 ip, user_agent 来识别爬虫，从而限制爬虫的爬取频率。但是基于某一个登录用户去做频率限制就有点麻烦了，这种情况下，只能通过下一层程序去防，比如 django 的话，通过中间件结合缓存的方式可以做到一定的频率限制。">
-<meta name="keywords" content="web">
+  <meta name="description" content="基本防爬策略
+一般的，像 nginx 这种 web 服务器都有防爬虫模块，基于 ip, user_agent 来识别爬虫，从而限制爬虫的爬取频率。但是基于某一个登录用户去做频率限制就有点麻烦了，这种情况下，只能通过下一层程序去防，比如 django 的话，通过中间件结合缓存的方式可以做到一定的频率限制。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="django 防爬虫实现">
 <meta property="og:url" content="https://facert.github.io/2016/09/29/django-防爬虫实现/index.html">
 <meta property="og:site_name" content="facert 的杂货店">
-<meta property="og:description" content="基本防爬策略 一般的，像 nginx 这种 web 服务器都有防爬虫模块，基于 ip, user_agent 来识别爬虫，从而限制爬虫的爬取频率。但是基于某一个登录用户去做频率限制就有点麻烦了，这种情况下，只能通过下一层程序去防，比如 django 的话，通过中间件结合缓存的方式可以做到一定的频率限制。">
-<meta property="og:locale" content="zh-Hans">
+<meta property="og:description" content="基本防爬策略
+一般的，像 nginx 这种 web 服务器都有防爬虫模块，基于 ip, user_agent 来识别爬虫，从而限制爬虫的爬取频率。但是基于某一个登录用户去做频率限制就有点麻烦了，这种情况下，只能通过下一层程序去防，比如 django 的话，通过中间件结合缓存的方式可以做到一定的频率限制。">
 <meta property="og:updated_time" content="2017-01-17T07:43:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django 防爬虫实现">
-<meta name="twitter:description" content="基本防爬策略 一般的，像 nginx 这种 web 服务器都有防爬虫模块，基于 ip, user_agent 来识别爬虫，从而限制爬虫的爬取频率。但是基于某一个登录用户去做频率限制就有点麻烦了，这种情况下，只能通过下一层程序去防，比如 django 的话，通过中间件结合缓存的方式可以做到一定的频率限制。">
+<meta name="twitter:description" content="基本防爬策略
+一般的，像 nginx 这种 web 服务器都有防爬虫模块，基于 ip, user_agent 来识别爬虫，从而限制爬虫的爬取频率。但是基于某一个登录用户去做频率限制就有点麻烦了，这种情况下，只能通过下一层程序去防，比如 django 的话，通过中间件结合缓存的方式可以做到一定的频率限制。">
   
     <link rel="alternate" href="/atom.xml" title="facert 的杂货店" type="application/atom+xml">
   
@@ -70,7 +71,7 @@
         <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://facert.github.io"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://facert.github.io"></form>
       </div>
     </div>
   </div>
