@@ -18,18 +18,18 @@
   
   <title>由浅入深写代理(3) -socks5 代理 | facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本文讲的是如何写一个 socks5 代理，其实 shadowsocks 的代理也是 socks5 协议的，所以 socks5 代理也是本系列教程的一个重点。 首先放出 socks5 协议的 rfc，socks5 协议很简单，SOCKS5 协议并不负责代理服务器的数据传输环节，此协议只是在 C/S 两端真实交互之间，建立起一条从客户端到代理服务器的授信连接。 sock5 代理结构图 0x02 soc">
+  <meta name="description" content="本文讲的是如何写一个 socks5 代理，其实 shadowsocks 的代理也是 socks5 协议的，所以 socks5 代理也是本系列教程的一个重点。 首先放出 socks5 协议的 rfc，socks5 协议很简单，SOCKS5 协议并不负责代理服务器的数据传输环节，此协议只是在 C/S 两端真实交互之间，建立起一条从客户端到代理服务器的授信连接。">
 <meta name="keywords" content="代理">
 <meta property="og:type" content="article">
 <meta property="og:title" content="由浅入深写代理(3) -socks5 代理">
 <meta property="og:url" content="http://yoursite.com/2017/08/19/由浅入深写代理-3-socks5-代理/index.html">
 <meta property="og:site_name" content="facert 的杂货店">
-<meta property="og:description" content="本文讲的是如何写一个 socks5 代理，其实 shadowsocks 的代理也是 socks5 协议的，所以 socks5 代理也是本系列教程的一个重点。 首先放出 socks5 协议的 rfc，socks5 协议很简单，SOCKS5 协议并不负责代理服务器的数据传输环节，此协议只是在 C/S 两端真实交互之间，建立起一条从客户端到代理服务器的授信连接。 sock5 代理结构图 0x02 soc">
+<meta property="og:description" content="本文讲的是如何写一个 socks5 代理，其实 shadowsocks 的代理也是 socks5 协议的，所以 socks5 代理也是本系列教程的一个重点。 首先放出 socks5 协议的 rfc，socks5 协议很简单，SOCKS5 协议并不负责代理服务器的数据传输环节，此协议只是在 C/S 两端真实交互之间，建立起一条从客户端到代理服务器的授信连接。">
 <meta property="og:image" content="http://yoursite.com/media/15032089114950.jpg">
-<meta property="og:updated_time" content="2017-08-20T15:02:52.000Z">
+<meta property="og:updated_time" content="2018-01-27T14:59:43.600Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="由浅入深写代理(3) -socks5 代理">
-<meta name="twitter:description" content="本文讲的是如何写一个 socks5 代理，其实 shadowsocks 的代理也是 socks5 协议的，所以 socks5 代理也是本系列教程的一个重点。 首先放出 socks5 协议的 rfc，socks5 协议很简单，SOCKS5 协议并不负责代理服务器的数据传输环节，此协议只是在 C/S 两端真实交互之间，建立起一条从客户端到代理服务器的授信连接。 sock5 代理结构图 0x02 soc">
+<meta name="twitter:description" content="本文讲的是如何写一个 socks5 代理，其实 shadowsocks 的代理也是 socks5 协议的，所以 socks5 代理也是本系列教程的一个重点。 首先放出 socks5 协议的 rfc，socks5 协议很简单，SOCKS5 协议并不负责代理服务器的数据传输环节，此协议只是在 C/S 两端真实交互之间，建立起一条从客户端到代理服务器的授信连接。">
 <meta name="twitter:image" content="http://yoursite.com/media/15032089114950.jpg">
   
     <link rel="alternate" href="/atom.xml" title="facert 的杂货店" type="application/atom+xml">
@@ -100,7 +100,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>本文讲的是如何写一个 socks5 代理，其实 shadowsocks 的代理也是 socks5 协议的，所以 socks5 代理也是本系列教程的一个重点。</p>
-<p>首先放出 socks5 协议的 <a href="https://www.ietf.org/rfc/rfc1928.txt" target="_blank" rel="noopener">rfc</a>，socks5 协议很简单，SOCKS5 协议并不负责代理服务器的数据传输环节，此协议只是在 C/S 两端真实交互之间，建立起一条从客户端到代理服务器的授信连接。</p>
+<p>首先放出 socks5 协议的 <a href="https://www.ietf.org/rfc/rfc1928.txt" target="_blank" rel="noopener">rfc</a>，socks5 协议很简单，SOCKS5 协议并不负责代理服务器的数据传输环节，此协议只是在 C/S 两端真实交互之间，建立起一条从客户端到代理服务器的授信连接。<br><a id="more"></a></p>
 <h3 id="sock5-代理结构图"><a href="#sock5-代理结构图" class="headerlink" title="sock5 代理结构图"></a>sock5 代理结构图</h3><p><img src="/media/15032089114950.jpg" alt=""></p>
 <h3 id="0x02-socks5-协议分析"><a href="#0x02-socks5-协议分析" class="headerlink" title="0x02 socks5 协议分析"></a>0x02 socks5 协议分析</h3><h5 id="认证阶段"><a href="#认证阶段" class="headerlink" title="认证阶段"></a>认证阶段</h5><p>首先客户端需要和服务端有个握手认证的过程，可以采用 <strong>用户名/密码</strong> 认证或者无需认证方式。</p>
 <p>格式如下 （<em>数字表示位数</em>）</p>
@@ -239,25 +239,6 @@ remote -&gt; server -&gt; client
   
 </article>
 
-
-<section id="comments">
-<!-- 多说评论框 start -->
-<div class="ds-thread" data-thread-key="post-由浅入深写代理-3-socks5-代理" data-title="由浅入深写代理(3) -socks5 代理" data-url="http://yoursite.com/2017/08/19/由浅入深写代理-3-socks5-代理/"></div>
-<!-- 多说评论框 end -->
-<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-<script type="text/javascript">
-var duoshuoQuery = {short_name:'facert'};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] 
-     || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-  </script>
-<!-- 多说公共JS代码 end -->
-</section>
 
 </section>
         
