@@ -64,13 +64,57 @@
         <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
       </div>
     </div>
   </div>
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-django-源码分析-base36编码函数" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/13/django-源码分析-base36编码函数/" class="article-date">
+  <time datetime="2016-10-13T07:37:36.000Z" itemprop="datePublished">2016-10-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/13/django-源码分析-base36编码函数/">django 源码分析 - base36编码函数</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h3><p>   首先介绍一下什么是 base36编码，它的编码中包含0~9的数字，加上所有26个字母，不区分大小写，不包含任何标点，所有的字母要不全大写，要不全小写。所以加起来就是 “0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ”,<br>或者 ‘0123456789abcdefghijklmnopqrstuvwxyz’，同样的还有 base62编码，就是26个字母的大小写再加上0-9，一共62个字符。<br>
+        
+          <p class="article-more-link">
+            <a href="/2016/10/13/django-源码分析-base36编码函数/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-base36编码函数/" data-id="cjcxh7rqn0007riolivrxw8g2" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
   
     <article id="post-django-源码分析-自定义数据结构" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -103,7 +147,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-自定义数据结构/" data-id="cjccyxnoj0008ejo0mvgbzv48" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-自定义数据结构/" data-id="cjcxh7rqj0005riolud74hjyz" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
@@ -139,7 +183,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h4 id="原理以及应用"><a href="#原理以及应用" class="headerlink" title="原理以及应用"></a>原理以及应用</h4><hr>
-<p>一致性哈希算法现在主要用于分布式系统中负载均衡，比如分布式 cache,  防止某些节点突然 down 掉，或者增加新节点时，大量的  cache 失效。具体介绍原理之类的文章非常多，比如：<a href="http://the-art-of-programming-by-july.readthedocs.io/en/latest/ebook/zh/%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">这篇文章</a>，在这里不再赘述。<br>
+<p>一致性哈希算法现在主要用于分布式系统中负载均衡，比如分布式 cache,  防止某些节点突然 down 掉，或者增加新节点时，大量的  cache 失效。具体介绍原理之类的文章非常多，比如：<a href="http://the-art-of-programming-by-july.readthedocs.io/en/latest/ebook/zh/%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/" target="_blank" rel="noopener">这篇文章</a>，在这里不再赘述。<br>
         
           <p class="article-more-link">
             <a href="/2016/10/13/一致性哈希算法-简单的-python-实现/#more">Read More</a>
@@ -148,7 +192,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/一致性哈希算法-简单的-python-实现/" data-id="cjccyxnov000lejo0ci2olzhr" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/10/13/一致性哈希算法-简单的-python-实现/" data-id="cjcxh7rqz000griolkpgp9m0x" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
@@ -193,7 +237,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/09/29/django-防爬虫实现/" data-id="cjccyxnon000cejo0xeg6fr21" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/09/29/django-防爬虫实现/" data-id="cjcxh7rqt000criolh7kksfzu" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
@@ -224,7 +268,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊，区块链/">以太坊，区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊，区块链/">以太坊，区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
     </div>
   </div>
 
@@ -234,7 +278,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊，区块链/" style="font-size: 10px;">以太坊，区块链</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊，区块链/" style="font-size: 10px;">以太坊，区块链</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
@@ -256,6 +300,10 @@
       <ul>
         
           <li>
+            <a href="/2018/01/27/前端线上调试指南/">前端线上调试指南</a>
+          </li>
+        
+          <li>
             <a href="/2018/01/13/开源【动态可配化爬虫】代码/">开源【动态可配化爬虫】代码</a>
           </li>
         
@@ -269,10 +317,6 @@
         
           <li>
             <a href="/2017/12/03/动态可配置化 Python 爬虫教程/">动态可配置化 Python 爬虫教程</a>
-          </li>
-        
-          <li>
-            <a href="/2017/10/11/谈谈-django-应用实践/">谈谈 django 应用实践</a>
           </li>
         
       </ul>

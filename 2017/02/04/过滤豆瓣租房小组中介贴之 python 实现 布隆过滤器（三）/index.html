@@ -19,6 +19,7 @@
   <title>过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三） | facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="其实这篇文章跟过滤中介贴没什么关系，只是在爬豆瓣小组的时候遇到的一点思考，我们知道，其实爬虫就是循环的爬取网站的 url，但是怎么判断爬取的 url 是否重复呢，最简单的，维护一个列表，每次循环查找，很明显效率很低。进阶的，采用哈希表，每次查询都是 O(1), 看上去不错。不过如果一旦 url 大到一定程度时，单台机器的内存肯定吃不消，这个时候分布式方案就呼之欲出，变得越来越复杂。那么能不能在牺牲">
+<meta name="keywords" content="algorithm">
 <meta property="og:type" content="article">
 <meta property="og:title" content="过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）">
 <meta property="og:url" content="http://yoursite.com/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）/index.html">
@@ -68,7 +69,7 @@
         <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
       </div>
     </div>
   </div>
@@ -96,21 +97,21 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>其实这篇文章跟过滤中介贴没什么关系，只是在爬豆瓣小组的时候遇到的一点思考，我们知道，其实爬虫就是循环的爬取网站的 url，但是怎么判断爬取的 url 是否重复呢，最简单的，维护一个列表，每次循环查找，很明显效率很低。进阶的，采用哈希表，每次查询都是 O(1), 看上去不错。不过如果一旦 url 大到一定程度时，单台机器的内存肯定吃不消，这个时候分布式方案就呼之欲出，变得越来越复杂。那么能不能在牺牲一点点精确性的前提下，有简单的方案呢，答案是肯定的。这就是 布隆过滤器。<br><a id="more"></a><br>布隆过滤器的原理是，当一个元素被加入集合时，通过 K 个散列函数将这个元素映射成一个位数组中的 K 个点，把它们置为1。检索时，我们只要看看这些点是不是都是 1 就（大约）知道集合中有没有它了：如果这些点有任何一个 0 ，则被检元素一定不在；如果都是 1 ，则被检元素很可能在。这就是布隆过滤器的基本思想。（引用自维基百科）。布隆过滤器可以看成是 bitmap 的扩展，它的优点是空间和时间复杂度都是常数，缺点是有一定的误算率。<br>具体还可以参考：<a href="https://segmentfault.com/a/1190000002729689" target="_blank" rel="external">https://segmentfault.com/a/1190000002729689</a><br><a href="https://zh.wikipedia.org/wiki/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8" target="_blank" rel="external">维基百科</a></p>
+        <p>其实这篇文章跟过滤中介贴没什么关系，只是在爬豆瓣小组的时候遇到的一点思考，我们知道，其实爬虫就是循环的爬取网站的 url，但是怎么判断爬取的 url 是否重复呢，最简单的，维护一个列表，每次循环查找，很明显效率很低。进阶的，采用哈希表，每次查询都是 O(1), 看上去不错。不过如果一旦 url 大到一定程度时，单台机器的内存肯定吃不消，这个时候分布式方案就呼之欲出，变得越来越复杂。那么能不能在牺牲一点点精确性的前提下，有简单的方案呢，答案是肯定的。这就是 布隆过滤器。<br><a id="more"></a><br>布隆过滤器的原理是，当一个元素被加入集合时，通过 K 个散列函数将这个元素映射成一个位数组中的 K 个点，把它们置为1。检索时，我们只要看看这些点是不是都是 1 就（大约）知道集合中有没有它了：如果这些点有任何一个 0 ，则被检元素一定不在；如果都是 1 ，则被检元素很可能在。这就是布隆过滤器的基本思想。（引用自维基百科）。布隆过滤器可以看成是 bitmap 的扩展，它的优点是空间和时间复杂度都是常数，缺点是有一定的误算率。<br>具体还可以参考：<a href="https://segmentfault.com/a/1190000002729689" target="_blank" rel="noopener">https://segmentfault.com/a/1190000002729689</a><br><a href="https://zh.wikipedia.org/wiki/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8" target="_blank" rel="noopener">维基百科</a></p>
 <p>我们写爬虫很多时候会使用 redis 作为各种队列来提高性能。同样，这次我们将用 redis 和 python 结合起来写个布隆过滤器。</p>
 <p>首先需要实现一个求 hash 的函数，这里采用 murmurhash 算法。然后算出 k 个点的位置（这里是 7 个点）。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">BIT_SIZE = <span class="number">5000000</span></div><div class="line">SEEDS = [<span class="number">50</span>, <span class="number">51</span>, <span class="number">52</span>, <span class="number">53</span>, <span class="number">54</span>, <span class="number">55</span>, <span class="number">56</span>]</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">cal_offsets</span><span class="params">(self, content)</span>:</span></div><div class="line">        <span class="keyword">return</span> [mmh3.hash(content, seed) % BIT_SIZE <span class="keyword">for</span> seed <span class="keyword">in</span> SEEDS]</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">BIT_SIZE = <span class="number">5000000</span></span><br><span class="line">SEEDS = [<span class="number">50</span>, <span class="number">51</span>, <span class="number">52</span>, <span class="number">53</span>, <span class="number">54</span>, <span class="number">55</span>, <span class="number">56</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cal_offsets</span><span class="params">(self, content)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> [mmh3.hash(content, seed) % BIT_SIZE <span class="keyword">for</span> seed <span class="keyword">in</span> SEEDS]</span><br></pre></td></tr></table></figure>
 <p>接下来就是 insert 和 is_contains 方法</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span><span class="params">(self, content)</span>:</span></div><div class="line">    locs = self.cal_offsets(content)</div><div class="line">    <span class="keyword">for</span> loc <span class="keyword">in</span> locs:</div><div class="line">        self.db.setbit(self.key, loc, <span class="number">1</span>)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_contains</span><span class="params">(self, content)</span>:</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> content:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line">    locs = self.cal_offsets(content)</div><div class="line"></div><div class="line">    <span class="keyword">return</span> all(<span class="keyword">True</span> <span class="keyword">if</span> self.db.getbit(self.key, loc) <span class="keyword">else</span> <span class="keyword">False</span> <span class="keyword">for</span> loc <span class="keyword">in</span> locs)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span><span class="params">(self, content)</span>:</span></span><br><span class="line">    locs = self.cal_offsets(content)</span><br><span class="line">    <span class="keyword">for</span> loc <span class="keyword">in</span> locs:</span><br><span class="line">        self.db.setbit(self.key, loc, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_contains</span><span class="params">(self, content)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> content:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">    locs = self.cal_offsets(content)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> all(<span class="keyword">True</span> <span class="keyword">if</span> self.db.getbit(self.key, loc) <span class="keyword">else</span> <span class="keyword">False</span> <span class="keyword">for</span> loc <span class="keyword">in</span> locs)</span><br></pre></td></tr></table></figure>
 <p>在 is_contains 方法中，我们用了 any 这个函数，是因为只要 k 个点有一个不为 1 元素就不存在。当然，就算是都为 1，也会由于小概率的哈希冲突存在一定的误差，这个在前面说明过。</p>
-<p>代码见 github : <a href="https://github.com/facert/BloomFilterForRedis" target="_blank" rel="external">https://github.com/facert/BloomFilterForRedis</a></p>
+<p>代码见 github : <a href="https://github.com/facert/BloomFilterForRedis" target="_blank" rel="noopener">https://github.com/facert/BloomFilterForRedis</a></p>
 <p>这里面其实还有很多细节，比如 redis setbit 的时候可以采用 pipeline 来批量操作，另外对于 redis string 来说，最大是 512M，如果超过这个大小会阻塞 redis 服务器做一个再次分配内存的操作，需要尽量避免，可以采用分配多个 string 的方式。</p>
-<p>最后，redis bitmaps 操作可以用于统计数据的实时计算，非常节省空间。感兴趣的可以看下这篇文章: <a href="http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps/" target="_blank" rel="external">http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps/</a></p>
+<p>最后，redis bitmaps 操作可以用于统计数据的实时计算，非常节省空间。感兴趣的可以看下这篇文章: <a href="http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps/" target="_blank" rel="noopener">http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps/</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）/" data-id="cjccyxnqf001zejo08sve6sxq" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）/" data-id="cjcxh7rt50022riolx3qswmtb" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
@@ -172,7 +173,7 @@ var duoshuoQuery = {short_name:'facert'};
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊，区块链/">以太坊，区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊，区块链/">以太坊，区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
     </div>
   </div>
 
@@ -182,7 +183,7 @@ var duoshuoQuery = {short_name:'facert'};
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊，区块链/" style="font-size: 10px;">以太坊，区块链</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊，区块链/" style="font-size: 10px;">以太坊，区块链</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
@@ -204,6 +205,10 @@ var duoshuoQuery = {short_name:'facert'};
       <ul>
         
           <li>
+            <a href="/2018/01/27/前端线上调试指南/">前端线上调试指南</a>
+          </li>
+        
+          <li>
             <a href="/2018/01/13/开源【动态可配化爬虫】代码/">开源【动态可配化爬虫】代码</a>
           </li>
         
@@ -217,10 +222,6 @@ var duoshuoQuery = {short_name:'facert'};
         
           <li>
             <a href="/2017/12/03/动态可配置化 Python 爬虫教程/">动态可配置化 Python 爬虫教程</a>
-          </li>
-        
-          <li>
-            <a href="/2017/10/11/谈谈-django-应用实践/">谈谈 django 应用实践</a>
           </li>
         
       </ul>

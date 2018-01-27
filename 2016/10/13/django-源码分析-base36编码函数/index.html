@@ -19,6 +19,7 @@
   <title>django 源码分析 - base36编码函数 | facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="0x01   首先介绍一下什么是 base36编码，它的编码中包含0~9的数字，加上所有26个字母，不区分大小写，不包含任何标点，所有的字母要不全大写，要不全小写。所以加起来就是 “0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ”,或者 ‘0123456789abcdefghijklmnopqrstuvwxyz’，同样的还有 base62编码，就是26个字母的大小写再加上">
+<meta name="keywords" content="web">
 <meta property="og:type" content="article">
 <meta property="og:title" content="django 源码分析 - base36编码函数">
 <meta property="og:url" content="http://yoursite.com/2016/10/13/django-源码分析-base36编码函数/index.html">
@@ -68,7 +69,7 @@
         <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
       </div>
     </div>
   </div>
@@ -96,14 +97,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h3><p>   首先介绍一下什么是 base36编码，它的编码中包含0~9的数字，加上所有26个字母，不区分大小写，不包含任何标点，所有的字母要不全大写，要不全小写。所以加起来就是 “0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ”,<br>或者 ‘0123456789abcdefghijklmnopqrstuvwxyz’，同样的还有 base62编码，就是26个字母的大小写再加上0-9，一共62个字符。<br>   <a id="more"></a><br>   base62 编码在短地址服务中用的比较多，比如这种： <a href="http://dwz.cn/1qPNt，" target="_blank" rel="external">http://dwz.cn/1qPNt，</a> 有关怎么设计一个高性能的短地址服务在这里有个回答的不错（<a href="https://www.zhihu.com/question/29270034）" target="_blank" rel="external">https://www.zhihu.com/question/29270034）</a> ，大家可以参考。今天主要说的是 django 中 base36 和 int 之间的转换。代码如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">def int_to_base36(i):</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    Converts an integer to a base36 string</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    char_set = &apos;0123456789abcdefghijklmnopqrstuvwxyz&apos;</div><div class="line">    if i &lt; 36:</div><div class="line">        return char_set[i]</div><div class="line">    b36 = &apos;&apos;</div><div class="line">    while i != 0:</div><div class="line">        i, n = divmod(i, 36)</div><div class="line">        b36 = char_set[n] + b36</div><div class="line">    return b36</div><div class="line"></div><div class="line">&gt;&gt;&gt; int_to_base36(123456)</div><div class="line">&apos;2n9c&apos;</div><div class="line">&gt;&gt;&gt; int(&apos;2n9c&apos;, 32)</div><div class="line">89388</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure>
+        <h3 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h3><p>   首先介绍一下什么是 base36编码，它的编码中包含0~9的数字，加上所有26个字母，不区分大小写，不包含任何标点，所有的字母要不全大写，要不全小写。所以加起来就是 “0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ”,<br>或者 ‘0123456789abcdefghijklmnopqrstuvwxyz’，同样的还有 base62编码，就是26个字母的大小写再加上0-9，一共62个字符。<br>   <a id="more"></a><br>   base62 编码在短地址服务中用的比较多，比如这种： <a href="http://dwz.cn/1qPNt，" target="_blank" rel="noopener">http://dwz.cn/1qPNt，</a> 有关怎么设计一个高性能的短地址服务在这里有个回答的不错（<a href="https://www.zhihu.com/question/29270034）" target="_blank" rel="noopener">https://www.zhihu.com/question/29270034）</a> ，大家可以参考。今天主要说的是 django 中 base36 和 int 之间的转换。代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">def int_to_base36(i):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    Converts an integer to a base36 string</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    char_set = &apos;0123456789abcdefghijklmnopqrstuvwxyz&apos;</span><br><span class="line">    if i &lt; 36:</span><br><span class="line">        return char_set[i]</span><br><span class="line">    b36 = &apos;&apos;</span><br><span class="line">    while i != 0:</span><br><span class="line">        i, n = divmod(i, 36)</span><br><span class="line">        b36 = char_set[n] + b36</span><br><span class="line">    return b36</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; int_to_base36(123456)</span><br><span class="line">&apos;2n9c&apos;</span><br><span class="line">&gt;&gt;&gt; int(&apos;2n9c&apos;, 32)</span><br><span class="line">89388</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
 <p>这个函数主要用于 django auth 模块自带的密码重置生成 token 模块 default_token_generator 中。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-base36编码函数/" data-id="cjccyxno10004ejo00qxcndcb" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/10/13/django-源码分析-base36编码函数/" data-id="cjcxh7rqn0007riolivrxw8g2" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
@@ -165,7 +166,7 @@ var duoshuoQuery = {short_name:'facert'};
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊，区块链/">以太坊，区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊，区块链/">以太坊，区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
     </div>
   </div>
 
@@ -175,7 +176,7 @@ var duoshuoQuery = {short_name:'facert'};
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊，区块链/" style="font-size: 10px;">以太坊，区块链</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊，区块链/" style="font-size: 10px;">以太坊，区块链</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
@@ -197,6 +198,10 @@ var duoshuoQuery = {short_name:'facert'};
       <ul>
         
           <li>
+            <a href="/2018/01/27/前端线上调试指南/">前端线上调试指南</a>
+          </li>
+        
+          <li>
             <a href="/2018/01/13/开源【动态可配化爬虫】代码/">开源【动态可配化爬虫】代码</a>
           </li>
         
@@ -210,10 +215,6 @@ var duoshuoQuery = {short_name:'facert'};
         
           <li>
             <a href="/2017/12/03/动态可配置化 Python 爬虫教程/">动态可配置化 Python 爬虫教程</a>
-          </li>
-        
-          <li>
-            <a href="/2017/10/11/谈谈-django-应用实践/">谈谈 django 应用实践</a>
           </li>
         
       </ul>

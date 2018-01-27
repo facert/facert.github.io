@@ -19,6 +19,7 @@
   <title>python 与 数据结构 第三章 线性表 （上） | facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="3.1  线性表抽象数据类型123456789101112ADT List:  List(self)             # 一个表抽象数据类型  is_empty(self)         # 判断 self 是否为一个空表  len(self)              # 获得 self 的长度  prepend(self, elem)    # 将元素 elem 加入表中作为第一个元">
+<meta name="keywords" content="数据结构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python 与 数据结构 第三章 线性表 （上）">
 <meta property="og:url" content="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（上）/index.html">
@@ -68,7 +69,7 @@
         <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
       </div>
     </div>
   </div>
@@ -96,7 +97,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h4 id="3-1-线性表抽象数据类型"><a href="#3-1-线性表抽象数据类型" class="headerlink" title="3.1  线性表抽象数据类型"></a>3.1  线性表抽象数据类型</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">ADT List:</div><div class="line">  List(self)             # 一个表抽象数据类型</div><div class="line">  is_empty(self)         # 判断 self 是否为一个空表</div><div class="line">  len(self)              # 获得 self 的长度</div><div class="line">  prepend(self, elem)    # 将元素 elem 加入表中作为第一个元素</div><div class="line">  append(self, elem)     # 将元素 elem 加入表中作为最后一个元素</div><div class="line">  insert(self, elem, i)  # 将 elem 加入表中作为第 i 个元素， 其他元素的顺序不变</div><div class="line">  del_first(self)        # 删除表中的首元素</div><div class="line">  del_last(self)         # 删除表中尾元素</div><div class="line">  del(self)              # 删除表中第 i 个元素</div><div class="line">  search(self, elem)     # 查找元素 elem 在表中出现的位置， 不出现时返回 -1</div><div class="line">  forall(self, op)       # 对表中的每个元素执行操作 op</div></pre></td></tr></table></figure>
+        <h4 id="3-1-线性表抽象数据类型"><a href="#3-1-线性表抽象数据类型" class="headerlink" title="3.1  线性表抽象数据类型"></a>3.1  线性表抽象数据类型</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ADT List:</span><br><span class="line">  List(self)             # 一个表抽象数据类型</span><br><span class="line">  is_empty(self)         # 判断 self 是否为一个空表</span><br><span class="line">  len(self)              # 获得 self 的长度</span><br><span class="line">  prepend(self, elem)    # 将元素 elem 加入表中作为第一个元素</span><br><span class="line">  append(self, elem)     # 将元素 elem 加入表中作为最后一个元素</span><br><span class="line">  insert(self, elem, i)  # 将 elem 加入表中作为第 i 个元素， 其他元素的顺序不变</span><br><span class="line">  del_first(self)        # 删除表中的首元素</span><br><span class="line">  del_last(self)         # 删除表中尾元素</span><br><span class="line">  del(self)              # 删除表中第 i 个元素</span><br><span class="line">  search(self, elem)     # 查找元素 elem 在表中出现的位置， 不出现时返回 -1</span><br><span class="line">  forall(self, op)       # 对表中的每个元素执行操作 op</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
 <h5 id="3-1-3-线性表实现：基本考虑"><a href="#3-1-3-线性表实现：基本考虑" class="headerlink" title="3.1.3 线性表实现：基本考虑"></a>3.1.3 线性表实现：基本考虑</h5><p> 提出两种基本实现模型：</p>
 <ul>
@@ -132,7 +133,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（上）/" data-id="cjccyxnok0009ejo07ymej2ly" class="article-share-link">Teilen</a>
+      <a data-url="http://yoursite.com/2016/10/13/python-与-数据结构-第三章-线性表-（上）/" data-id="cjcxh7rqv000driolmd1yj7s1" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
@@ -194,7 +195,7 @@ var duoshuoQuery = {short_name:'facert'};
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊，区块链/">以太坊，区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊，区块链/">以太坊，区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
     </div>
   </div>
 
@@ -204,7 +205,7 @@ var duoshuoQuery = {short_name:'facert'};
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊，区块链/" style="font-size: 10px;">以太坊，区块链</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊，区块链/" style="font-size: 10px;">以太坊，区块链</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
@@ -226,6 +227,10 @@ var duoshuoQuery = {short_name:'facert'};
       <ul>
         
           <li>
+            <a href="/2018/01/27/前端线上调试指南/">前端线上调试指南</a>
+          </li>
+        
+          <li>
             <a href="/2018/01/13/开源【动态可配化爬虫】代码/">开源【动态可配化爬虫】代码</a>
           </li>
         
@@ -239,10 +244,6 @@ var duoshuoQuery = {short_name:'facert'};
         
           <li>
             <a href="/2017/12/03/动态可配置化 Python 爬虫教程/">动态可配置化 Python 爬虫教程</a>
-          </li>
-        
-          <li>
-            <a href="/2017/10/11/谈谈-django-应用实践/">谈谈 django 应用实践</a>
           </li>
         
       </ul>
