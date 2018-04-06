@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://facert.github.io/media/15195409091484.jpg">
 <meta property="og:image" content="https://facert.github.io/media/15195614553288.jpg">
 <meta property="og:image" content="https://facert.github.io/media/15195621769351.jpg">
-<meta property="og:updated_time" content="2018-02-25T15:15:19.460Z">
+<meta property="og:updated_time" content="2018-04-06T09:05:29.215Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="利用 ipfs 构建去中心化 django 博客系统">
 <meta name="twitter:description" content="0x01运营 区块链日报 有一段时间了，访问量也在不断上涨，不过由于搭建在国外 vps 上，所以经常有同学反映网站打不开。这段时间尝试了一些方案，发现 ipfs 的去中心化方案能够完美这个问题。 关注区块链的同学也许已经对 ipfs 有过一定了解，我也在日报中推送过好几篇相关的文章，感兴趣的同学可以关注下。这里我简单介绍下，ipfs 是一个点对点的分布式文件系统，只要文件被添加到 ipfs 节点上">
@@ -103,7 +103,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h5 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h5><p>运营 <a href="https://www.btchain.me/" target="_blank" rel="noopener">区块链日报</a> 有一段时间了，访问量也在不断上涨，不过由于搭建在国外 vps 上，所以经常有同学反映网站打不开。这段时间尝试了一些方案，发现 ipfs 的去中心化方案能够完美这个问题。</p>
-<p>关注区块链的同学也许已经对 <a href="https://ipfs.io/" target="_blank" rel="noopener">ipfs</a> 有过一定了解，我也在日报中推送过好几篇相关的文章，感兴趣的同学可以关注下。这里我简单介绍下，ipfs 是一个点对点的分布式文件系统，只要文件被添加到 ipfs 节点上，他就有个 hash 值来代表他的存在，哪怕只在文件中修改一个比特的数据，哈希都会完全不同。当下一步向 ipfs 分布式网络查找该哈希的时候，它通过使用一个分布式哈希表，可以快速地找到拥有数据的节点，从而检索该数据，并使用哈希验证这是否是正确的数据。而存储这些文件的节点我们可以认为也是一种矿工的形式，只是不像比特币利用算力来做工作量证明，而是存储和带宽。目前 ipfs 团队正在推进发布基于 POR (带激励机制的带宽，存储容量等资源相关的一种共识)的 filecoin。</p>
+<p>关注区块链的同学也许已经对 <a href="https://ipfs.io/" target="_blank" rel="noopener">ipfs</a> 有过一定了解，我也在日报中推送过好几篇相关的文章，感兴趣的同学可以关注下。这里我简单介绍下，ipfs 是一个点对点的分布式文件系统，只要文件被添加到 ipfs 节点上，他就有个 hash 值来代表他的存在，哪怕只在文件中修改一个比特的数据，哈希都会完全不同。当下一步向 ipfs 分布式网络查找该哈希的时候，它通过使用一个分布式哈希表，可以快速地找到拥有数据的节点，从而检索该数据，并使用哈希验证这是否是正确的数据。而存储这些文件的节点我们可以认为也是一种矿工的形式，只是不像比特币利用算力来做工作量证明，而是存储和带宽。目前 ipfs 团队正在推进发布基于 POR (带激励机制的带宽，存储容量等资源相关的一种共识)的 filecoin。<br><a id="more"></a></p>
 <h5 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h5><p>好了，介绍完 ipfs，我们来看下 ipfs 如何和 django 结合起来搭建自己的去中心化 cdn。</p>
 <p>由于 django 搭建的网站的网页是动态服务器渲染的，而 ipfs 只能存储静态文件，所以需要先将 django 的网页静态化，然后再上传到 ipfs。</p>
 <p>举 <a href="https://www.btchain.me/" target="_blank" rel="noopener">区块链日报</a> 为例，有两种方案可以实现</p>
