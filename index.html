@@ -73,6 +73,308 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-智能合约调试指南" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/04/06/智能合约调试指南/" class="article-date">
+  <time datetime="2018-04-06T06:52:26.000Z" itemprop="datePublished">2018-04-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/06/智能合约调试指南/">智能合约调试指南</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><code>注意：本教程的 Truffle 版本 4.4.0 及以上</code></p>
+<p>不像你在其他地方看到的纸质合约，以太坊的智能合约是代码组成的，需要你已非常谨慎的态度去对待它。</p>
+<p>（这是一件好事，想象下如果现实世界的合同需要编译的话会更清晰么？）</p>
+<p>如果我们的合同没有被正确的编码出来, 我们的交易可能会失败，导致以太币的损失(以 gas 的形式)，更不用说浪费时间和精力。</p>
+<p><strong>幸运的是，Truffle (版本 4 以上) 内置了逐步调试的功能</strong>，所以一旦发生错误，你可以很快发现并修复它。</p>
+<p>在本教程中,我们将在测试的区块链环境中部署一个基础的合同，并引入一些错误，通过 Truffle 内置调试器修复它们。</p>
+<h4 id="一个基础的智能合约"><a href="#一个基础的智能合约" class="headerlink" title="一个基础的智能合约"></a>一个基础的智能合约</h4><p>一个最基础的合同是一个简单的存储类型的智能合约。（这个例子改编自 <a href="https://solidity.readthedocs.io/en/develop/introduction-to-smart-contracts.html" target="_blank" rel="noopener">Solidity documentation</a>)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.4.17;</span><br><span class="line"></span><br><span class="line">contract SimpleStorage &#123;</span><br><span class="line">  uint myVariable;</span><br><span class="line"></span><br><span class="line">  function set(uint x) public &#123;</span><br><span class="line">    myVariable = x;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  function get() constant public returns (uint) &#123;</span><br><span class="line">    return myVariable;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此合约做了两件事：</p>
+<ul>
+<li>允许你设置一个变量（myVariable）为特定整数值。</li>
+<li>允许你查询一个选定的值。</li>
+</ul>
+<p>这不是一个非常有趣的合约，但是这不是重点。我们想看看出错后会发生什么当事情。</p>
+<p>首先我们配置环境。</p>
+<h4 id="部署智能合约"><a href="#部署智能合约" class="headerlink" title="部署智能合约"></a>部署智能合约</h4><ol>
+<li><p>首先为我们的合约创建一个新的本地目录:</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir simple-storage</span><br><span class="line">cd simple-storage</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建一个空的 Truffle 项目</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">truffle init</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<pre><code>这个命令将创建目录，比如 `contracts/` 和 `migrations/`,并生成一些文件用于帮助部署合约到区块链。
+</code></pre><ol>
+<li><p><code>contracts/</code> 目录中有一个 <code>Store.sol</code> 文件。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.4.17;</span><br><span class="line"></span><br><span class="line">contract SimpleStorage &#123;</span><br><span class="line">  uint myVariable;</span><br><span class="line"></span><br><span class="line">  function set(uint x) public &#123;</span><br><span class="line">    myVariable = x;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  function get() constant public returns (uint) &#123;</span><br><span class="line">    return myVariable;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<pre><code>这是我们需要调试的合约，详细的合约内容的解释超出了本教程的范围，注意我们有一个名为 `SimpleStorage` 的合约，里面有个数字类型的变量 `myVariable` 和两个函数 `set()` 和 `get()`。第一个函数设置变量内容，第二个获取变量。
+</code></pre><ol>
+<li><p><code>migrations/</code> 目录下，有个 <code>2_deploy_contracts.js</code> 文件。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var SimpleStorage = artifacts.require(&quot;SimpleStorage&quot;);</span><br><span class="line"></span><br><span class="line">module.exports = function(deployer) &#123;</span><br><span class="line">  deployer.deploy(SimpleStorage);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<pre><code>这个文件是管理部署 `SimpleStorage` 合约的。
+</code></pre><ol>
+<li><p>在终端中，编译此合约 </p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">truffle compile</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>再开一个终端，运行 <code>truffle develop</code> ，开启 truffle 内置的测试区块链，这样我们可以使用它来测试合约。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">truffle develop</span><br></pre></td></tr></table></figure>
+<p> 这个命令将出现提示符 <code>truffle(develop)&gt;</code>， 从现在开始，所有的命令都在此提示符下输入（特殊情况会说明）</p>
+</li>
+<li><p>当开发控制台运行起来后，我们可以部署我们的合约了。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">migrate</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol>
+<li>下面的相应有些类似，除了 id 不同。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Running migration: 1_initial_migration.js</span><br><span class="line">  Replacing Migrations...</span><br><span class="line">  ... 0xe4f911d95904c808a81f28de1e70a377968608348b627a66efa60077a900fb4c</span><br><span class="line">  Migrations: 0x3ed10fd31b3fbb2c262e6ab074dd3c684b8aa06b</span><br><span class="line">Saving successful migration to network...</span><br><span class="line">  ... 0x429a40ee574664a48753a33ea0c103fc78c5ca7750961d567d518ff7a31eefda</span><br><span class="line">Saving artifacts...</span><br><span class="line">Running migration: 2_deploy_contracts.js</span><br><span class="line">  Replacing SimpleStorage...</span><br><span class="line">  ... 0x6783341ba67d5c0415daa647513771f14cb8a3103cc5c15dab61e86a7ab0cfd2</span><br><span class="line">  SimpleStorage: 0x377bbcae5327695b32a1784e0e13bedc8e078c9c</span><br><span class="line">Saving successful migration to network...</span><br><span class="line">  ... 0x6e25158c01a403d33079db641cb4d46b6245fd2e9196093d9e5984e45d64a866</span><br><span class="line">Saving artifacts...</span><br></pre></td></tr></table></figure>
+<h4 id="和基础的智能合约交互"><a href="#和基础的智能合约交互" class="headerlink" title="和基础的智能合约交互"></a>和基础的智能合约交互</h4><p>智能合约通过 <code>truffle develop</code> 部署到了测试网络中，运行 <a href="http://truffleframework.com/docs/getting_started/console" target="_blank" rel="noopener">console</a> 而不是 <a href="http://truffleframework.com/ganache/" target="_blank" rel="noopener">Ganache</a>，一个内置在 Truffle 的本地区块链。</p>
+<ol>
+<li><p>在 <code>truffle develop</code> 运行的终端中，输入如下命令：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SimpleStorage.deployed().then(function(instance)&#123;return instance.get.call();&#125;).then(function(value)&#123;return value.toNumber()&#125;);</span><br></pre></td></tr></table></figure>
+<p> 这个命令找到 SimpleStorage 合约，然后调用 <code>get()</code> 命令，通常返回一个字符串并转化为数字。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<pre><code>`myVariable` 被设置为 0，尽管我们还没给它赋值。这是因为 Solidity 数值型变量会自动被赋值为 0，不像其他语言会是 `NULL` 和 `undefined`。
+</code></pre><ol>
+<li><p>现在我们运行一条交易命令，调用 <code>set()</code> 设置我们的变量为其他值。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SimpleStorage.deployed().then(function(instance)&#123;return instance.set(4);&#125;);</span><br></pre></td></tr></table></figure>
+<p> 设置变量为 4，返回的信息包括交易（交易 id ，交易receipt 和一些交易的时间 log）</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> &#123; tx: &apos;0x7f799ad56584199db36bd617b77cc1d825ff18714e80da9d2d5a0a9fff5b4d42&apos;,</span><br><span class="line">receipt:</span><br><span class="line"> &#123; transactionHash: &apos;0x7f799ad56584199db36bd617b77cc1d825ff18714e80da9d2d5a0a9fff5b4d42&apos;,</span><br><span class="line">   transactionIndex: 0,</span><br><span class="line">   blockHash: &apos;0x60adbf0523622dc1be52c627f37644ce0a343c8e7c8955b34c5a592da7d7c651&apos;,</span><br><span class="line">   blockNumber: 5,</span><br><span class="line">   gasUsed: 41577,</span><br><span class="line">   cumulativeGasUsed: 41577,</span><br><span class="line">   contractAddress: null,</span><br><span class="line">   logs: [] &#125;,</span><br><span class="line">logs: [] &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<pre><code>最重要的是交易的 id (在这里是 tx 和 transactionHash)。我们需要赋值这个值用来调试。
+</code></pre><ol>
+<li><p>想验证值是否已经改变，运行 <code>get()</code></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SimpleStorage.deployed().then(function(instance)&#123;return instance.get.call();&#125;).then(function(value)&#123;return value.toNumber()&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>输出</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="调试错误"><a href="#调试错误" class="headerlink" title="调试错误"></a>调试错误</h4><p>上文展示了智能合约如何工作，现在我们引入一些错误到合约中。</p>
+<p>针对如下几个错误</p>
+<ul>
+<li>无限循环</li>
+<li>无效错误检查</li>
+<li>无错误，但是函数没有按预期执行</li>
+</ul>
+<h5 id="错误-1-无限循环"><a href="#错误-1-无限循环" class="headerlink" title="错误 #1: 无限循环"></a>错误 #1: 无限循环</h5><p>在以太坊区块链中，交易不能永远执行下去。</p>
+<p>一个交易会一直执行到 gas 用尽。一旦发生这种情况，交易会返回 <code>out of gas</code> 错误。</p>
+<p>因为 gas 是以以太币计费的，所以会造成真实的资产损失，所以修复这种错误迫在眉睫。</p>
+<p><strong>引入错误</strong></p>
+<ol>
+<li>在编辑器打开 <code>contracts/</code> 目录中的 <code>Store.sol</code></li>
+<li><p>替换 <code>set()</code></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function set(uint x) public &#123;</span><br><span class="line">  while(true) &#123;</span><br><span class="line">    myVariable = x;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>因为 <code>while(true)</code> 所以函数永远不会退出。</p>
+<p><strong>测试合约</strong></p>
+<p>Truffle 的开发终端不重启就可以重新部署合约。我们可以通过 <code>migrate</code> 一步编译和部署合约</p>
+<ol>
+<li><p>Truffle 的开发终端中，更新合约</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">migrate --reset</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>为了更好的捕获错误，我们打开第二个终端</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">truffle develop --log</span><br></pre></td></tr></table></figure>
+<p> 然后回到之前的终端中</p>
+</li>
+<li><p>现在我们可以运行交易了，运行 <code>set()</code> 命令</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SimpleStorage.deployed().then(function(instance)&#123;return instance.set(4);&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>捕获到错误</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Error: VM Exception while processing transaction: out of gas</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<pre><code>在 log 的终端中，我们可以看到更多信息
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">    develop:testrpc eth_sendTransaction +0ms</span><br><span class="line">develop:testrpc  +1s</span><br><span class="line">develop:testrpc   Transaction: 0xe493340792ab92b95ac40e43dca6bc88fba7fd67191989d59ca30f79320e883f +2ms</span><br><span class="line">develop:testrpc   Gas usage: 4712388 +11ms</span><br><span class="line">develop:testrpc   Block Number: 6 +15ms</span><br><span class="line">develop:testrpc   Runtime Error: out of gas +0ms</span><br><span class="line">develop:testrpc  +16ms</span><br></pre></td></tr></table></figure>
+
+通过这些信息，我们可以调试这个交易
+</code></pre><p><strong>调试错误</strong></p>
+<p>调出 debug 的命令是在 Truffle 开发终端输入 <code>debug &lt;Transaction ID&gt;</code> 或者直接在终端中输入 <code>truffle debug &lt;Transaction ID&gt;</code>，现在让我们开始吧!</p>
+<ol>
+<li><p>在 Truffle 开发终端中，复制粘贴交易 id 到 debug 命令后</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">debug 0xe493340792ab92b95ac40e43dca6bc88fba7fd67191989d59ca30f79320e883f</span><br></pre></td></tr></table></figure>
+<p> 你将看到如下输出</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> Gathering transaction data...</span><br><span class="line"></span><br><span class="line">Addresses affected:</span><br><span class="line">  0x377bbcae5327695b32a1784e0e13bedc8e078c9c - SimpleStorage</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">(enter) last command entered (step next)</span><br><span class="line">(o) step over, (i) step into, (u) step out, (n) step next</span><br><span class="line">(;) step instruction, (p) print instruction, (h) print this help, (q) quit</span><br><span class="line"></span><br><span class="line">Store.sol | 0x377bbcae5327695b32a1784e0e13bedc8e078c9c:</span><br><span class="line"></span><br><span class="line">1: pragma solidity ^0.4.17;</span><br><span class="line">2:</span><br><span class="line">3: contract SimpleStorage &#123;</span><br><span class="line">   ^^^^^^^^^^^^^^^^^^^^^^^</span><br><span class="line"></span><br><span class="line">debug(develop:0xe4933407...)&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<pre><code>这是个交互式命令行，你可以用列出的命令和程序交互
+
+
+* 最常用的命令是 `step next`，命令执行一次往下一行代码，快捷键是 `Enter` 或者 `n` 
+
+输出
+
+        Store.sol | 0x377bbcae5327695b32a1784e0e13bedc8e078c9c:
+    4:   uint myVariable;
+    5:
+    6: function set(uint x) public {
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+注意程序已经移动到了下一个命令，第六行中。
+
+* 键入 `Enter`
+
+
+        Store.sol | 0x377bbcae5327695b32a1784e0e13bedc8e078c9c:
+
+        5:
+        6: function set(uint x) public {
+        7:   while(true) {
+        ^^^^^^^^^^^^
+
+* 不断按 `Enter`
+
+        Store.sol | 0x377bbcae5327695b32a1784e0e13bedc8e078c9c:
+
+        5:
+        6: function set(uint x) public {
+        7:   while(true) {
+               ^^^^
+
+        debug(develop:0xe4933407...)&gt;
+
+        Store.sol | 0x377bbcae5327695b32a1784e0e13bedc8e078c9c:
+
+        5:
+        6: function set(uint x) public {
+        7:   while(true) {
+         ^^^^^^^^^^^^
+
+        debug(develop:0xe4933407...)&gt;
+
+        Store.sol | 0x377bbcae5327695b32a1784e0e13bedc8e078c9c:
+
+        6: function set(uint x) public {
+        7:   while(true) {
+        8:     myVariable = x;
+                        ^
+
+        debug(develop:0xe4933407...)&gt;
+
+        Store.sol | 0x377bbcae5327695b32a1784e0e13bedc8e078c9c:
+
+        6: function set(uint x) public {
+        7:   while(true) {
+        8:     myVariable = x;
+           ^^^^^^^^^^
+
+        debug(develop:0xe4933407...)&gt;
+
+        Store.sol | 0x377bbcae5327695b32a1784e0e13bedc8e078c9c:
+
+        6: function set(uint x) public {
+        7:   while(true) {
+        8:     myVariable = x;
+           ^^^^^^^^^^^^^^
+
+        debug(develop:0xe4933407...)&gt;
+
+        Store.sol | 0x377bbcae5327695b32a1784e0e13bedc8e078c9c:
+
+        5:
+        6: function set(uint x) public {
+        7:   while(true) {
+         ^^^^^^^^^^^^
+</code></pre><p>请注意，最终步骤会一直重复。事实上，按回车会永远重复那些交易(直到用完 gas )。而这会告诉你问题在哪里。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">##### 错误 #2: 无效错误检查</span><br><span class="line"></span><br><span class="line">智能合约可以用 `assert()` 来保证必要特定条件会出现。这种和合约状态的冲突是不可调和的。</span><br><span class="line"></span><br><span class="line">**引入错误**</span><br><span class="line"></span><br><span class="line">现在我们来引入这个错误，看看调试器如何发现它。</span><br><span class="line"></span><br><span class="line">1. 再次打开 `Store.sol`</span><br><span class="line">2. 替换 `set()` 函数</span><br></pre></td></tr></table></figure></p>
+<pre><code>function set(uint x) public {
+  assert(x == 0);
+  myVariable = x;
+}
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">    </span><br><span class="line">    和前一个版本一样，只是多了 `assert()` 函数，保证 `x == 0`，如果我们设置 x 为其他值，我们就会发现错误。</span><br><span class="line">    </span><br><span class="line">**测试合约**</span><br><span class="line"></span><br><span class="line">和之前一样，我们重置下合约</span><br><span class="line"></span><br><span class="line">1. `migrate --reset`</span><br><span class="line">2. `SimpleStorage.deployed().then(function(instance)&#123;return instance.set(4);&#125;);`</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    我们会看到如下错误</span><br></pre></td></tr></table></figure>
+
+Error: VM Exception while processing transaction: invalid opcode
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">**调试错误**</span><br><span class="line"></span><br><span class="line">1. 复制交易 id 到 debug 命令下</span><br></pre></td></tr></table></figure>
+
+debug 0xe493340792ab92b95ac40e43dca6bc88fba7fd67191989d59ca30f79320e883f
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">回到调试器</span><br></pre></td></tr></table></figure>
+</code></pre><p>Store.sol | 0x377bbcae5327695b32a1784e0e13bedc8e078c9c:</p>
+<p>   1: pragma solidity ^0.4.17;<br>   2:<br>   3: contract SimpleStorage {<br>      ^^^^^^^^^^^^^^^^^^^^^^^</p>
+<p>   debug(develop:0xe4933407…)&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">1. 键入 `Enter`</span><br></pre></td></tr></table></figure></p>
+<pre><code>    Store.sol | 0x377bbcae5327695b32a1784e0e13bedc8e078c9c:
+
+5:
+6:   function set(uint x) public {
+7:     assert(x == 0);
+       ^^^^^^^^^^^^^^
+
+debug(develop:0x7e060037...)&gt;
+
+Transaction halted with a RUNTIME ERROR.
+
+This is likely due to an intentional halting expression, like 
+assert(), require() or revert(). It can also be due to out-of-gas
+exceptions. Please inspect your transaction parameters and 
+contract code to determine the meaning of this error.
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">我们可以看到最后的事件中触发了错误.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">##### 错误 #3: 无错误，但是函数没有按预期执行</span><br><span class="line"></span><br><span class="line">有时候，错误不一定是真正的错误，它在运行时间内不会引起问题，只是不会按预期执行。</span><br><span class="line"></span><br><span class="line">举个例子，一个事件将会在变量是奇数的时候执行，而另一个事件在偶数的时候执行。如果我们调换了这个条件，让相反的事件执行了。它斌不会触发错误，然而，合约会不按照我们的预期执行下去。</span><br><span class="line"></span><br><span class="line">我们再次用调试器来找出错误。</span><br><span class="line"></span><br><span class="line">**引入错误**</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">1. 再次打开 `Store.sol`</span><br><span class="line">2. 替换 `set()` 函数</span><br></pre></td></tr></table></figure>
+
+event Odd();
+
+event Even();
+
+function set(uint x) public {
+  myVariable = x;
+  if (x % 2 == 0) {
+    Odd();
+  } else {
+    Even();
+  }
+}
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    代码有两个假的事件，`Odd()` 和 `Even()` 是否执行取决于 x 是否能被 2 整除。</span><br><span class="line">    </span><br><span class="line">    但是我们发现 x 能被 2 整除时， `Odd()` 事件触发了。</span><br><span class="line"></span><br><span class="line">**测试合约**</span><br><span class="line"></span><br><span class="line">1. `migrate --reset`</span><br><span class="line">2. `SimpleStorage.deployed().then(function(instance)&#123;return instance.set(4);&#125;);`</span><br><span class="line"></span><br><span class="line">没有错误产生，输出如下</span><br></pre></td></tr></table></figure>
+</code></pre><p>{ tx: ‘0x7f799ad56584199db36bd617b77cc1d825ff18714e80da9d2d5a0a9fff5b4d42’,<br>  receipt:<br>   { transactionHash: ‘0x7f799ad56584199db36bd617b77cc1d825ff18714e80da9d2d5a0a9fff5b4d42’,<br>     transactionIndex: 0,<br>     blockHash: ‘0x08d7c35904e4a93298ed5be862227fcf18383fec374759202cf9e513b390956f’,<br>     blockNumber: 5,<br>     gasUsed: 42404,<br>     cumulativeGasUsed: 42404,<br>     contractAddress: null,<br>     logs: [ [Object] ] },<br>  logs:<br>   [ { logIndex: 0,<br>       transactionIndex: 0,<br>       transactionHash: ‘0x7f799ad56584199db36bd617b77cc1d825ff18714e80da9d2d5a0a9fff5b4d42’,<br>       blockHash: ‘0x08d7c35904e4a93298ed5be862227fcf18383fec374759202cf9e513b390956f’,<br>       blockNumber: 5,<br>       address: ‘0x377bbcae5327695b32a1784e0e13bedc8e078c9c’,<br>       type: ‘mined’,<br>       event: ‘Odd’,<br>       args: {} } ] }<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">logs 里面显示调用了 Odd 事件，这是不对的，我们的任务是找到这个事件为什么会被触发。</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"> **调试错误**</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">1. 复制交易 id 到 debug 命令下</span><br></pre></td></tr></table></figure></p>
+<p>debug 0x7f799ad56584199db36bd617b77cc1d825ff18714e80da9d2d5a0a9fff5b4d42<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">2. 键入 Enter 几次，最后我们将看到调用 Odd 事件的条件</span><br></pre></td></tr></table></figure></p>
+<p>Store.sol | 0x377bbcae5327695b32a1784e0e13bedc8e078c9c:</p>
+<p>10:   function set(uint x) public {<br>11:     myVariable = x;<br>12:     if (x % 2 == 0) {<br>        ^^^^^^^^^^^^^^^^</p>
+<p>debug(develop:0x7f799ad5…)&gt;</p>
+<p>Store.sol | 0x377bbcae5327695b32a1784e0e13bedc8e078c9c:</p>
+<p>11:     myVariable = x;<br>12:     if (x % 2 == 0) {<br>13:       Odd();<br>          ^^^^^</p>
+<p>debug(develop:0x7f799ad5…)&gt;<br>```</p>
+<p>错误找到了，这个条件导致了错误的事件调用。</p>
+<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><p>有了在 Truffle 中的调试能力，你可以编写更健壮的智能合约。</p>
+<p>翻译自： <a href="http://truffleframework.com/tutorials/debugging-a-smart-contract" target="_blank" rel="noopener">http://truffleframework.com/tutorials/debugging-a-smart-contract</a></p>
+<p>更多内容请访问：<a href="https://www.bdaily.club/" target="_blank" rel="noopener">区块链日报 - 关注区块链 - 推送高质量区块链文章</a></p>
+<p>订阅区块链日报</p>
+<p>微博： <a href="https://weibo.com/u/6453120687" target="_blank" rel="noopener">@区块链_daily</a><br>RSS: <a href="https://www.bdaily.club/rss" target="_blank" rel="noopener">rss</a><br>Twitter: <a href="https://twitter.com/bchain_daily" target="_blank" rel="noopener">@区块链日报</a><br>知乎： <a href="https://zhuanlan.zhihu.com/btchain" target="_blank" rel="noopener">区块链日报</a><br>Medium: <a href="https://medium.com/@blockchaindaily" target="_blank" rel="noopener">区块链日报</a><br>微信公众号: 搜索 【区块链daily】或 <a href="http://78rc6b.com1.z0.glb.clouddn.com/qrcode_for_gh_f652585159d6_258.jpg" target="_blank" rel="noopener">点击扫二维码关注</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2018/04/06/智能合约调试指南/" data-id="cjfnq50qe0013h1oly7t31zkc" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链-智能合约/">区块链 智能合约</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-利用-ipfs-构建去中心化-django-博客系统" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/" class="article-date">
@@ -147,7 +449,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/" data-id="cje2ydgs3000momolvqb33501" class="article-share-link">Teilen</a>
+      <a data-url="https://facert.github.io/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/" data-id="cjfnq50pz000sh1oll8cgm1q2" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链-ipfs/">区块链, ipfs</a></li></ul>
@@ -194,7 +496,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/01/27/前端线上调试指南/" data-id="cje2ydgs8000qomolq7z69kl5" class="article-share-link">Teilen</a>
+      <a data-url="https://facert.github.io/2018/01/27/前端线上调试指南/" data-id="cjfnq50pu000oh1olw8loo5h6" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端/">前端</a></li></ul>
@@ -235,7 +537,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/01/13/开源【动态可配化爬虫】代码/" data-id="cje2ydgsm0012omolw9phytsg" class="article-share-link">Teilen</a>
+      <a data-url="https://facert.github.io/2018/01/13/开源【动态可配化爬虫】代码/" data-id="cjfnq50q6000yh1ol1a8szt3a" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -280,7 +582,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2017/12/10/以太坊云撸猫教程/" data-id="cje2ydgs6000oomol0te1ycip" class="article-share-link">Teilen</a>
+      <a data-url="https://facert.github.io/2017/12/10/以太坊云撸猫教程/" data-id="cjfnq50ps000mh1olo9amufbi" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/以太坊，区块链/">以太坊，区块链</a></li></ul>
@@ -293,63 +595,11 @@
 
 
   
-    <article id="post-xpath-使用教程" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/12/03/xpath-使用教程/" class="article-date">
-  <time datetime="2017-12-03T13:26:31.000Z" itemprop="datePublished">2017-12-03</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/03/xpath-使用教程/">xpath 使用教程</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;div class=&quot;demo&quot;&gt;</span><br><span class="line">   &lt;span&gt;</span><br><span class="line">   &lt;/span&gt;</span><br><span class="line">   &lt;ul&gt;</span><br><span class="line">       &lt;li class=&quot;item-0&quot;&gt;</span><br><span class="line">           &lt;a href=&quot;link-0&quot;&gt;link0-item&lt;/a&gt;</span><br><span class="line">       &lt;/li&gt;</span><br><span class="line">       &lt;li class=&quot;item-1&quot;&gt;</span><br><span class="line">           &lt;a href=&quot;link-1&quot;&gt;link1-item&lt;/a&gt;</span><br><span class="line">       &lt;/li&gt;</span><br><span class="line">       &lt;li class=&quot;item-2&quot;&gt;</span><br><span class="line">           &lt;a href=&quot;link-2&quot;&gt;link2-item&lt;/a&gt;</span><br><span class="line">       &lt;/li&gt;</span><br><span class="line">   &lt;/ul&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
-<p>这篇文章列举常用的一些 xpath 用法，以便同学们更好的理解使用 <a href="http://www.anycrawl.info/" target="_blank" rel="noopener">http://www.anycrawl.info/</a> 这个网站</p>
-<ol>
-<li><code>//div</code> (获取所有 div 元素，不管在文档什么位置)</li>
-<li><code>/div</code> (获取根路径 div 元素)</li>
-<li><code>//div/span</code> (获取 div 元素下一级的 span 元素)</li>
-<li><code>//div//span</code> (获取 div 元素所有后代的 span)</li>
-<li><code>//ul/li[1]</code> (获取 ul 子元素下的第一个 li 元素)</li>
-<li><code>//ul/li[last()]</code> (获取 ul 子元素下的最后一个 li 元素)</li>
-<li><code>//div[@class=&quot;demo&quot;]</code> (获取 class 为 demo 的 div 元素)</li>
-<li><code>//ul/li/a/@href</code> (获取 ul&gt;li&gt;a 链接的 href 属性)</li>
-<li><code>//ul/li/a/text()</code> (获取 ul&gt;li&gt;a 链接的内容)</li>
-<li><code>//*[@class=&quot;item-0&quot;]</code> (获取 class 为 item-0 的元素)</li>
-<li><code>//*[contains(@class, &quot;de&quot;)]</code> (获取 class 元素包含 de 的元素)</li>
-</ol>
-<h4 id="参考手册：xpath-cheatsheet"><a href="#参考手册：xpath-cheatsheet" class="headerlink" title="参考手册：xpath cheatsheet "></a>参考手册：<a href="http://www.cheat-sheets.org/saved-copy/Locators_table_1_0_2.pdf" target="_blank" rel="noopener">xpath cheatsheet </a></h4>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2017/12/03/xpath-使用教程/" data-id="cje2ydgrw000iomolg9330w4v" class="article-share-link">Teilen</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">weiter &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">weiter &raquo;</a>
   </nav>
 
 </section>
@@ -363,7 +613,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊，区块链/">以太坊，区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/区块链-ipfs/">区块链, ipfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊，区块链/">以太坊，区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/区块链-智能合约/">区块链 智能合约</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/区块链-ipfs/">区块链, ipfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
     </div>
   </div>
 
@@ -373,7 +623,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊，区块链/" style="font-size: 10px;">以太坊，区块链</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/区块链-ipfs/" style="font-size: 10px;">区块链, ipfs</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊，区块链/" style="font-size: 10px;">以太坊，区块链</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/区块链-智能合约/" style="font-size: 10px;">区块链 智能合约</a> <a href="/tags/区块链-ipfs/" style="font-size: 10px;">区块链, ipfs</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
@@ -382,7 +632,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
   </div>
 
@@ -393,6 +643,10 @@
     <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/04/06/智能合约调试指南/">智能合约调试指南</a>
+          </li>
         
           <li>
             <a href="/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/">利用 ipfs 构建去中心化 django 博客系统</a>
@@ -408,10 +662,6 @@
         
           <li>
             <a href="/2017/12/10/以太坊云撸猫教程/">以太坊云撸猫教程</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/03/xpath-使用教程/">xpath 使用教程</a>
           </li>
         
       </ul>
