@@ -18,20 +18,20 @@
   
   <title>智能合约开发 - 如何实现一键化登录 Dapp | facert 的杂货店</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="任何有帐户体系的网站和 app 都会有自己的登录模块，有时候还会集成 oauth2 （weibo, weixin，github)一键化登录.开发者肯定也都或多或少的开发过注册，登录的功能。那么基于以太坊的 Dapp 中登录功能会有什么区别呢？本文主要介绍了 Dapp 帐号体系的构成，以及如何基于 Metamask 开发一键化登录的功能。 首先 Dapp 跟普通的网站(app)没多少区别，完全可以延">
+  <meta name="description" content="任何有帐户体系的网站和 app 都会有自己的登录模块，有时候还会集成 oauth2 （weibo, weixin，github)一键化登录.开发者肯定也都或多或少的开发过注册，登录的功能。那么基于以太坊的 Dapp 中登录功能会有什么区别呢？本文主要介绍了 Dapp 帐号体系的构成，以及如何基于 Metamask 开发一键化登录的功能。">
 <meta name="keywords" content="智能合约">
 <meta property="og:type" content="article">
 <meta property="og:title" content="智能合约开发 - 如何实现一键化登录 Dapp">
 <meta property="og:url" content="https://facert.github.io/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/index.html">
 <meta property="og:site_name" content="facert 的杂货店">
-<meta property="og:description" content="任何有帐户体系的网站和 app 都会有自己的登录模块，有时候还会集成 oauth2 （weibo, weixin，github)一键化登录.开发者肯定也都或多或少的开发过注册，登录的功能。那么基于以太坊的 Dapp 中登录功能会有什么区别呢？本文主要介绍了 Dapp 帐号体系的构成，以及如何基于 Metamask 开发一键化登录的功能。 首先 Dapp 跟普通的网站(app)没多少区别，完全可以延">
+<meta property="og:description" content="任何有帐户体系的网站和 app 都会有自己的登录模块，有时候还会集成 oauth2 （weibo, weixin，github)一键化登录.开发者肯定也都或多或少的开发过注册，登录的功能。那么基于以太坊的 Dapp 中登录功能会有什么区别呢？本文主要介绍了 Dapp 帐号体系的构成，以及如何基于 Metamask 开发一键化登录的功能。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://facert.github.io/media/15292352605816.gif">
 <meta property="og:image" content="https://facert.github.io/media/15292413044056.jpg">
-<meta property="og:updated_time" content="2018-06-17T13:20:19.083Z">
+<meta property="og:updated_time" content="2018-06-18T14:26:55.100Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="智能合约开发 - 如何实现一键化登录 Dapp">
-<meta name="twitter:description" content="任何有帐户体系的网站和 app 都会有自己的登录模块，有时候还会集成 oauth2 （weibo, weixin，github)一键化登录.开发者肯定也都或多或少的开发过注册，登录的功能。那么基于以太坊的 Dapp 中登录功能会有什么区别呢？本文主要介绍了 Dapp 帐号体系的构成，以及如何基于 Metamask 开发一键化登录的功能。 首先 Dapp 跟普通的网站(app)没多少区别，完全可以延">
+<meta name="twitter:description" content="任何有帐户体系的网站和 app 都会有自己的登录模块，有时候还会集成 oauth2 （weibo, weixin，github)一键化登录.开发者肯定也都或多或少的开发过注册，登录的功能。那么基于以太坊的 Dapp 中登录功能会有什么区别呢？本文主要介绍了 Dapp 帐号体系的构成，以及如何基于 Metamask 开发一键化登录的功能。">
 <meta name="twitter:image" content="https://facert.github.io/media/15292352605816.gif">
   
     <link rel="alternate" href="/atom.xml" title="facert 的杂货店" type="application/atom+xml">
@@ -102,6 +102,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>任何有帐户体系的网站和 app 都会有自己的登录模块，有时候还会集成 oauth2 （weibo, weixin，github)一键化登录.开发者肯定也都或多或少的开发过注册，登录的功能。那么基于以太坊的 Dapp 中登录功能会有什么区别呢？本文主要介绍了 Dapp 帐号体系的构成，以及如何基于 Metamask 开发一键化登录的功能。</p>
+<a id="more"></a>
 <p>首先 Dapp 跟普通的网站(app)没多少区别，完全可以延续之前的帐号体系登录，注册。在需要用到以太坊区块链的时候（比如创建交易，支付等）调用钱包或者 MetaMask 插件即可。</p>
 <p>当然本身以太坊就有自己的帐号，每个人都可以创建 Address 来和区块链交互，所以如果我们的 Dapp 跟 Address 能够绑定并实现登录的话，整体的体验会好很多。</p>
 <p>解决方案是利用私钥对 payload 加密生成 signature，然后再用<br>ecdsa_recover 方法对 signature 解密可以拿到对应的公钥。</p>
