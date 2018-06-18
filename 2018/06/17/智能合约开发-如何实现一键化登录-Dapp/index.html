@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+	      var hm = document.createElement("script");
+	      hm.src = "//hm.baidu.com/hm.js?98cc862d4b99529da444b0b16203e7e7";
+		  var s = document.getElementsByTagName("script")[0]; 
+		  s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+  
+  <title>智能合约开发 - 如何实现一键化登录 Dapp | facert 的杂货店</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="任何有帐户体系的网站和 app 都会有自己的登录模块，有时候还会集成 oauth2 （weibo, weixin，github)一键化登录.开发者肯定也都或多或少的开发过注册，登录的功能。那么基于以太坊的 Dapp 中登录功能会有什么区别呢？本文主要介绍了 Dapp 帐号体系的构成，以及如何基于 Metamask 开发一键化登录的功能。 首先 Dapp 跟普通的网站(app)没多少区别，完全可以延">
+<meta name="keywords" content="智能合约">
+<meta property="og:type" content="article">
+<meta property="og:title" content="智能合约开发 - 如何实现一键化登录 Dapp">
+<meta property="og:url" content="https://facert.github.io/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/index.html">
+<meta property="og:site_name" content="facert 的杂货店">
+<meta property="og:description" content="任何有帐户体系的网站和 app 都会有自己的登录模块，有时候还会集成 oauth2 （weibo, weixin，github)一键化登录.开发者肯定也都或多或少的开发过注册，登录的功能。那么基于以太坊的 Dapp 中登录功能会有什么区别呢？本文主要介绍了 Dapp 帐号体系的构成，以及如何基于 Metamask 开发一键化登录的功能。 首先 Dapp 跟普通的网站(app)没多少区别，完全可以延">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://facert.github.io/media/15292352605816.gif">
+<meta property="og:image" content="https://facert.github.io/media/15292413044056.jpg">
+<meta property="og:updated_time" content="2018-06-17T13:20:19.083Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="智能合约开发 - 如何实现一键化登录 Dapp">
+<meta name="twitter:description" content="任何有帐户体系的网站和 app 都会有自己的登录模块，有时候还会集成 oauth2 （weibo, weixin，github)一键化登录.开发者肯定也都或多或少的开发过注册，登录的功能。那么基于以太坊的 Dapp 中登录功能会有什么区别呢？本文主要介绍了 Dapp 帐号体系的构成，以及如何基于 Metamask 开发一键化登录的功能。 首先 Dapp 跟普通的网站(app)没多少区别，完全可以延">
+<meta name="twitter:image" content="https://facert.github.io/media/15292352605816.gif">
+  
+    <link rel="alternate" href="/atom.xml" title="facert 的杂货店" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">facert 的杂货店</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://facert.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-智能合约开发-如何实现一键化登录-Dapp" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/" class="article-date">
+  <time datetime="2018-06-17T10:56:56.000Z" itemprop="datePublished">2018-06-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      智能合约开发 - 如何实现一键化登录 Dapp
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>任何有帐户体系的网站和 app 都会有自己的登录模块，有时候还会集成 oauth2 （weibo, weixin，github)一键化登录.开发者肯定也都或多或少的开发过注册，登录的功能。那么基于以太坊的 Dapp 中登录功能会有什么区别呢？本文主要介绍了 Dapp 帐号体系的构成，以及如何基于 Metamask 开发一键化登录的功能。</p>
+<p>首先 Dapp 跟普通的网站(app)没多少区别，完全可以延续之前的帐号体系登录，注册。在需要用到以太坊区块链的时候（比如创建交易，支付等）调用钱包或者 MetaMask 插件即可。</p>
+<p>当然本身以太坊就有自己的帐号，每个人都可以创建 Address 来和区块链交互，所以如果我们的 Dapp 跟 Address 能够绑定并实现登录的话，整体的体验会好很多。</p>
+<p>解决方案是利用私钥对 payload 加密生成 signature，然后再用<br>ecdsa_recover 方法对 signature 解密可以拿到对应的公钥。</p>
+<p><img src="/media/15292352605816.gif" alt=""></p>
+<p>我们来看下具体的步骤 （默认已经安装 MetaMask）</p>
+<p>（1）前端点击登录按钮，首先通过 <code>web3.eth.accounts[0]</code> 拿到 publicAddress，然后去后端拿 nonce </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">httpClient.post(&apos;/api/user&apos;, &#123;address&#125;)</span><br></pre></td></tr></table></figure>
+<p>（2）后端拿到 address 后，会去数据库查询是否存在这个用户，如果有，则直接返回跟 address 对应的 nonce。没有的话，会执行一个注册用户的过程，同样返回 nonce。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class Profile(models.Model):</span><br><span class="line">    user = models.OneToOneField(User, on_delete=models.CASCADE)</span><br><span class="line">    public_address = models.CharField(max_length=256)</span><br><span class="line">    nonce = models.IntegerField()</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">def user()</span><br><span class="line">    public_address = boby.get(&quot;address&quot;)</span><br><span class="line">    profiles = Profile.objects.filter(public_address=public_address.lower())</span><br><span class="line">    </span><br><span class="line">    if not profiles.exists():</span><br><span class="line">        user = User.objects.create(username=public_address.lower())</span><br><span class="line">        profile = Profile.objects.create(user=user, public_address=public_address.lower(), nonce=generate_nonce())</span><br><span class="line">    else:</span><br><span class="line">        profile = profiles[0]</span><br><span class="line">    return profile</span><br></pre></td></tr></table></figure>
+<p>(3) 前端拿到 nonce 之后会去找 MetaMask 签名生成 signature</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">web3.personal.sign(nonce, public_address, callback);</span><br></pre></td></tr></table></figure>
+<p>(4) 最后拿 signature 和 address 到后端验证是否签名正确</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">httpClient.post(&apos;/api/login&apos;, &#123;address, signature&#125;);</span><br></pre></td></tr></table></figure>
+<p>(5) 后端验证，验证成功则完成登录（基于 session 或 jwt）操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">message_hash = defunct_hash_message(text=&quot;signature nonce:%s&quot; % profile.nonce)</span><br><span class="line">recover_address = w3.eth.account.recoverHash(message_hash, signature=signature)</span><br><span class="line">if recover_address and recover_address.lower() == public_address:</span><br><span class="line">    user_login(request, profile.user)</span><br></pre></td></tr></table></figure>
+<p>这里面的 recoverHash 函数是 python web3.py 模块的。由于以太坊的椭圆曲线加密函数签名参数与比特币不太一样，所以如果用其他椭圆加解密包没法验证通过的话，可查看是不是参数设置不同。</p>
+<p>(6) 登录成功后，前后端交互就跟普通 http 请求没什么区别了。</p>
+<p><img src="/media/15292413044056.jpg" alt=""></p>
+<p>借用一张图来说明登录流程 （challenge 跟上文的 nonce 一致）</p>
+<p>最后，我们其实可以看到目前这个登录方式强依赖于 MetaMask 插件，对于手机端 App 是无效的，需要有专门的钱包 app 来完成签名等功能。不过可以展望下，如果 Dapp 越来越多，那么这些基础插件会越来越丰富和完善。</p>
+<p>参考链接：</p>
+<ol>
+<li><a href="https://www.toptal.com/ethereum/one-click-login-flows-a-metamask-tutorial" target="_blank" rel="noopener">https://www.toptal.com/ethereum/one-click-login-flows-a-metamask-tutorial</a></li>
+<li><a href="https://github.com/amaurymartiny/login-with-metamask-demo" target="_blank" rel="noopener">https://github.com/amaurymartiny/login-with-metamask-demo</a></li>
+<li><a href="https://github.com/m0t0k1ch1/metamask-login-sample" target="_blank" rel="noopener">https://github.com/m0t0k1ch1/metamask-login-sample</a></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/" data-id="cjikcpjct001296olmveqtcg1" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/智能合约/">智能合约</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/06/17/智能合约开发-如何更好的与合约交互/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          智能合约开发 - 如何更好的与合约交互
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/05/14/2018-05-14/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ipfs/">ipfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊/">以太坊</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/智能合约/">智能合约</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/ipfs/" style="font-size: 10px;">ipfs</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊/" style="font-size: 10px;">以太坊</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/智能合约/" style="font-size: 16.67px;">智能合约</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/06/17/智能合约开发-如何更好的与合约交互/">智能合约开发 - 如何更好的与合约交互</a>
+          </li>
+        
+          <li>
+            <a href="/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/">智能合约开发 - 如何实现一键化登录 Dapp</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/14/2018-05-14/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/06/智能合约调试指南/">智能合约调试指南</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/">利用 ipfs 构建去中心化 django 博客系统</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 facert<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    }); 
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

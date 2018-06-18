@@ -60,9 +60,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Buscar"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://facert.github.io"></form>
@@ -72,6 +72,159 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-智能合约开发-如何更好的与合约交互" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/06/17/智能合约开发-如何更好的与合约交互/" class="article-date">
+  <time datetime="2018-06-17T13:24:30.000Z" itemprop="datePublished">2018-06-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/17/智能合约开发-如何更好的与合约交互/">智能合约开发 - 如何更好的与合约交互</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>我们从一个简单的例子开始：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.4.0;</span><br><span class="line"></span><br><span class="line">contract Calc&#123;</span><br><span class="line">  uint count;</span><br><span class="line"></span><br><span class="line">  function add(uint a, uint b) returns(uint)&#123;</span><br><span class="line">    count++;</span><br><span class="line">    return a + b;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  function getCount() constant returns (uint)&#123;</span><br><span class="line">    return count;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面是 Solidity 智能合约，我们将合约编译发布后，会通过 web3.js 调用，如调用 getCount()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myContract.getCount.call()</span><br></pre></td></tr></table></figure>
+<p>web3.js 可以很方便的调用 json-rpc 接口来获得想要的数据，或者发起交易。</p>
+<p>不过如果要进一步开发产品的话，会发现只依赖现存的一些调用函数会比较麻烦，举个例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.4.0;</span><br><span class="line"></span><br><span class="line">contract Item&#123;</span><br><span class="line">  mapping(address =&gt; uint256[]) public ownedItems;</span><br><span class="line">  </span><br><span class="line">  function ListItem() returns(mapping)&#123;</span><br><span class="line">    return ownedItems[msg.sender];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  function addItem(_itemId) returns (uint256)&#123;</span><br><span class="line">    ownedItems[msg.sender].push(_itemId);</span><br><span class="line">    return _itemId</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果我们先获得某个地址的 item, 可以通过函数 <code>Item.ListItem.call()</code> 获得数据，前端获得数据后展示即可。但需求加上根据条件过滤出 item，根据个人喜好推荐 item，这些原本在传统开发中很容易实现的功能，在智能合约的交互中会变的相对麻烦。</p>
+<p>这里面我提供一种思路供大家参考，利用智能合约的 event 事件来同步数据。</p>
+<p>event 也可以称为日志，是交易收据（Transaction Receipts）的一部分，他可以用来异步通知客户端交易的执行结果。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.4.0;</span><br><span class="line"></span><br><span class="line">contract Item&#123;</span><br><span class="line">  mapping(address =&gt; uint256[]) public ownedItems;</span><br><span class="line">  </span><br><span class="line">  event AddItem(address, itemID);  // event</span><br><span class="line">  </span><br><span class="line">  function addItem(_itemId) returns (uint256)&#123;</span><br><span class="line">    ownedItems[msg.sender].push(_itemId);</span><br><span class="line">    AddItem(msg.sender, _itemId);</span><br><span class="line">    return _itemId;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>比如我们可以加个 AddItem 的事件，然后客户端监听事件结果，同步数据到 server 端，server 端保存到数据库后，可以根据需求开发 http 接口供前端调用，如过滤前三个月的，根据浏览量排行。</p>
+<p><img src="/media/15293064015386.jpg" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def handle(self, *args, **options):</span><br><span class="line">    	event_filter = w3.eth.filter(&#123;&quot;address&quot;: contract_address&#125;)</span><br><span class="line">    	poll_interval = 2</span><br><span class="line">    	while True:</span><br><span class="line">    		for event in event_filter.get_new_entries():</span><br><span class="line">    			handle_event(event)</span><br><span class="line">    		time.sleep(poll_interval)</span><br></pre></td></tr></table></figure>
+<p>event 可以给参数加 indexed 属性，这样这些参数值会存到日志结构的 topic 部分，有助于过滤和查找。</p>
+<p>参考链接：</p>
+<ol>
+<li><a href="http://me.tryblockchain.org/blockchain-solidity-event.html" target="_blank" rel="noopener">http://me.tryblockchain.org/blockchain-solidity-event.html</a></li>
+<li><a href="http://web3.tryblockchain.org/web3-js-in-action.html" target="_blank" rel="noopener">http://web3.tryblockchain.org/web3-js-in-action.html</a></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2018/06/17/智能合约开发-如何更好的与合约交互/" data-id="cjikcpjcu001396oljul36za4" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/智能合约/">智能合约</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-智能合约开发-如何实现一键化登录-Dapp" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/" class="article-date">
+  <time datetime="2018-06-17T10:56:56.000Z" itemprop="datePublished">2018-06-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/">智能合约开发 - 如何实现一键化登录 Dapp</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>任何有帐户体系的网站和 app 都会有自己的登录模块，有时候还会集成 oauth2 （weibo, weixin，github)一键化登录.开发者肯定也都或多或少的开发过注册，登录的功能。那么基于以太坊的 Dapp 中登录功能会有什么区别呢？本文主要介绍了 Dapp 帐号体系的构成，以及如何基于 Metamask 开发一键化登录的功能。</p>
+<p>首先 Dapp 跟普通的网站(app)没多少区别，完全可以延续之前的帐号体系登录，注册。在需要用到以太坊区块链的时候（比如创建交易，支付等）调用钱包或者 MetaMask 插件即可。</p>
+<p>当然本身以太坊就有自己的帐号，每个人都可以创建 Address 来和区块链交互，所以如果我们的 Dapp 跟 Address 能够绑定并实现登录的话，整体的体验会好很多。</p>
+<p>解决方案是利用私钥对 payload 加密生成 signature，然后再用<br>ecdsa_recover 方法对 signature 解密可以拿到对应的公钥。</p>
+<p><img src="/media/15292352605816.gif" alt=""></p>
+<p>我们来看下具体的步骤 （默认已经安装 MetaMask）</p>
+<p>（1）前端点击登录按钮，首先通过 <code>web3.eth.accounts[0]</code> 拿到 publicAddress，然后去后端拿 nonce </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">httpClient.post(&apos;/api/user&apos;, &#123;address&#125;)</span><br></pre></td></tr></table></figure>
+<p>（2）后端拿到 address 后，会去数据库查询是否存在这个用户，如果有，则直接返回跟 address 对应的 nonce。没有的话，会执行一个注册用户的过程，同样返回 nonce。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class Profile(models.Model):</span><br><span class="line">    user = models.OneToOneField(User, on_delete=models.CASCADE)</span><br><span class="line">    public_address = models.CharField(max_length=256)</span><br><span class="line">    nonce = models.IntegerField()</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">def user()</span><br><span class="line">    public_address = boby.get(&quot;address&quot;)</span><br><span class="line">    profiles = Profile.objects.filter(public_address=public_address.lower())</span><br><span class="line">    </span><br><span class="line">    if not profiles.exists():</span><br><span class="line">        user = User.objects.create(username=public_address.lower())</span><br><span class="line">        profile = Profile.objects.create(user=user, public_address=public_address.lower(), nonce=generate_nonce())</span><br><span class="line">    else:</span><br><span class="line">        profile = profiles[0]</span><br><span class="line">    return profile</span><br></pre></td></tr></table></figure>
+<p>(3) 前端拿到 nonce 之后会去找 MetaMask 签名生成 signature</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">web3.personal.sign(nonce, public_address, callback);</span><br></pre></td></tr></table></figure>
+<p>(4) 最后拿 signature 和 address 到后端验证是否签名正确</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">httpClient.post(&apos;/api/login&apos;, &#123;address, signature&#125;);</span><br></pre></td></tr></table></figure>
+<p>(5) 后端验证，验证成功则完成登录（基于 session 或 jwt）操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">message_hash = defunct_hash_message(text=&quot;signature nonce:%s&quot; % profile.nonce)</span><br><span class="line">recover_address = w3.eth.account.recoverHash(message_hash, signature=signature)</span><br><span class="line">if recover_address and recover_address.lower() == public_address:</span><br><span class="line">    user_login(request, profile.user)</span><br></pre></td></tr></table></figure>
+<p>这里面的 recoverHash 函数是 python web3.py 模块的。由于以太坊的椭圆曲线加密函数签名参数与比特币不太一样，所以如果用其他椭圆加解密包没法验证通过的话，可查看是不是参数设置不同。</p>
+<p>(6) 登录成功后，前后端交互就跟普通 http 请求没什么区别了。</p>
+<p><img src="/media/15292413044056.jpg" alt=""></p>
+<p>借用一张图来说明登录流程 （challenge 跟上文的 nonce 一致）</p>
+<p>最后，我们其实可以看到目前这个登录方式强依赖于 MetaMask 插件，对于手机端 App 是无效的，需要有专门的钱包 app 来完成签名等功能。不过可以展望下，如果 Dapp 越来越多，那么这些基础插件会越来越丰富和完善。</p>
+<p>参考链接：</p>
+<ol>
+<li><a href="https://www.toptal.com/ethereum/one-click-login-flows-a-metamask-tutorial" target="_blank" rel="noopener">https://www.toptal.com/ethereum/one-click-login-flows-a-metamask-tutorial</a></li>
+<li><a href="https://github.com/amaurymartiny/login-with-metamask-demo" target="_blank" rel="noopener">https://github.com/amaurymartiny/login-with-metamask-demo</a></li>
+<li><a href="https://github.com/m0t0k1ch1/metamask-login-sample" target="_blank" rel="noopener">https://github.com/m0t0k1ch1/metamask-login-sample</a></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/" data-id="cjikcpjct001296olmveqtcg1" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/智能合约/">智能合约</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2018-05-14" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/05/14/2018-05-14/" class="article-date">
+  <time datetime="2018-05-14T03:04:18.011Z" itemprop="datePublished">2018-05-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p># </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2018/05/14/2018-05-14/" data-id="cjikcpjc0000796olnq6hpwba" class="article-share-link">Teilen</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
   
     <article id="post-智能合约调试指南" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -109,7 +262,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/04/06/智能合约调试指南/" data-id="cjfnq50qe0013h1oly7t31zkc" class="article-share-link">Compartir</a>
+      <a data-url="https://facert.github.io/2018/04/06/智能合约调试指南/" data-id="cjikcpje5002x96olfla3xh7k" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/智能合约/">智能合约</a></li></ul>
@@ -154,143 +307,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/" data-id="cjfnq50pz000sh1oll8cgm1q2" class="article-share-link">Compartir</a>
+      <a data-url="https://facert.github.io/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/" data-id="cjikcpjcm000n96olrpjffaqh" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ipfs/">ipfs</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-前端线上调试指南" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/01/27/前端线上调试指南/" class="article-date">
-  <time datetime="2018-01-27T09:46:08.000Z" itemprop="datePublished">2018-01-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/27/前端线上调试指南/">前端线上调试指南</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h4><p>前端工程师可能会遇到如下的场景：测试环境功能都 ok ，到了生产环境就出问题，改完 bug 上线后发现又引入了新的问题。只能再次重复这个过程。</p>
-<p>所以能不能不上线，将本地代码直接作用于线上，来调试功能呢。</p>
-<p>我们有如下工具可以选择 fiddler (windows), charles (mac), mitmproxy (可自定义脚本)</p>
-<p>下面我们举 charles 和 mitmproxy 为例子说明<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/01/27/前端线上调试指南/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/01/27/前端线上调试指南/" data-id="cjfnq50pu000oh1olw8loo5h6" class="article-share-link">Compartir</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端/">前端</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-开源【动态可配化爬虫】代码" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/01/13/开源【动态可配化爬虫】代码/" class="article-date">
-  <time datetime="2018-01-13T06:17:37.000Z" itemprop="datePublished">2018-01-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/13/开源【动态可配化爬虫】代码/">开源【动态可配化爬虫】代码</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>继上篇文章 <a href="https://zhuanlan.zhihu.com/p/31659456" target="_blank" rel="noopener">动态可配置化 Python 爬虫</a> 说过的 Todo 项一直没有精力去维护，索性开源代码，让各位自己去折腾完善，欢迎提 pr。</p>
-<p>项目地址：<a href="https://github.com/facert/scrapy_helper" target="_blank" rel="noopener">https://github.com/facert/scrapy_helper</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/01/13/开源【动态可配化爬虫】代码/" data-id="cjfnq50q6000yh1ol1a8szt3a" class="article-share-link">Compartir</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-以太坊云撸猫教程" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/12/10/以太坊云撸猫教程/" class="article-date">
-  <time datetime="2017-12-10T04:12:11.000Z" itemprop="datePublished">2017-12-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/10/以太坊云撸猫教程/">以太坊云撸猫教程</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近听说以太坊上能撸猫了，而且据说还能养猫赚钱，有些猫的价格已经高的离谱，按今天一个以太币 = 2800 ¥ 的节奏，1000 个 就是 280 w。</p>
-<p><img src="/media/15128794800292.jpg" alt=""></p>
-<p>那么作为国内的普通用户想尝试下养一只猫该怎么办呢，因为可能大家没有任何虚拟币，而且很多国内的渠道都已经封闭，但是买猫的话只能通过以太币购买。</p>
-<p>下面介绍一下我使用的方法<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/12/10/以太坊云撸猫教程/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2017/12/10/以太坊云撸猫教程/" data-id="cjfnq50ps000mh1olo9amufbi" class="article-share-link">Compartir</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/以太坊/">以太坊</a></li></ul>
 
     </footer>
   </div>
@@ -304,7 +324,7 @@
 
   <nav id="page-nav">
     
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">Siguiente &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">weiter &raquo;</a>
   </nav>
 
 </section>
@@ -326,18 +346,18 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Nube de Tags</h3>
+    <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/ipfs/" style="font-size: 10px;">ipfs</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊/" style="font-size: 10px;">以太坊</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/智能合约/" style="font-size: 10px;">智能合约</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/ipfs/" style="font-size: 10px;">ipfs</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊/" style="font-size: 10px;">以太坊</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/智能合约/" style="font-size: 16.67px;">智能合约</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archivos</h3>
+    <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
   </div>
 
@@ -345,9 +365,21 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Posts recientes</h3>
+    <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/06/17/智能合约开发-如何更好的与合约交互/">智能合约开发 - 如何更好的与合约交互</a>
+          </li>
+        
+          <li>
+            <a href="/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/">智能合约开发 - 如何实现一键化登录 Dapp</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/14/2018-05-14/">(no title)</a>
+          </li>
         
           <li>
             <a href="/2018/04/06/智能合约调试指南/">智能合约调试指南</a>
@@ -355,18 +387,6 @@
         
           <li>
             <a href="/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/">利用 ipfs 构建去中心化 django 博客系统</a>
-          </li>
-        
-          <li>
-            <a href="/2018/01/27/前端线上调试指南/">前端线上调试指南</a>
-          </li>
-        
-          <li>
-            <a href="/2018/01/13/开源【动态可配化爬虫】代码/">开源【动态可配化爬虫】代码</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/10/以太坊云撸猫教程/">以太坊云撸猫教程</a>
           </li>
         
       </ul>
@@ -382,7 +402,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2018 facert<br>
-      Construido por <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>

@@ -60,9 +60,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Buscar"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://facert.github.io"></form>
@@ -72,6 +72,148 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-由浅入深写代理-1-介绍" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/14/由浅入深写代理-1-介绍/" class="article-date">
+  <time datetime="2017-08-14T15:16:27.000Z" itemprop="datePublished">2017-08-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/14/由浅入深写代理-1-介绍/">由浅入深写代理(1)-介绍</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>代理作为现代人上网必备的一个工具，但是大家其实对其中的原理也不是特别了解，所以写了一个系列的教程，由浅入深的讲解下。</p>
+<p>代理可以分为正向代理和反向代理。</p>
+<ul>
+<li>正向代理是一个位于客户端和目标服务器之间的代理服务器，用来把客户端的请求代理到目标服务器，比如科学上网。</li>
+<li>反向代理就好像是目标服务器，客户端并不知道这个请求具体会被转发到哪里，由反向代理自己判断，比如负载均衡。</li>
+</ul>
+<p>这次主要教程跟正向代理有关，目前已更新如下</p>
+<p>由浅入深写代理(2)- socket 编程<br>由浅入深写代理(3) -socks5 代理<br>由浅入深写代理(4)-socks5-代理<br>由浅入深写代理(5)-socks5-代理<br>由浅入深写代理(6)-http-代理<br>由浅入深写代理(7)-https-代理<br>由浅入深写代理(8)-ss-代理<br>由浅入深写代理(9)-ssh-代理<br>由浅入深写代理(10)-内网穿透</p>
+<p>tips</p>
+<ol>
+<li>这次教程的所有资源的 github 地址为 <a href="https://github.com/facert/socket-example" target="_blank" rel="noopener">https://github.com/facert/socket-example</a><br>（除了 ss-local.py 和 ss-server.py 以外，其他都用 python3 编写）</li>
+<li>公众号 程序化思维 , 欢迎关注</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2017/08/14/由浅入深写代理-1-介绍/" data-id="cjikcpjd3001m96olne8e5nfc" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代理/">代理</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-写给前端的甩锅指南" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/08/写给前端的甩锅指南/" class="article-date">
+  <time datetime="2017-03-08T08:04:53.000Z" itemprop="datePublished">2017-03-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/08/写给前端的甩锅指南/">写给前端的甩锅指南</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">前端小白，“老王，你的接口不能用了”</span><br><span class="line">后端老王一脸不屑，“怎么可能，刚刚还能用，你看看参数传对了没有。” </span><br><span class="line">前端小白吭哧吭哧检查了几遍，“参数没问题啊，你看看是不是有 username, id。。。”</span><br><span class="line">后端老王顿了许久， “参数应该没问题，你再清下浏览器缓存试试”</span><br><span class="line">前端小白摁着 &quot;ctr + f5&quot; 刷新了好多次， 一脸苦逼的说：“清完浏览器缓存了，还是有问题”</span><br><span class="line">后端老王略过一丝疑虑，难道是我接口出问题了，不该啊，刚还能用，都测试好几遍了，说道：“你看看是不是数据库存的测试数据有问题，删了再试试，或者换个浏览器，重启下 server。”</span><br><span class="line">前端小白照着老王的方法逐一尝试着。。。</span><br><span class="line">突然老王拍了下脑瓜，一脸尴尬的说：“小白，我刚 fix 一个线上 bug, 测试环境换了分支，所以接口出问题了。”</span><br><span class="line">小白一脸生无可恋的望着老王头顶的地中海发呆。。。</span><br></pre></td></tr></table></figure>
+<p>上面情节纯属虚构，作为一个后端开发人员，我怎么忍心这么黑自己的同行呢 😭。不过思考下这么一个问题，前端如何能够快速的定位问题呢。这里面跟很多因素有关，比如前后端协作流程是否完善，前后端人员的经验。<br>
+        
+          <p class="article-more-link">
+            <a href="/2017/03/08/写给前端的甩锅指南/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2017/03/08/写给前端的甩锅指南/" data-id="cjikcpjcp000s96olucnw8cjz" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web开发/">web开发</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-过滤豆瓣租房小组中介贴之-python-实现-k-近邻算法（四）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/06/过滤豆瓣租房小组中介贴之-python-实现-k-近邻算法（四）/" class="article-date">
+  <time datetime="2017-03-06T05:21:02.000Z" itemprop="datePublished">2017-03-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/06/过滤豆瓣租房小组中介贴之-python-实现-k-近邻算法（四）/">过滤豆瓣租房小组中介贴之 python 实现 k 近邻算法（四）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>豆瓣有各种小组，每个小组会有个主题，比如租房小组基本里面全是房源相关的，当然偶尔也会有广告出现。那么如何能够让机器知道你发的帖子到底是哪个主题的呢，简单来说就是如何给帖子分类。这个时候需要介绍机器学习一个最简单的算法，叫 <code>k 近邻算法</code>。 原理介绍见这篇 <a href="http://coolshell.cn/articles/8052.html" target="_blank" rel="noopener">K NEAREST NEIGHBOR 算法</a>，</p>
+<p><img src="/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-03-06%20%E4%B8%8B%E5%8D%881.35.46.png" alt="屏幕快照 2017-03-06 下午1.35.46"><br>
+        
+          <p class="article-more-link">
+            <a href="/2017/03/06/过滤豆瓣租房小组中介贴之-python-实现-k-近邻算法（四）/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2017/03/06/过滤豆瓣租房小组中介贴之-python-实现-k-近邻算法（四）/" data-id="cjikcpjdu002s96oll1sojvuc" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
   
     <article id="post-过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -104,7 +246,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/" data-id="cjfnq50rt001wh1olc3b3thu3" class="article-share-link">Compartir</a>
+      <a data-url="https://facert.github.io/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/" data-id="cjikcpjda002096ol402hx1pw" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
@@ -148,143 +290,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）/" data-id="cjfnq50s30020h1ols1ykt3vo" class="article-share-link">Compartir</a>
+      <a data-url="https://facert.github.io/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）/" data-id="cjikcpjda002196olg25w4504" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-ghost-博客中文搜索插件" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/21/ghost-博客中文搜索插件/" class="article-date">
-  <time datetime="2016-12-21T09:59:44.000Z" itemprop="datePublished">2016-12-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/21/ghost-博客中文搜索插件/">ghost 博客中文搜索插件</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在用 ghost 博客的时候，发现一直没有合适的搜索插件，主要是官方没提供相应的 search api, <a href="https://github.com/dreampiggy/ghostHunter" target="_blank" rel="noopener">ghostHunter</a> 采用 api 获取所有文章的方式，然后用 lunir 做全文搜索。但是 lunir 本身不支持中文分词，虽然有小伙伴提供了中文分词的方案，但是为了一个简单的搜索加了好大一堆库，感觉还是不怎么经济。</p>
-<p>所以鉴于此，根据 ghsotHunter 改了个简单的插件，为了效率，api 获取的时候只取 title, 所以只支持简单的 title 匹配搜索, 代码如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> searchResult = [];</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>; i &lt; <span class="keyword">this</span>.blogData.length; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span>(value &amp;&amp; <span class="keyword">this</span>.blogData[i].title.toLowerCase().search(value.toLowerCase()) != <span class="number">-1</span>)&#123;</span><br><span class="line">    searchResult.push(<span class="keyword">this</span>.blogData[i]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-          <p class="article-more-link">
-            <a href="/2016/12/21/ghost-博客中文搜索插件/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2016/12/21/ghost-博客中文搜索插件/" data-id="cjfnq50p50009h1olzjzsmdim" class="article-share-link">Compartir</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ghost/">ghost</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-2016-关于技术和人生的一些碎碎念" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/15/2016-关于技术和人生的一些碎碎念/" class="article-date">
-  <time datetime="2016-12-15T05:09:37.000Z" itemprop="datePublished">2016-12-15</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/15/2016-关于技术和人生的一些碎碎念/">2016 关于技术和人生的一些碎碎念</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>这几天知乎上有个问题很火，<a href="https://www.zhihu.com/question/53625757" target="_blank" rel="noopener">如何评价真阿当的文章：《2016年前端技术观察》？</a>, 主要还是围绕前端这两年新技术发展的讨论。以前语言之间一比较就会撕起来，现在前端领域都能引发这么大的轰动，足见这几年前端的火爆。文章中吐槽前端的一些问题确实存在，我觉得不算是一件坏事，这本来就是个百家争鸣的时代，事物是慢慢发展的，总有一天会出现很成熟的前端方案。至于对于新人的影响，也希望单纯为了一份高工资而盲目进入这个行业的人能谨慎考虑下。</p>
-<p>有一天我偶然听到一妹子跟她老板说想要搞数据分析，然后她老板耐心的跟她解释，现在没有什么数据可以分析，再说你是文科专业的，数据分析学起来可能比较困难。首先我对于妹子上进心还是赞许的，但是我觉得是不是现在有些行业被炒的过火了，比如数据分析，如果达到全民搞数据分析的程度，那肯定是有问题了。不否认数据本身是有它的价值的，但数据也不是万金油，盲目的去分析毫无意义。说到底数据分析也是为解决问题服务的。</p>
-<p>我一直不认为做技术比做其他工作有优越感，只是由于运气好赶上了互联网的发展。大多数从菜鸟到别人眼中的大牛，其实也就是多看了几本书，多实践了几个项目而已。我在年终述职中对自己的展望是用平和的心去看待这个世界，做技术难免有自己的执念，有时候放下执念，看看这个真实的世界，好多美好的东西就不会错过。</p>
-<p>以上都是碎碎念，生活不只是有技术，还有诗和远方。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2016/12/15/2016-关于技术和人生的一些碎碎念/" data-id="cjfnq50on0004h1olq74v2rxm" class="article-share-link">Compartir</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/思考/">思考</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-django-防御-csrf-源码分析" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/09/django-防御-csrf-源码分析/" class="article-date">
-  <time datetime="2016-12-09T10:28:39.000Z" itemprop="datePublished">2016-12-09</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/09/django-防御-csrf-源码分析/">django 安全之防御 csrf</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="本文主要通过分析-django-源码-介绍-django-在-csrf-跨站请求伪造-的防御措施，-默认大家对-csrf-有一定的了解"><a href="#本文主要通过分析-django-源码-介绍-django-在-csrf-跨站请求伪造-的防御措施，-默认大家对-csrf-有一定的了解" class="headerlink" title="本文主要通过分析 django 源码 介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解"></a>本文主要通过分析 django 源码 介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解</h4>
-        
-          <p class="article-more-link">
-            <a href="/2016/12/09/django-防御-csrf-源码分析/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2016/12/09/django-防御-csrf-源码分析/" data-id="cjfnq50oz0007h1olldx1m44y" class="article-share-link">Compartir</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/django源码/">django源码</a></li></ul>
 
     </footer>
   </div>
@@ -298,7 +307,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/4/">&laquo; Previo</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/6/">Siguiente &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/4/">&laquo; zurück</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/6/">weiter &raquo;</a>
   </nav>
 
 </section>
@@ -320,18 +329,18 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Nube de Tags</h3>
+    <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/ipfs/" style="font-size: 10px;">ipfs</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊/" style="font-size: 10px;">以太坊</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/智能合约/" style="font-size: 10px;">智能合约</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/ipfs/" style="font-size: 10px;">ipfs</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊/" style="font-size: 10px;">以太坊</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/智能合约/" style="font-size: 16.67px;">智能合约</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archivos</h3>
+    <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
   </div>
 
@@ -339,9 +348,21 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Posts recientes</h3>
+    <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/06/17/智能合约开发-如何更好的与合约交互/">智能合约开发 - 如何更好的与合约交互</a>
+          </li>
+        
+          <li>
+            <a href="/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/">智能合约开发 - 如何实现一键化登录 Dapp</a>
+          </li>
+        
+          <li>
+            <a href="/2018/05/14/2018-05-14/">(no title)</a>
+          </li>
         
           <li>
             <a href="/2018/04/06/智能合约调试指南/">智能合约调试指南</a>
@@ -349,18 +370,6 @@
         
           <li>
             <a href="/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/">利用 ipfs 构建去中心化 django 博客系统</a>
-          </li>
-        
-          <li>
-            <a href="/2018/01/27/前端线上调试指南/">前端线上调试指南</a>
-          </li>
-        
-          <li>
-            <a href="/2018/01/13/开源【动态可配化爬虫】代码/">开源【动态可配化爬虫】代码</a>
-          </li>
-        
-          <li>
-            <a href="/2017/12/10/以太坊云撸猫教程/">以太坊云撸猫教程</a>
           </li>
         
       </ul>
@@ -376,7 +385,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2018 facert<br>
-      Construido por <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
