@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://facert.github.io/"/>
-  <updated>2018-06-18T14:27:01.522Z</updated>
+  <updated>2018-06-30T09:06:47.403Z</updated>
   <id>https://facert.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>智能合约开发-基于以太坊的文章付费转载 demo</title>
+    <link href="https://facert.github.io/2018/06/30/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%BC%80%E5%8F%91-%E5%9F%BA%E4%BA%8E%E4%BB%A5%E5%A4%AA%E5%9D%8A%E7%9A%84%E6%96%87%E7%AB%A0%E4%BB%98%E8%B4%B9%E8%BD%AC%E8%BD%BDdemo/"/>
+    <id>https://facert.github.io/2018/06/30/智能合约开发-基于以太坊的文章付费转载demo/</id>
+    <published>2018-06-30T07:50:47.000Z</published>
+    <updated>2018-06-30T09:06:47.403Z</updated>
+    
+    <content type="html"><![CDATA[<p>前段时间做了一个 Dapp demo，名字叫 <a href="http://ds.bdaily.club/" target="_blank" rel="noopener">钉书</a>。通过区块链技术，证明用户文章的所有权，以此为基础打造一个知识类商品平台，用户上传知识，文章，标价，买家选择有价值的知识和文章，付费转载。</p><p><img src="/media/15303460856374.jpg" alt=""></p><p>这个平台的愿景是为作者和内容使用方提供通畅的授权渠道，引导规范合理的转载行为，为原创者带来更多的尊重和收益。</p><p>下面具体说说 Dapp 开发过程中一些技术点和坑吧。</p><h5 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h5><p>目前 dapp 基本都是从零开始，帐户体系还未建立。而以太坊本身就有账户的概念，所以让 dapp 的帐户和以太坊账户打通也是必要的。目前有一些解决方案，比如基于 Metamask 的一键化登录，无需单独创建账号，用户通过 Metamask 插件签名后与后端交互校验后即可创建与 address 绑定的帐户。</p><p><img src="/media/15303468251209.jpg" alt=""></p><p><img src="/media/15303468301532.jpg" alt=""></p><p>具体交互流程可参考我的这篇文章：<a href="https://zhuanlan.zhihu.com/p/38213993" target="_blank" rel="noopener">智能合约开发 - 如何实现一键化登录 Dapp</a></p><h5 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h5><p>dapp 的交互目前有 truffle, web3.js ，都属于前端的 js 包。或许说明了一个问题，目前与智能合约的交互得依赖前端。但其实很多时候数据的处理和维护还得放在后端来做，所以让 dapp 的开发更加方便也变得很重要，这里有一个思路供参考： <a href="https://zhuanlan.zhihu.com/p/38244475" target="_blank" rel="noopener">智能合约开发 - 如何更好的与合约交互</a></p><h5 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h5><p>再说说智能合约的测试环境吧。</p><ol><li>如要在本地测试，可以用 ganache，他会启动一条私有的链，并且生成一些账户供测试用。</li><li>如要放到公网环境测试，可以用 Ropsten Test Net 环境部署合约。比如 <a href="http://ds.bdaily.club/" target="_blank" rel="noopener">钉书</a> 的合约就部署在以太坊的 Ropsten Test Net 环境。先安装 MetaMask 插件，切换到 Ropsten Test Net 环境，点击 BUY -&gt; ROPSTEN TEST FAUCET 即可获得免费以太币测试发布和购买文章。</li></ol><h5 id="0x04"><a href="#0x04" class="headerlink" title="0x04"></a>0x04</h5><p>截止目前，以太坊的一个全节点总数据快 600G 了，自己维护一个全节点成本也变的越来越高。有一个稳定和可信的全节点还是很重要的，比如 <a href="https://infura.io/，" target="_blank" rel="noopener">https://infura.io/，</a> 不过它不支持某些 json-rpc 接口，比如 event_filter。</p><h5 id="0x05"><a href="#0x05" class="headerlink" title="0x05"></a>0x05</h5><p>就这个 demo 来说，其实还有好多东西没做，比如</p><ol><li>作者的身份认证系统</li><li>文章通过数字签名来锚定唯一的链接</li><li>支持其他数字媒体类型的所有权确认</li></ol><h5 id="0x06"><a href="#0x06" class="headerlink" title="0x06"></a>0x06</h5><p>这里抱怨下，这个 demo 其实是迅雷区块链大赛的参赛作品。迅雷的评委只看了 ppt ，demo 一眼都没看就被淘汰了，还是有点失望评委的态度。</p><h5 id="0x07"><a href="#0x07" class="headerlink" title="0x07"></a>0x07</h5><p>最后推广下自己的 <a href="https://www.bdaily.club/about" target="_blank" rel="noopener">区块链日报</a>，目前更新到八十三期，在<a href="https://zhuanlan.zhihu.com/btchain" target="_blank" rel="noopener">知乎</a>和 <a href="https://twitter.com/bchain_daily" target="_blank" rel="noopener">twitter</a> 上都有了一定的关注量，希望能为真正学习区块链的人带来一点帮助。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;前段时间做了一个 Dapp demo，名字叫 &lt;a href=&quot;http://ds.bdaily.club/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;钉书&lt;/a&gt;。通过区块链技术，证明用户文章的所有权，以此为基础打造一个知识类商品平台，用户上传知识，
+      
+    
+    </summary>
+    
+    
+      <category term="智能合约" scheme="https://facert.github.io/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/"/>
+    
+  </entry>
   
   <entry>
     <title>智能合约开发 - 如何更好的与合约交互</title>
@@ -399,32 +422,6 @@
     <summary type="html">
     
       &lt;p&gt;说到代理，那肯定会跟网络协议有关，包括（tcp, ip, http），网络中的进程需要通过 socket 来通信，socket 可以认为是操作系统抽象出来的一类接口，供使用者能够更加方便的与底层的网络协议打交道。&lt;br&gt;
-    
-    </summary>
-    
-    
-      <category term="代理" scheme="https://facert.github.io/tags/%E4%BB%A3%E7%90%86/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>由浅入深写代理(1)-介绍</title>
-    <link href="https://facert.github.io/2017/08/14/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E5%86%99%E4%BB%A3%E7%90%86-1-%E4%BB%8B%E7%BB%8D/"/>
-    <id>https://facert.github.io/2017/08/14/由浅入深写代理-1-介绍/</id>
-    <published>2017-08-14T15:16:27.000Z</published>
-    <updated>2017-08-27T03:02:12.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>代理作为现代人上网必备的一个工具，但是大家其实对其中的原理也不是特别了解，所以写了一个系列的教程，由浅入深的讲解下。</p><p>代理可以分为正向代理和反向代理。</p><ul><li>正向代理是一个位于客户端和目标服务器之间的代理服务器，用来把客户端的请求代理到目标服务器，比如科学上网。</li><li>反向代理就好像是目标服务器，客户端并不知道这个请求具体会被转发到哪里，由反向代理自己判断，比如负载均衡。</li></ul><p>这次主要教程跟正向代理有关，目前已更新如下</p><p>由浅入深写代理(2)- socket 编程<br>由浅入深写代理(3) -socks5 代理<br>由浅入深写代理(4)-socks5-代理<br>由浅入深写代理(5)-socks5-代理<br>由浅入深写代理(6)-http-代理<br>由浅入深写代理(7)-https-代理<br>由浅入深写代理(8)-ss-代理<br>由浅入深写代理(9)-ssh-代理<br>由浅入深写代理(10)-内网穿透</p><p>tips</p><ol><li>这次教程的所有资源的 github 地址为 <a href="https://github.com/facert/socket-example" target="_blank" rel="noopener">https://github.com/facert/socket-example</a><br>（除了 ss-local.py 和 ss-server.py 以外，其他都用 python3 编写）</li><li>公众号 程序化思维 , 欢迎关注</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;代理作为现代人上网必备的一个工具，但是大家其实对其中的原理也不是特别了解，所以写了一个系列的教程，由浅入深的讲解下。&lt;/p&gt;
-&lt;p&gt;代理可以分为正向代理和反向代理。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;正向代理是一个位于客户端和目标服务器之间的代理服务器，用来把客户端的请求代理到目标
-      
     
     </summary>
     

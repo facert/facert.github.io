@@ -73,6 +73,70 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-智能合约开发-基于以太坊的文章付费转载demo" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/06/30/智能合约开发-基于以太坊的文章付费转载demo/" class="article-date">
+  <time datetime="2018-06-30T07:50:47.000Z" itemprop="datePublished">2018-06-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/30/智能合约开发-基于以太坊的文章付费转载demo/">智能合约开发-基于以太坊的文章付费转载 demo</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前段时间做了一个 Dapp demo，名字叫 <a href="http://ds.bdaily.club/" target="_blank" rel="noopener">钉书</a>。通过区块链技术，证明用户文章的所有权，以此为基础打造一个知识类商品平台，用户上传知识，文章，标价，买家选择有价值的知识和文章，付费转载。</p>
+<p><img src="/media/15303460856374.jpg" alt=""></p>
+<p>这个平台的愿景是为作者和内容使用方提供通畅的授权渠道，引导规范合理的转载行为，为原创者带来更多的尊重和收益。</p>
+<p>下面具体说说 Dapp 开发过程中一些技术点和坑吧。</p>
+<h5 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h5><p>目前 dapp 基本都是从零开始，帐户体系还未建立。而以太坊本身就有账户的概念，所以让 dapp 的帐户和以太坊账户打通也是必要的。目前有一些解决方案，比如基于 Metamask 的一键化登录，无需单独创建账号，用户通过 Metamask 插件签名后与后端交互校验后即可创建与 address 绑定的帐户。</p>
+<p><img src="/media/15303468251209.jpg" alt=""></p>
+<p><img src="/media/15303468301532.jpg" alt=""></p>
+<p>具体交互流程可参考我的这篇文章：<a href="https://zhuanlan.zhihu.com/p/38213993" target="_blank" rel="noopener">智能合约开发 - 如何实现一键化登录 Dapp
+</a></p>
+<h5 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h5><p>dapp 的交互目前有 truffle, web3.js ，都属于前端的 js 包。或许说明了一个问题，目前与智能合约的交互得依赖前端。但其实很多时候数据的处理和维护还得放在后端来做，所以让 dapp 的开发更加方便也变得很重要，这里有一个思路供参考： <a href="https://zhuanlan.zhihu.com/p/38244475" target="_blank" rel="noopener">智能合约开发 - 如何更好的与合约交互
+</a></p>
+<h5 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h5><p>再说说智能合约的测试环境吧。</p>
+<ol>
+<li>如要在本地测试，可以用 ganache，他会启动一条私有的链，并且生成一些账户供测试用。</li>
+<li>如要放到公网环境测试，可以用 Ropsten Test Net 环境部署合约。比如 <a href="http://ds.bdaily.club/" target="_blank" rel="noopener">钉书</a> 的合约就部署在以太坊的 Ropsten Test Net 环境。先安装 MetaMask 插件，切换到 Ropsten Test Net 环境，点击 BUY -&gt; ROPSTEN TEST FAUCET 即可获得免费以太币测试发布和购买文章。</li>
+</ol>
+<h5 id="0x04"><a href="#0x04" class="headerlink" title="0x04"></a>0x04</h5><p>截止目前，以太坊的一个全节点总数据快 600G 了，自己维护一个全节点成本也变的越来越高。有一个稳定和可信的全节点还是很重要的，比如 <a href="https://infura.io/，" target="_blank" rel="noopener">https://infura.io/，</a> 不过它不支持某些 json-rpc 接口，比如 event_filter。</p>
+<h5 id="0x05"><a href="#0x05" class="headerlink" title="0x05"></a>0x05</h5><p>就这个 demo 来说，其实还有好多东西没做，比如</p>
+<ol>
+<li>作者的身份认证系统</li>
+<li>文章通过数字签名来锚定唯一的链接</li>
+<li>支持其他数字媒体类型的所有权确认</li>
+</ol>
+<h5 id="0x06"><a href="#0x06" class="headerlink" title="0x06"></a>0x06</h5><p>这里抱怨下，这个 demo 其实是迅雷区块链大赛的参赛作品。迅雷的评委只看了 ppt ，demo 一眼都没看就被淘汰了，还是有点失望评委的态度。</p>
+<h5 id="0x07"><a href="#0x07" class="headerlink" title="0x07"></a>0x07</h5><p>最后推广下自己的 <a href="https://www.bdaily.club/about" target="_blank" rel="noopener">区块链日报</a>，目前更新到八十三期，在<a href="https://zhuanlan.zhihu.com/btchain" target="_blank" rel="noopener">知乎</a>和 <a href="https://twitter.com/bchain_daily" target="_blank" rel="noopener">twitter</a> 上都有了一定的关注量，希望能为真正学习区块链的人带来一点帮助。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2018/06/30/智能合约开发-基于以太坊的文章付费转载demo/" data-id="cjj16nyhp000xpxolx9twsek8" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/智能合约/">智能合约</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-智能合约开发-如何更好的与合约交互" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/06/17/智能合约开发-如何更好的与合约交互/" class="article-date">
@@ -106,7 +170,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/06/17/智能合约开发-如何更好的与合约交互/" data-id="cjikcpjcu001396oljul36za4" class="article-share-link">Teilen</a>
+      <a data-url="https://facert.github.io/2018/06/17/智能合约开发-如何更好的与合约交互/" data-id="cjj16nyhu0015pxolitu8pawb" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/智能合约/">智能合约</a></li></ul>
@@ -150,7 +214,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/" data-id="cjikcpjct001296olmveqtcg1" class="article-share-link">Teilen</a>
+      <a data-url="https://facert.github.io/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/" data-id="cjj16nyht0012pxolki4l74pw" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/智能合约/">智能合约</a></li></ul>
@@ -199,7 +263,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/04/06/智能合约调试指南/" data-id="cjikcpje5002x96olfla3xh7k" class="article-share-link">Teilen</a>
+      <a data-url="https://facert.github.io/2018/04/06/智能合约调试指南/" data-id="cjj16nyjm0030pxolhxj16m7w" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/智能合约/">智能合约</a></li></ul>
@@ -244,57 +308,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/" data-id="cjikcpjcm000n96olrpjffaqh" class="article-share-link">Teilen</a>
+      <a data-url="https://facert.github.io/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/" data-id="cjj16nyhl000ppxolquag79xc" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ipfs/">ipfs</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-前端线上调试指南" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/01/27/前端线上调试指南/" class="article-date">
-  <time datetime="2018-01-27T09:46:08.000Z" itemprop="datePublished">2018-01-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/27/前端线上调试指南/">前端线上调试指南</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h4><p>前端工程师可能会遇到如下的场景：测试环境功能都 ok ，到了生产环境就出问题，改完 bug 上线后发现又引入了新的问题。只能再次重复这个过程。</p>
-<p>所以能不能不上线，将本地代码直接作用于线上，来调试功能呢。</p>
-<p>我们有如下工具可以选择 fiddler (windows), charles (mac), mitmproxy (可自定义脚本)</p>
-<p>下面我们举 charles 和 mitmproxy 为例子说明<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/01/27/前端线上调试指南/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/01/27/前端线上调试指南/" data-id="cjikcpjcv001596olzwn3csnu" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端/">前端</a></li></ul>
 
     </footer>
   </div>
@@ -332,7 +349,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 16.67px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/ipfs/" style="font-size: 10px;">ipfs</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 16.67px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 16.67px;">代理</a> <a href="/tags/以太坊/" style="font-size: 10px;">以太坊</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 13.33px;">数据结构</a> <a href="/tags/智能合约/" style="font-size: 16.67px;">智能合约</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 15px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/ipfs/" style="font-size: 10px;">ipfs</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 15px;">代理</a> <a href="/tags/以太坊/" style="font-size: 10px;">以太坊</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 12.5px;">数据结构</a> <a href="/tags/智能合约/" style="font-size: 17.5px;">智能合约</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
@@ -354,6 +371,10 @@
       <ul>
         
           <li>
+            <a href="/2018/06/30/智能合约开发-基于以太坊的文章付费转载demo/">智能合约开发-基于以太坊的文章付费转载 demo</a>
+          </li>
+        
+          <li>
             <a href="/2018/06/17/智能合约开发-如何更好的与合约交互/">智能合约开发 - 如何更好的与合约交互</a>
           </li>
         
@@ -367,10 +388,6 @@
         
           <li>
             <a href="/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/">利用 ipfs 构建去中心化 django 博客系统</a>
-          </li>
-        
-          <li>
-            <a href="/2018/01/27/前端线上调试指南/">前端线上调试指南</a>
           </li>
         
       </ul>
