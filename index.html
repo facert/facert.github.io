@@ -73,6 +73,152 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-基于-IPFS-的去中心化短链接服务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/22/基于-IPFS-的去中心化短链接服务/" class="article-date">
+  <time datetime="2018-12-22T10:15:30.000Z" itemprop="datePublished">2018-12-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/22/基于-IPFS-的去中心化短链接服务/">基于 IPFS 的去中心化短链接服务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>短链接服务国内外有很多，如免费的服务域名 t.cn，t.co, url.cn。但由于服务由公司提供，一旦公司关停服务，原来生成的短链接就面临没法访问的风险。如 google 就把之前的 goo.gl 域名停用了，当然之前生成的链接目前还提供服务。鉴于此，我们提供了一个基于 IPFS ，永久有效，不受任何中心化公司影响的短链接服务 <a href="http://t.bdaily.club/" target="_blank" rel="noopener">DtinyUrl</a>。</p>
+<p><img src="/media/15454747683769.jpg" alt=""></p>
+<p>你可以访问任意生成链接跳转到你的目标网址，当然如果你有自己的 IPFS 节点，也可以改成自己的节点地址。</p>
+<p>我们提供了 <a href="https://gist.github.com/facert/fa39f0e094a2dd5c99f108cb975dde5b" target="_blank" rel="noopener">api</a> 接口供你使用，可以通过它开发一些插件来提高效率，如 Alfred workflow，捷径，浏览器插件。这里提供一个 <a href="https://github.com/facert/dtiny-plugins" target="_blank" rel="noopener">workflow</a> 版本。</p>
+<p><img src="/media/15454750636254.jpg" alt=""></p>
+<p>FAQ</p>
+<ol>
+<li>IPFS 的 gateway 地址也是基于域名的，如何保证自己生成的链接不因某些原因被屏蔽。</li>
+</ol>
+<pre><code>即使如 gateway.ipfs.io 之类的域名被屏蔽，你也可以使用其他 gateway 域名。或者自己运行一个节点，只要能连上其他节点，那么直接可以在本地访问到 IPFS 网络。
+</code></pre><ol>
+<li><p>生成的短链接地址不够短</p>
+<p> 这个问题确实存在，所以提供了两种类型的地址<br> (1) <a href="http://t.bdaily.club/ek5wz" target="_blank" rel="noopener">http://t.bdaily.club/ek5wz</a> 此类地址和其他短链接服务一样，中间会经过 Server 跳转一次到 IPFS。<br> (2) <a href="https://gateway.ipfs.io/ipfs/QmT2AKLygsgMa6r2AvxiJP31JTqSMMKCVK4FHKXiTCX3bR" target="_blank" rel="noopener">https://gateway.ipfs.io/ipfs/QmT2AKLygsgMa6r2AvxiJP31JTqSMMKCVK4FHKXiTCX3bR</a> 这类地址长度取决于 hash <code>QmT2AKLygsgMa6r2AvxiJP31JTqSMMKCVK4FHKXiTCX3bR</code> 的长度。</p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2018/12/22/基于-IPFS-的去中心化短链接服务/" data-id="cjpzjnlxd000pmgolv18f6mhd" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IPFS/">IPFS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-基于libp2p-的echo例子" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/26/基于libp2p-的echo例子/" class="article-date">
+  <time datetime="2018-09-26T10:18:15.000Z" itemprop="datePublished">2018-09-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/26/基于libp2p-的echo例子/">基于libp2p 的echo例子</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这个例子快速的展示如何使用 <code>go-libp2p</code>， 包括 <code>Host/Basichost, Network/Swarm, Streams, Peerstores and Multiaddresses</code>。</p>
+<p>此例子能以 <code>listen</code> 或者 <code>dial</code> 模式启动。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2018/09/26/基于libp2p-的echo例子/" data-id="cjpzjnlx5000jmgol4fr5r90h" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ipfs/">ipfs</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-基于libp2p的http代理" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/26/基于libp2p的http代理/" class="article-date">
+  <time datetime="2018-09-26T09:41:36.000Z" itemprop="datePublished">2018-09-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/26/基于libp2p的http代理/">基于libp2p的http代理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这是一个 ipfs 官方的例子，基于 libp2p 模块构建一个 http 代理。<a href="https://github.com/libp2p/go-libp2p-examples/blob/master/http-proxy/proxy.go" target="_blank" rel="noopener">proxy.go</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">                                                                                                    XXX</span><br><span class="line">                                                                                                   XX  XXXXXX</span><br><span class="line">                                                                                                  X         XX</span><br><span class="line">                                                                                        XXXXXXX  XX          XX XXXXXXXXXX</span><br><span class="line">                  +----------------+                +-----------------+              XXX      XXX            XXX        XXX</span><br><span class="line"> HTTP Request     |                |                |                 |             XX                                    XX</span><br><span class="line">+-----------------&gt;                | libp2p stream  |                 |  HTTP       X                                      X</span><br><span class="line">                  |  Local peer    &lt;----------------&gt;  Remote peer    &lt;-------------&gt;     HTTP SERVER - THE INTERNET      XX</span><br><span class="line">&lt;-----------------+                |                |                 | Req &amp; Resp   XX                                   X</span><br><span class="line">  HTTP Response   |  libp2p host   |                |  libp2p host    |               XXXX XXXX XXXXXXXXXXXXXXXXXXXX   XXXX</span><br><span class="line">                  +----------------+                +-----------------+                                            XXXXX</span><br></pre></td></tr></table></figure>
+<p>为了能够代理 HTTP 请求，我们首先创建一个本地节点监听 <code>localhost:9900</code>。 HTTP 请求通过 libp2p 流建立隧道到远程节点，然后执行 HTTP 请求，将请求结果返回给本地节点，最后发送给用户。</p>
+<p>注意，这是一个很简单的代理，没有处理 header, 也不支持 HTTPS, <code>proxy.go</code> 代码都注释过了，每一步都有细节描述。</p>
+<h4 id="Build"><a href="#Build" class="headerlink" title="Build"></a>Build</h4><p>在 <code>go-libp2p</code> 根目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; make deps</span><br><span class="line">&gt; go build ./examples/http-proxy</span><br></pre></td></tr></table></figure>
+<h4 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h4><p>首先按如下方式执行 <code>remote</code>。它将打印一个本地节点的地址。如果你不在同一台机器上运行，需相应替换 IP。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; ./http-proxy</span><br><span class="line">Proxy server is ready</span><br><span class="line">libp2p-peer addresses:</span><br><span class="line">/ip4/127.0.0.1/tcp/12000/ipfs/QmddTrQXhA9AkCpXPTkcY7e22NK73TwkUms3a44DhTKJTD</span><br></pre></td></tr></table></figure>
+<p>然后运行本地节点，指定请求需通过如下方式到远程节点。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; ./http-proxy -d /ip4/127.0.0.1/tcp/12000/ipfs/QmddTrQXhA9AkCpXPTkcY7e22NK73TwkUms3a44DhTKJTD</span><br><span class="line">Proxy server is ready</span><br><span class="line">libp2p-peer addresses:</span><br><span class="line">/ip4/127.0.0.1/tcp/12001/ipfs/Qmaa2AYTha1UqcFVX97p9R1UP7vbzDLY7bqWsZw1135QvN</span><br><span class="line">proxy listening on  127.0.0.1:9900</span><br></pre></td></tr></table></figure>
+<p>正如你所看到的，代理打印了监听的节点 <code>127.0.0.1:9900</code>。你现在可以用这个地址作为代理，以 <code>curl</code> 为例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; curl -x &quot;127.0.0.1:9900&quot; &quot;http://ipfs.io/ipfs/QmfUX75pGRBRDnjeoMkQzuQczuCup2aYbeLxz5NzeSu9G6&quot;</span><br><span class="line">it works!</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2018/09/26/基于libp2p的http代理/" data-id="cjpzjnlxo0011mgolzp89g937" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ipfs/">ipfs</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-智能合约开发-基于以太坊的文章付费转载demo" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/06/30/智能合约开发-基于以太坊的文章付费转载demo/" class="article-date">
@@ -107,7 +253,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/06/30/智能合约开发-基于以太坊的文章付费转载demo/" data-id="cjj16nyhp000xpxolx9twsek8" class="article-share-link">Teilen</a>
+      <a data-url="https://facert.github.io/2018/06/30/智能合约开发-基于以太坊的文章付费转载demo/" data-id="cjpzjnlxp0012mgols3zbv3c0" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/智能合约/">智能合约</a></li></ul>
@@ -153,148 +299,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/06/17/智能合约开发-如何更好的与合约交互/" data-id="cjj16nyhu0015pxolitu8pawb" class="article-share-link">Teilen</a>
+      <a data-url="https://facert.github.io/2018/06/17/智能合约开发-如何更好的与合约交互/" data-id="cjpzjnlxs0014mgolddq2q7if" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/智能合约/">智能合约</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-智能合约开发-如何实现一键化登录-Dapp" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/" class="article-date">
-  <time datetime="2018-06-17T10:56:56.000Z" itemprop="datePublished">2018-06-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/">智能合约开发 - 如何实现一键化登录 Dapp</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>任何有帐户体系的网站和 app 都会有自己的登录模块，有时候还会集成 oauth2 （weibo, weixin，github)一键化登录.开发者肯定也都或多或少的开发过注册，登录的功能。那么基于以太坊的 Dapp 中登录功能会有什么区别呢？本文主要介绍了 Dapp 帐号体系的构成，以及如何基于 Metamask 开发一键化登录的功能。</p>
-        
-          <p class="article-more-link">
-            <a href="/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/" data-id="cjj16nyht0012pxolki4l74pw" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/智能合约/">智能合约</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-智能合约调试指南" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/04/06/智能合约调试指南/" class="article-date">
-  <time datetime="2018-04-06T06:52:26.000Z" itemprop="datePublished">2018-04-06</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/06/智能合约调试指南/">智能合约调试指南</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><code>注意：本教程的 Truffle 版本 4.4.0 及以上</code></p>
-<p>不像你在其他地方看到的纸质合约，以太坊的智能合约是代码组成的，需要你以非常谨慎的态度去对待它。</p>
-<p>（这是一件好事，想象下如果现实世界的合同需要编译的话会更清晰么？）</p>
-<p>如果我们的合同没有被正确的编码出来, 我们的交易可能会失败，导致以太币的损失(以 gas 的形式)，更不用说浪费时间和精力。</p>
-<p><strong>幸运的是，Truffle (版本 4 以上) 内置了逐步调试的功能</strong>，所以一旦发生错误，你可以很快发现并修复它。</p>
-<p>在本教程中,我们将在测试的区块链环境中部署一个基础的合同，并引入一些错误，通过 Truffle 内置调试器修复它们。<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/04/06/智能合约调试指南/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/04/06/智能合约调试指南/" data-id="cjj16nyjm0030pxolhxj16m7w" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/智能合约/">智能合约</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-利用-ipfs-构建去中心化-django-博客系统" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/" class="article-date">
-  <time datetime="2018-02-25T04:10:54.000Z" itemprop="datePublished">2018-02-25</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/">利用 ipfs 构建去中心化 django 博客系统</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h5 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h5><p>运营 <a href="https://www.btchain.me/" target="_blank" rel="noopener">区块链日报</a> 有一段时间了，访问量也在不断上涨，不过由于搭建在国外 vps 上，所以经常有同学反映网站打不开。这段时间尝试了一些方案，发现 ipfs 的去中心化方案能够完美这个问题。</p>
-<p>关注区块链的同学也许已经对 <a href="https://ipfs.io/" target="_blank" rel="noopener">ipfs</a> 有过一定了解，我也在日报中推送过好几篇相关的文章，感兴趣的同学可以关注下。这里我简单介绍下，ipfs 是一个点对点的分布式文件系统，只要文件被添加到 ipfs 节点上，他就有个 hash 值来代表他的存在，哪怕只在文件中修改一个比特的数据，哈希都会完全不同。当下一步向 ipfs 分布式网络查找该哈希的时候，它通过使用一个分布式哈希表，可以快速地找到拥有数据的节点，从而检索该数据，并使用哈希验证这是否是正确的数据。而存储这些文件的节点我们可以认为也是一种矿工的形式，只是不像比特币利用算力来做工作量证明，而是存储和带宽。目前 ipfs 团队正在推进发布基于 POR (带激励机制的带宽，存储容量等资源相关的一种共识)的 filecoin。<br>
-        
-          <p class="article-more-link">
-            <a href="/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/" data-id="cjj16nyhl000ppxolquag79xc" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ipfs/">ipfs</a></li></ul>
 
     </footer>
   </div>
@@ -308,7 +316,7 @@
 
   <nav id="page-nav">
     
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">weiter &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/2/">weiter &raquo;</a>
   </nav>
 
 </section>
@@ -322,7 +330,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ipfs/">ipfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊/">以太坊</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/智能合约/">智能合约</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IPFS/">IPFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ipfs/">ipfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊/">以太坊</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/智能合约/">智能合约</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
     </div>
   </div>
 
@@ -332,7 +340,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 15px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/ipfs/" style="font-size: 10px;">ipfs</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 15px;">代理</a> <a href="/tags/以太坊/" style="font-size: 10px;">以太坊</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 12.5px;">数据结构</a> <a href="/tags/智能合约/" style="font-size: 17.5px;">智能合约</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/IPFS/" style="font-size: 10px;">IPFS</a> <a href="/tags/algorithm/" style="font-size: 15px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/ipfs/" style="font-size: 15px;">ipfs</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 15px;">代理</a> <a href="/tags/以太坊/" style="font-size: 10px;">以太坊</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 12.5px;">数据结构</a> <a href="/tags/智能合约/" style="font-size: 17.5px;">智能合约</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
@@ -341,7 +349,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
   </div>
 
@@ -354,23 +362,23 @@
       <ul>
         
           <li>
+            <a href="/2018/12/22/基于-IPFS-的去中心化短链接服务/">基于 IPFS 的去中心化短链接服务</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/26/基于libp2p-的echo例子/">基于libp2p 的echo例子</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/26/基于libp2p的http代理/">基于libp2p的http代理</a>
+          </li>
+        
+          <li>
             <a href="/2018/06/30/智能合约开发-基于以太坊的文章付费转载demo/">智能合约开发-基于以太坊的文章付费转载 demo</a>
           </li>
         
           <li>
             <a href="/2018/06/17/智能合约开发-如何更好的与合约交互/">智能合约开发 - 如何更好的与合约交互</a>
-          </li>
-        
-          <li>
-            <a href="/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/">智能合约开发 - 如何实现一键化登录 Dapp</a>
-          </li>
-        
-          <li>
-            <a href="/2018/04/06/智能合约调试指南/">智能合约调试指南</a>
-          </li>
-        
-          <li>
-            <a href="/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/">利用 ipfs 构建去中心化 django 博客系统</a>
           </li>
         
       </ul>

@@ -73,6 +73,139 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-过滤豆瓣租房小组中介贴之-python-实现-k-近邻算法（四）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/06/过滤豆瓣租房小组中介贴之-python-实现-k-近邻算法（四）/" class="article-date">
+  <time datetime="2017-03-06T05:21:02.000Z" itemprop="datePublished">2017-03-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/06/过滤豆瓣租房小组中介贴之-python-实现-k-近邻算法（四）/">过滤豆瓣租房小组中介贴之 python 实现 k 近邻算法（四）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>豆瓣有各种小组，每个小组会有个主题，比如租房小组基本里面全是房源相关的，当然偶尔也会有广告出现。那么如何能够让机器知道你发的帖子到底是哪个主题的呢，简单来说就是如何给帖子分类。这个时候需要介绍机器学习一个最简单的算法，叫 <code>k 近邻算法</code>。 原理介绍见这篇 <a href="http://coolshell.cn/articles/8052.html" target="_blank" rel="noopener">K NEAREST NEIGHBOR 算法</a>，</p>
+<p><img src="/media/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-03-06%20%E4%B8%8B%E5%8D%881.35.46.png" alt="屏幕快照 2017-03-06 下午1.35.46"><br>
+        
+          <p class="article-more-link">
+            <a href="/2017/03/06/过滤豆瓣租房小组中介贴之-python-实现-k-近邻算法（四）/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2017/03/06/过滤豆瓣租房小组中介贴之-python-实现-k-近邻算法（四）/" data-id="cjpzjnm1f002vmgolf845uvg1" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/" class="article-date">
+  <time datetime="2017-02-04T11:16:04.000Z" itemprop="datePublished">2017-02-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/">过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前段时间写过一篇 <a href="https://facert.github.io/2016/11/24/%E8%BF%87%E6%BB%A4%E8%B1%86%E7%93%A3%E7%A7%9F%E6%88%BF%E5%B0%8F%E7%BB%84%E4%B8%AD%E4%BB%8B%E8%B4%B4%E4%B9%8B%20python%20%E5%AE%9E%E7%8E%B0%E4%BD%99%E5%BC%A6%E7%9B%B8%E4%BC%BC%E5%BA%A6%EF%BC%88%E4%B8%80%EF%BC%89/">过滤豆瓣租房小组中介贴之 python 实现余弦相似度（一）</a>, 这里面使用 <code>jieba</code> 将文档分词，然后计算对分词的结果向量化计算相似度。比如 <code>我的房子在方庄地铁附近的芳城园一区</code> 会被分词为 <code>方庄 芳城园 一区 地铁 房子 附近</code>，我们发现少了 <code>我 的 在</code> 这些词，在自然语言处理的过程中，称这些词为停用词，简单的说就是这些词对于分词结果没有多少帮助，所以需要直接过滤掉。因为我们直接调用 <code>jieba.analyse</code> 方法，所以停用词被直接过滤了，如果只是调用 <code>jieba.cut</code>，会将返回包含停用词的结果。<br>
+        
+          <p class="article-more-link">
+            <a href="/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 TF-IDF 算法（二）/" data-id="cjpzjnm09002imgolzny33rno" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）/" class="article-date">
+  <time datetime="2017-02-04T09:43:00.000Z" itemprop="datePublished">2017-02-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）/">过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>其实这篇文章跟过滤中介贴没什么关系，只是在爬豆瓣小组的时候遇到的一点思考，我们知道，其实爬虫就是循环的爬取网站的 url，但是怎么判断爬取的 url 是否重复呢，最简单的，维护一个列表，每次循环查找，很明显效率很低。进阶的，采用哈希表，每次查询都是 O(1), 看上去不错。不过如果一旦 url 大到一定程度时，单台机器的内存肯定吃不消，这个时候分布式方案就呼之欲出，变得越来越复杂。那么能不能在牺牲一点点精确性的前提下，有简单的方案呢，答案是肯定的。这就是 布隆过滤器。<br>
+        
+          <p class="article-more-link">
+            <a href="/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2017/02/04/过滤豆瓣租房小组中介贴之 python 实现 布隆过滤器（三）/" data-id="cjpzjnm0e002mmgolcmgyw4q7" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-ghost-博客中文搜索插件" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/12/21/ghost-博客中文搜索插件/" class="article-date">
@@ -106,7 +239,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2016/12/21/ghost-博客中文搜索插件/" data-id="cjj16nyh7000cpxolj5ukqs4j" class="article-share-link">Teilen</a>
+      <a data-url="https://facert.github.io/2016/12/21/ghost-博客中文搜索插件/" data-id="cjpzjnlwe0009mgol2jgubfrl" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ghost/">ghost</a></li></ul>
@@ -149,142 +282,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2016/12/15/2016-关于技术和人生的一些碎碎念/" data-id="cjj16nygi0004pxol33ascfuq" class="article-share-link">Teilen</a>
+      <a data-url="https://facert.github.io/2016/12/15/2016-关于技术和人生的一些碎碎念/" data-id="cjpzjnlu80000mgolh91ovy9e" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/思考/">思考</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-django-防御-csrf-源码分析" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/09/django-防御-csrf-源码分析/" class="article-date">
-  <time datetime="2016-12-09T10:28:39.000Z" itemprop="datePublished">2016-12-09</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/09/django-防御-csrf-源码分析/">django 安全之防御 csrf</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="本文主要通过分析-django-源码-介绍-django-在-csrf-跨站请求伪造-的防御措施，-默认大家对-csrf-有一定的了解"><a href="#本文主要通过分析-django-源码-介绍-django-在-csrf-跨站请求伪造-的防御措施，-默认大家对-csrf-有一定的了解" class="headerlink" title="本文主要通过分析 django 源码 介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解"></a>本文主要通过分析 django 源码 介绍 django 在 csrf (跨站请求伪造) 的防御措施， 默认大家对 csrf 有一定的了解</h4>
-        
-          <p class="article-more-link">
-            <a href="/2016/12/09/django-防御-csrf-源码分析/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2016/12/09/django-防御-csrf-源码分析/" data-id="cjj16nyh30008pxolukng51rd" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/django源码/">django源码</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-用-python-提高效率之自如爬虫" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/05/用-python-提高效率之自如爬虫/" class="article-date">
-  <time datetime="2016-12-05T09:45:17.000Z" itemprop="datePublished">2016-12-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/05/用-python-提高效率之自如爬虫/">用 python 提高效率之自如爬虫</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>如果你想入门数据分析，但是苦于没有数据，那就看下文如何用 10 行代码写一个最简单的自如房源爬虫<br>
-        
-          <p class="article-more-link">
-            <a href="/2016/12/05/用-python-提高效率之自如爬虫/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2016/12/05/用-python-提高效率之自如爬虫/" data-id="cjj16nyi3001gpxoli5uhe64h" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python-入门/">python 入门</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-用-python-提高效率之豆瓣自动顶贴" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/01/用-python-提高效率之豆瓣自动顶贴/" class="article-date">
-  <time datetime="2016-12-01T13:13:56.000Z" itemprop="datePublished">2016-12-01</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/01/用-python-提高效率之豆瓣自动顶贴/">用 python 提高效率之豆瓣自动顶贴</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>程序员喜欢是用代码解放双手，能懒则懒。举个例子，你在豆瓣上发布了一个帖子，希望过段时间就回复下来置顶，那么一个是手工回复，当然也可以写脚本来做<br>
-        
-          <p class="article-more-link">
-            <a href="/2016/12/01/用-python-提高效率之豆瓣自动顶贴/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2016/12/01/用-python-提高效率之豆瓣自动顶贴/" data-id="cjj16nyi4001ipxolnzkemjys" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python-入门/">python 入门</a></li></ul>
 
     </footer>
   </div>
@@ -298,7 +299,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/5/">&laquo; zurück</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/7/">weiter &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/5/">&laquo; zurück</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/7/">weiter &raquo;</a>
   </nav>
 
 </section>
@@ -312,7 +313,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ipfs/">ipfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊/">以太坊</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/智能合约/">智能合约</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IPFS/">IPFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ipfs/">ipfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊/">以太坊</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/智能合约/">智能合约</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
     </div>
   </div>
 
@@ -322,7 +323,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/algorithm/" style="font-size: 15px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/ipfs/" style="font-size: 10px;">ipfs</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 15px;">代理</a> <a href="/tags/以太坊/" style="font-size: 10px;">以太坊</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 12.5px;">数据结构</a> <a href="/tags/智能合约/" style="font-size: 17.5px;">智能合约</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/IPFS/" style="font-size: 10px;">IPFS</a> <a href="/tags/algorithm/" style="font-size: 15px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/ipfs/" style="font-size: 15px;">ipfs</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 15px;">代理</a> <a href="/tags/以太坊/" style="font-size: 10px;">以太坊</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 12.5px;">数据结构</a> <a href="/tags/智能合约/" style="font-size: 17.5px;">智能合约</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
@@ -331,7 +332,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
   </div>
 
@@ -344,23 +345,23 @@
       <ul>
         
           <li>
+            <a href="/2018/12/22/基于-IPFS-的去中心化短链接服务/">基于 IPFS 的去中心化短链接服务</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/26/基于libp2p-的echo例子/">基于libp2p 的echo例子</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/26/基于libp2p的http代理/">基于libp2p的http代理</a>
+          </li>
+        
+          <li>
             <a href="/2018/06/30/智能合约开发-基于以太坊的文章付费转载demo/">智能合约开发-基于以太坊的文章付费转载 demo</a>
           </li>
         
           <li>
             <a href="/2018/06/17/智能合约开发-如何更好的与合约交互/">智能合约开发 - 如何更好的与合约交互</a>
-          </li>
-        
-          <li>
-            <a href="/2018/06/17/智能合约开发-如何实现一键化登录-Dapp/">智能合约开发 - 如何实现一键化登录 Dapp</a>
-          </li>
-        
-          <li>
-            <a href="/2018/04/06/智能合约调试指南/">智能合约调试指南</a>
-          </li>
-        
-          <li>
-            <a href="/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/">利用 ipfs 构建去中心化 django 博客系统</a>
           </li>
         
       </ul>
