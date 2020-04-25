@@ -27,7 +27,7 @@
 <meta property="og:description" content="我们首先从官方文档中一张比较经典的层级架构图开始，右边是 IPFS 的层级图，左边是对应现实网络中的一些实现形式。 (一) applications 应用层这个很好理解，就是基于 IPFS 网络开发的应用。我们可以在 awesome 看到一些应用。生态能不能繁荣，肯定是需要开发者参与。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://facert.github.io/media/15861596465559.jpg">
-<meta property="og:updated_time" content="2020-04-25T08:23:38.562Z">
+<meta property="og:updated_time" content="2020-04-25T08:39:05.733Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解 IPFS - 分层架构总览">
 <meta name="twitter:description" content="我们首先从官方文档中一张比较经典的层级架构图开始，右边是 IPFS 的层级图，左边是对应现实网络中的一些实现形式。 (一) applications 应用层这个很好理解，就是基于 IPFS 网络开发的应用。我们可以在 awesome 看到一些应用。生态能不能繁荣，肯定是需要开发者参与。">
@@ -69,7 +69,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://facert.github.io"></form>
@@ -107,8 +107,7 @@
 <h5 id="（二）-naming-命名"><a href="#（二）-naming-命名" class="headerlink" title="（二） naming 命名"></a>（二） naming 命名</h5><p>SFS 中文是自我认证文件系统，熟悉其他区块链项目的同学应该很好理解。比如比特币，我们采用非对称加密算法给节点生成了公钥和私钥。通过公钥生成的地址一旦参与转账行为，就会成为比特币网络中一份子，所有节点都知道这个地址。那么怎么证明这个地址是属于你，这就是一个自证明的过程，通过与公钥配对的私钥就可证明所有权。同样对于 IPFS 来说，也采用同样的方式，每个节点的 ID 都是全局唯一的存在，你可以通过 ID 对应的私钥来证明你是这个节点的主人。</p>
 <p>举个应用的例子，你有个静态网站想要上传到 IPFS 上，但是网站是需要一直更新内容的，更新后 hash 值变了，在 IPFS 上访问的链接都会变。解决办法是将节点 ID 指向生成的 hash 上。用户访问节点 ID 即可 。</p>
 <p>其实不仅仅是文件系统，身份认证（OpenID, OAuth2）可能也会由于区块链的发展出现新的契机。比如 ArcBlock 在推广的 DID。</p>
-<p>#####（三）merkledag </p>
-<p>merkledag 是 IPFS 的核心数据结构。比特币中用 merkle tree（默克尔树）快速校验区块数据完整性，使得轻节点钱包无需下载所有交易数据就能校验交易数据。而 merkledag 是一个有向无环图，对象模型和 Git 相似。这部分以后会详细说明。</p>
+<h5 id="（三）merkledag"><a href="#（三）merkledag" class="headerlink" title="（三）merkledag"></a>（三）merkledag</h5><p>merkledag 是 IPFS 的核心数据结构。比特币中用 merkle tree（默克尔树）快速校验区块数据完整性，使得轻节点钱包无需下载所有交易数据就能校验交易数据。而 merkledag 是一个有向无环图，对象模型和 Git 相似。这部分以后会详细说明。</p>
 <h5 id="（四）exchange-块交换"><a href="#（四）exchange-块交换" class="headerlink" title="（四）exchange 块交换"></a>（四）exchange 块交换</h5><p>因为 IPFS 是一个全网文件系统，当你上传一个文件的时候，文件会被分割成 block，然后被传输到最近的节点上（XOR）。这样当你再去获取这个文件的时候，节点间就会相互沟通，每个节点都有一个 wantlist 和 havelist，最终找到所有的 block，重新获取到文件。</p>
 <h5 id="（五）routing-路由"><a href="#（五）routing-路由" class="headerlink" title="（五）routing 路由"></a>（五）routing 路由</h5><p>其实在说到 exchange 的时候，有同学可能发现已经有点熟悉了，这不就是 BitTorrent 么。说的没错，不管是当年的电驴还是现在的迅雷，BT 网络一直很坚挺的存在着。IPFS 的很多设计都是借鉴于它 。说到 BT 的发展，最开始种子是存储到中央 Tracker 服务器上，这样一旦中央服务器挂了，这个种子也就废了，所以发展出了 DHT （分布式哈希表）。节点加入 DHT 网络，所有的资源都通过 hash 来寻址，无需中央节点介入，通过询问自己已知的节点，最终找到目标节点。</p>
 <p>对于 IPFS 来说，内容和地址寻址都是同构hash，这样可以避免转换成本。虽然说 routing 的方式不止 DHT 一种，还有 mdns，DHCP。但是作为一个去中心化的项目来说，DHT 是 IPFS 路由必不可少的一项。</p>
@@ -118,7 +117,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2020/04/25/深入理解-IPFS-分层架构总览/" data-id="ck9fd0vks001dbls6qqyws250" class="article-share-link">Share</a>
+      <a data-url="https://facert.github.io/2020/04/25/深入理解-IPFS-分层架构总览/" data-id="ck9fd0vks001dbls6qqyws250" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ipfs/">ipfs</a></li></ul>
@@ -130,7 +129,7 @@
 <nav id="article-nav">
   
     <a href="/2020/04/25/深入理解-IPFS-DHT-网络（1）/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
+      <strong class="article-nav-caption">Neuer</strong>
       <div class="article-nav-title">
         
           深入理解 IPFS - DHT 网络（1）
@@ -140,7 +139,7 @@
   
   
     <a href="/2018/12/22/基于-IPFS-的去中心化短链接服务/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
+      <strong class="article-nav-caption">Älter</strong>
       <div class="article-nav-title">基于 IPFS 的去中心化短链接服务</div>
     </a>
   
@@ -178,7 +177,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Archiv</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
@@ -188,7 +187,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
         
