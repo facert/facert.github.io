@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+	      var hm = document.createElement("script");
+	      hm.src = "//hm.baidu.com/hm.js?98cc862d4b99529da444b0b16203e7e7";
+		  var s = document.getElementsByTagName("script")[0]; 
+		  s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+  
+  <title>深入理解 IPFS - 分层架构总览 | facert 的杂货店</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="我们首先从官方文档中一张比较经典的层级架构图开始，右边是 IPFS 的层级图，左边是对应现实网络中的一些实现形式。 (一) applications 应用层这个很好理解，就是基于 IPFS 网络开发的应用。我们可以在 awesome 看到一些应用。生态能不能繁荣，肯定是需要开发者参与。">
+<meta name="keywords" content="ipfs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解 IPFS - 分层架构总览">
+<meta property="og:url" content="https://facert.github.io/2020/04/25/深入理解-IPFS-分层架构总览/index.html">
+<meta property="og:site_name" content="facert 的杂货店">
+<meta property="og:description" content="我们首先从官方文档中一张比较经典的层级架构图开始，右边是 IPFS 的层级图，左边是对应现实网络中的一些实现形式。 (一) applications 应用层这个很好理解，就是基于 IPFS 网络开发的应用。我们可以在 awesome 看到一些应用。生态能不能繁荣，肯定是需要开发者参与。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://facert.github.io/media/15861596465559.jpg">
+<meta property="og:updated_time" content="2020-04-25T08:23:38.562Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解 IPFS - 分层架构总览">
+<meta name="twitter:description" content="我们首先从官方文档中一张比较经典的层级架构图开始，右边是 IPFS 的层级图，左边是对应现实网络中的一些实现形式。 (一) applications 应用层这个很好理解，就是基于 IPFS 网络开发的应用。我们可以在 awesome 看到一些应用。生态能不能繁荣，肯定是需要开发者参与。">
+<meta name="twitter:image" content="https://facert.github.io/media/15861596465559.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="facert 的杂货店" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">facert 的杂货店</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://facert.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-深入理解-IPFS-分层架构总览" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/25/深入理解-IPFS-分层架构总览/" class="article-date">
+  <time datetime="2020-04-25T08:21:18.000Z" itemprop="datePublished">2020-04-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      深入理解 IPFS - 分层架构总览
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/media/15861596465559.jpg" alt=""></p>
+<p>我们首先从官方文档中一张比较经典的层级架构图开始，右边是 IPFS 的层级图，左边是对应现实网络中的一些实现形式。</p>
+<h5 id="一-applications-应用层"><a href="#一-applications-应用层" class="headerlink" title="(一) applications 应用层"></a>(一) applications 应用层</h5><p>这个很好理解，就是基于 IPFS 网络开发的应用。我们可以在 <a href="https://github.com/ipfs/awesome-ipfs" target="_blank" rel="noopener">awesome</a> 看到一些应用。生态能不能繁荣，肯定是需要开发者参与。</p>
+<a id="more"></a>
+<h5 id="（二）-naming-命名"><a href="#（二）-naming-命名" class="headerlink" title="（二） naming 命名"></a>（二） naming 命名</h5><p>SFS 中文是自我认证文件系统，熟悉其他区块链项目的同学应该很好理解。比如比特币，我们采用非对称加密算法给节点生成了公钥和私钥。通过公钥生成的地址一旦参与转账行为，就会成为比特币网络中一份子，所有节点都知道这个地址。那么怎么证明这个地址是属于你，这就是一个自证明的过程，通过与公钥配对的私钥就可证明所有权。同样对于 IPFS 来说，也采用同样的方式，每个节点的 ID 都是全局唯一的存在，你可以通过 ID 对应的私钥来证明你是这个节点的主人。</p>
+<p>举个应用的例子，你有个静态网站想要上传到 IPFS 上，但是网站是需要一直更新内容的，更新后 hash 值变了，在 IPFS 上访问的链接都会变。解决办法是将节点 ID 指向生成的 hash 上。用户访问节点 ID 即可 。</p>
+<p>其实不仅仅是文件系统，身份认证（OpenID, OAuth2）可能也会由于区块链的发展出现新的契机。比如 ArcBlock 在推广的 DID。</p>
+<p>#####（三）merkledag </p>
+<p>merkledag 是 IPFS 的核心数据结构。比特币中用 merkle tree（默克尔树）快速校验区块数据完整性，使得轻节点钱包无需下载所有交易数据就能校验交易数据。而 merkledag 是一个有向无环图，对象模型和 Git 相似。这部分以后会详细说明。</p>
+<h5 id="（四）exchange-块交换"><a href="#（四）exchange-块交换" class="headerlink" title="（四）exchange 块交换"></a>（四）exchange 块交换</h5><p>因为 IPFS 是一个全网文件系统，当你上传一个文件的时候，文件会被分割成 block，然后被传输到最近的节点上（XOR）。这样当你再去获取这个文件的时候，节点间就会相互沟通，每个节点都有一个 wantlist 和 havelist，最终找到所有的 block，重新获取到文件。</p>
+<h5 id="（五）routing-路由"><a href="#（五）routing-路由" class="headerlink" title="（五）routing 路由"></a>（五）routing 路由</h5><p>其实在说到 exchange 的时候，有同学可能发现已经有点熟悉了，这不就是 BitTorrent 么。说的没错，不管是当年的电驴还是现在的迅雷，BT 网络一直很坚挺的存在着。IPFS 的很多设计都是借鉴于它 。说到 BT 的发展，最开始种子是存储到中央 Tracker 服务器上，这样一旦中央服务器挂了，这个种子也就废了，所以发展出了 DHT （分布式哈希表）。节点加入 DHT 网络，所有的资源都通过 hash 来寻址，无需中央节点介入，通过询问自己已知的节点，最终找到目标节点。</p>
+<p>对于 IPFS 来说，内容和地址寻址都是同构hash，这样可以避免转换成本。虽然说 routing 的方式不止 DHT 一种，还有 mdns，DHCP。但是作为一个去中心化的项目来说，DHT 是 IPFS 路由必不可少的一项。</p>
+<h5 id="（六）network-网络"><a href="#（六）network-网络" class="headerlink" title="（六）network 网络"></a>（六）network 网络</h5><p>IPFS 没有创造新的协议来做节点间通信，而是尽可能的兼容现存的所有协议，包括 tcp, http, quic 等等。兼容是通过一个 self-describing 的方式，如 <code>/ip4/7.7.7.7/tcp/6543</code>， 这种风格我们在 IPFS 其他 repos 中也都能看到身影，如 MultiHash, MultiAddress。不得不说，这种 self-describing 的形式在之后的协议升级上会有很大的好处。同样，面对各种网络环境，NAT 穿透也是必备的，IPFS 基于 ICE 框架，支持 TURN 和 STUN。</p>
+<p>本文对 IPFS 各层做了简单的介绍，细节我们后续再聊。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2020/04/25/深入理解-IPFS-分层架构总览/" data-id="ck9fd0vks001dbls6qqyws250" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ipfs/">ipfs</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/04/25/深入理解-IPFS-DHT-网络（1）/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          深入理解 IPFS - DHT 网络（1）
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/12/22/基于-IPFS-的去中心化短链接服务/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">基于 IPFS 的去中心化短链接服务</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DIY/">DIY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IPFS/">IPFS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django源码/">django源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ghost/">ghost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ipfs/">ipfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python-入门/">python 入门</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-django/">web, django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web开发/">web开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代理/">代理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/以太坊/">以太坊</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考/">思考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/智能合约/">智能合约</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/IPFS/" style="font-size: 10px;">IPFS</a> <a href="/tags/algorithm/" style="font-size: 15px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/ipfs/" style="font-size: 20px;">ipfs</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 15px;">代理</a> <a href="/tags/以太坊/" style="font-size: 10px;">以太坊</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 12.5px;">数据结构</a> <a href="/tags/智能合约/" style="font-size: 17.5px;">智能合约</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/04/25/深入理解-IPFS-消费-订阅系统/">深入理解 IPFS - 消费/订阅系统</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/25/深入理解-IPFS-分布式代理/">深入理解 IPFS - 分布式代理</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/25/深入理解-IPFS-DHT-网络（1）/">深入理解 IPFS - DHT 网络（1）</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/25/深入理解-IPFS-分层架构总览/">深入理解 IPFS - 分层架构总览</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/22/基于-IPFS-的去中心化短链接服务/">基于 IPFS 的去中心化短链接服务</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 facert<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno",skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } }, Macros: { href: "{}" } },
+        messageStyle: "none"
+    }); 
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

@@ -73,6 +73,186 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-智能合约调试指南" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/04/06/智能合约调试指南/" class="article-date">
+  <time datetime="2018-04-06T06:52:26.000Z" itemprop="datePublished">2018-04-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/06/智能合约调试指南/">智能合约调试指南</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><code>注意：本教程的 Truffle 版本 4.4.0 及以上</code></p>
+<p>不像你在其他地方看到的纸质合约，以太坊的智能合约是代码组成的，需要你以非常谨慎的态度去对待它。</p>
+<p>（这是一件好事，想象下如果现实世界的合同需要编译的话会更清晰么？）</p>
+<p>如果我们的合同没有被正确的编码出来, 我们的交易可能会失败，导致以太币的损失(以 gas 的形式)，更不用说浪费时间和精力。</p>
+<p><strong>幸运的是，Truffle (版本 4 以上) 内置了逐步调试的功能</strong>，所以一旦发生错误，你可以很快发现并修复它。</p>
+<p>在本教程中,我们将在测试的区块链环境中部署一个基础的合同，并引入一些错误，通过 Truffle 内置调试器修复它们。<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/04/06/智能合约调试指南/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2018/04/06/智能合约调试指南/" data-id="ck9fd0vkt001fbls62wdvfvba" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/智能合约/">智能合约</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-利用-ipfs-构建去中心化-django-博客系统" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/" class="article-date">
+  <time datetime="2018-02-25T04:10:54.000Z" itemprop="datePublished">2018-02-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/">利用 ipfs 构建去中心化 django 博客系统</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h5 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h5><p>运营 <a href="https://www.btchain.me/" target="_blank" rel="noopener">区块链日报</a> 有一段时间了，访问量也在不断上涨，不过由于搭建在国外 vps 上，所以经常有同学反映网站打不开。这段时间尝试了一些方案，发现 ipfs 的去中心化方案能够完美这个问题。</p>
+<p>关注区块链的同学也许已经对 <a href="https://ipfs.io/" target="_blank" rel="noopener">ipfs</a> 有过一定了解，我也在日报中推送过好几篇相关的文章，感兴趣的同学可以关注下。这里我简单介绍下，ipfs 是一个点对点的分布式文件系统，只要文件被添加到 ipfs 节点上，他就有个 hash 值来代表他的存在，哪怕只在文件中修改一个比特的数据，哈希都会完全不同。当下一步向 ipfs 分布式网络查找该哈希的时候，它通过使用一个分布式哈希表，可以快速地找到拥有数据的节点，从而检索该数据，并使用哈希验证这是否是正确的数据。而存储这些文件的节点我们可以认为也是一种矿工的形式，只是不像比特币利用算力来做工作量证明，而是存储和带宽。目前 ipfs 团队正在推进发布基于 POR (带激励机制的带宽，存储容量等资源相关的一种共识)的 filecoin。<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/" data-id="ck9fd0vkg000sbls6hug70ewq" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ipfs/">ipfs</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-前端线上调试指南" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/01/27/前端线上调试指南/" class="article-date">
+  <time datetime="2018-01-27T09:46:08.000Z" itemprop="datePublished">2018-01-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/27/前端线上调试指南/">前端线上调试指南</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h4><p>前端工程师可能会遇到如下的场景：测试环境功能都 ok ，到了生产环境就出问题，改完 bug 上线后发现又引入了新的问题。只能再次重复这个过程。</p>
+<p>所以能不能不上线，将本地代码直接作用于线上，来调试功能呢。</p>
+<p>我们有如下工具可以选择 fiddler (windows), charles (mac), mitmproxy (可自定义脚本)</p>
+<p>下面我们举 charles 和 mitmproxy 为例子说明<br>
+        
+          <p class="article-more-link">
+            <a href="/2018/01/27/前端线上调试指南/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2018/01/27/前端线上调试指南/" data-id="ck9fd0vkf000qbls6pc1qm0l8" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端/">前端</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-开源【动态可配化爬虫】代码" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/01/13/开源【动态可配化爬虫】代码/" class="article-date">
+  <time datetime="2018-01-13T06:17:37.000Z" itemprop="datePublished">2018-01-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/13/开源【动态可配化爬虫】代码/">开源【动态可配化爬虫】代码</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>继上篇文章 <a href="https://zhuanlan.zhihu.com/p/31659456" target="_blank" rel="noopener">动态可配置化 Python 爬虫</a> 说过的 Todo 项一直没有精力去维护，索性开源代码，让各位自己去折腾完善，欢迎提 pr。</p>
+<p>项目地址：<a href="https://github.com/facert/scrapy_helper" target="_blank" rel="noopener">https://github.com/facert/scrapy_helper</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2018/01/13/开源【动态可配化爬虫】代码/" data-id="ck9fd0vkm0013bls680uuhtyl" class="article-share-link">Teilen</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-以太坊云撸猫教程" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/12/10/以太坊云撸猫教程/" class="article-date">
@@ -107,7 +287,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2017/12/10/以太坊云撸猫教程/" data-id="cjpzjnlwu000fmgoliyh7lajb" class="article-share-link">Teilen</a>
+      <a data-url="https://facert.github.io/2017/12/10/以太坊云撸猫教程/" data-id="ck9fd0vkd000lbls6ms2v1au4" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/以太坊/">以太坊</a></li></ul>
@@ -120,194 +300,11 @@
 
 
   
-    <article id="post-xpath-使用教程" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/12/03/xpath-使用教程/" class="article-date">
-  <time datetime="2017-12-03T13:26:31.000Z" itemprop="datePublished">2017-12-03</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/03/xpath-使用教程/">xpath 使用教程</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;div class=&quot;demo&quot;&gt;</span><br><span class="line">   &lt;span&gt;</span><br><span class="line">   &lt;/span&gt;</span><br><span class="line">   &lt;ul&gt;</span><br><span class="line">       &lt;li class=&quot;item-0&quot;&gt;</span><br><span class="line">           &lt;a href=&quot;link-0&quot;&gt;link0-item&lt;/a&gt;</span><br><span class="line">       &lt;/li&gt;</span><br><span class="line">       &lt;li class=&quot;item-1&quot;&gt;</span><br><span class="line">           &lt;a href=&quot;link-1&quot;&gt;link1-item&lt;/a&gt;</span><br><span class="line">       &lt;/li&gt;</span><br><span class="line">       &lt;li class=&quot;item-2&quot;&gt;</span><br><span class="line">           &lt;a href=&quot;link-2&quot;&gt;link2-item&lt;/a&gt;</span><br><span class="line">       &lt;/li&gt;</span><br><span class="line">   &lt;/ul&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
-<p>这篇文章列举常用的一些 xpath 用法，以便同学们更好的理解使用 <a href="http://www.anycrawl.info/" target="_blank" rel="noopener">http://www.anycrawl.info/</a> 这个网站</p>
-<ol>
-<li><code>//div</code> (获取所有 div 元素，不管在文档什么位置)</li>
-<li><code>/div</code> (获取根路径 div 元素)</li>
-<li><code>//div/span</code> (获取 div 元素下一级的 span 元素)</li>
-<li><code>//div//span</code> (获取 div 元素所有后代的 span)</li>
-<li><code>//ul/li[1]</code> (获取 ul 子元素下的第一个 li 元素)</li>
-<li><code>//ul/li[last()]</code> (获取 ul 子元素下的最后一个 li 元素)</li>
-<li><code>//div[@class=&quot;demo&quot;]</code> (获取 class 为 demo 的 div 元素)</li>
-<li><code>//ul/li/a/@href</code> (获取 ul&gt;li&gt;a 链接的 href 属性)</li>
-<li><code>//ul/li/a/text()</code> (获取 ul&gt;li&gt;a 链接的内容)</li>
-<li><code>//*[@class=&quot;item-0&quot;]</code> (获取 class 为 item-0 的元素)</li>
-<li><code>//*[contains(@class, &quot;de&quot;)]</code> (获取 class 元素包含 de 的元素)</li>
-</ol>
-<h4 id="参考手册：xpath-cheatsheet"><a href="#参考手册：xpath-cheatsheet" class="headerlink" title="参考手册：xpath cheatsheet "></a>参考手册：<a href="http://www.cheat-sheets.org/saved-copy/Locators_table_1_0_2.pdf" target="_blank" rel="noopener">xpath cheatsheet </a></h4>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2017/12/03/xpath-使用教程/" data-id="cjpzjnlwr000dmgolid9w32me" class="article-share-link">Teilen</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-动态可配置化 Python 爬虫教程" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/12/03/动态可配置化 Python 爬虫教程/" class="article-date">
-  <time datetime="2017-12-03T10:48:21.000Z" itemprop="datePublished">2017-12-03</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/03/动态可配置化 Python 爬虫教程/">动态可配置化 Python 爬虫教程</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>爬虫大家都很熟悉，像 scrapy 这种 Python 爬虫框架也很成熟，不过每写一个爬虫都得重新复制一份代码，这部分如果做成可配置的话，能相应减少一些工作量，对新手也会友好些，所以我花了点时间，开发了一个动态可配置的爬虫网站 <a href="http://www.anycrawl.info" target="_blank" rel="noopener">http://www.anycrawl.info</a> ，基于 scrapy ，提供一些配置项，5分钟就可生成一个通用爬虫，并可直接下载代码使用。</p>
-<p>我举 <a href="http://www.anycrawl.info/project/15/" target="_blank" rel="noopener">http://www.anycrawl.info/project/15/</a> 豆瓣小组爬虫的例子来介绍下网站的使用方法。<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/12/03/动态可配置化 Python 爬虫教程/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2017/12/03/动态可配置化 Python 爬虫教程/" data-id="cjpzjnlx6000lmgolx172smn0" class="article-share-link">Teilen</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-谈谈-django-应用实践" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/10/11/谈谈-django-应用实践/" class="article-date">
-  <time datetime="2017-10-11T15:56:33.000Z" itemprop="datePublished">2017-10-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/11/谈谈-django-应用实践/">谈谈 django 应用实践</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>python 的 web 框架非常多，比较出名的有 django, flask, tornado。django 作为一个老牌框架，无论是文档还是代码质量都非常高，另外他自带的 admin 后台和一些有用的 app，如果你的需求是做 cms 之类的 web 应用的话，基本上不用开发多少代码就能出一个成品。不过很多新手可能一开始不太适应他的设计模式，遇到问题后基本就懵了，所以这里我按照自己用 django 的经验，写一下 django 的一些应用实践，可能写的比较零散，大家见谅。</p>
-<h3 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程"></a>整体流程</h3><p><img src="/media/15077390149599.png" alt=""></p>
-        
-          <p class="article-more-link">
-            <a href="/2017/10/11/谈谈-django-应用实践/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2017/10/11/谈谈-django-应用实践/" data-id="cjpzjnm1d002umgolsuk2ex56" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web-django/">web, django</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-由浅入深写代理-10-反向代理" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/08/26/由浅入深写代理-10-反向代理/" class="article-date">
-  <time datetime="2017-08-26T06:27:04.000Z" itemprop="datePublished">2017-08-26</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/26/由浅入深写代理-10-反向代理/">由浅入深写代理(10)-内网穿透</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本篇主要介绍代理的一个常用的功能：内网穿透<br>很多人经常会有这么一个需求，需要将本地开发的 web 项目给外网的人看下，再搭一遍到 vps 太麻烦，于是就有借助拥有公网 ip 的主机来中转。</p>
-<p>有专门的软件做这件事，如 ngrok, frp。<br>
-        
-          <p class="article-more-link">
-            <a href="/2017/08/26/由浅入深写代理-10-反向代理/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2017/08/26/由浅入深写代理-10-反向代理/" data-id="cjpzjnlz8001zmgol5dl2qnwn" class="article-share-link">Teilen</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
 
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/2/">&laquo; zurück</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/4/">weiter &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; zurück</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/4/">weiter &raquo;</a>
   </nav>
 
 </section>
@@ -331,7 +328,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/IPFS/" style="font-size: 10px;">IPFS</a> <a href="/tags/algorithm/" style="font-size: 15px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/ipfs/" style="font-size: 15px;">ipfs</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 15px;">代理</a> <a href="/tags/以太坊/" style="font-size: 10px;">以太坊</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 12.5px;">数据结构</a> <a href="/tags/智能合约/" style="font-size: 17.5px;">智能合约</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/IPFS/" style="font-size: 10px;">IPFS</a> <a href="/tags/algorithm/" style="font-size: 15px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/ipfs/" style="font-size: 20px;">ipfs</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 15px;">代理</a> <a href="/tags/以太坊/" style="font-size: 10px;">以太坊</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 12.5px;">数据结构</a> <a href="/tags/智能合约/" style="font-size: 17.5px;">智能合约</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
@@ -340,7 +337,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
   </div>
 
@@ -353,23 +350,23 @@
       <ul>
         
           <li>
+            <a href="/2020/04/25/深入理解-IPFS-消费-订阅系统/">深入理解 IPFS - 消费/订阅系统</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/25/深入理解-IPFS-分布式代理/">深入理解 IPFS - 分布式代理</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/25/深入理解-IPFS-DHT-网络（1）/">深入理解 IPFS - DHT 网络（1）</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/25/深入理解-IPFS-分层架构总览/">深入理解 IPFS - 分层架构总览</a>
+          </li>
+        
+          <li>
             <a href="/2018/12/22/基于-IPFS-的去中心化短链接服务/">基于 IPFS 的去中心化短链接服务</a>
-          </li>
-        
-          <li>
-            <a href="/2018/09/26/基于libp2p-的echo例子/">基于libp2p 的echo例子</a>
-          </li>
-        
-          <li>
-            <a href="/2018/09/26/基于libp2p的http代理/">基于libp2p的http代理</a>
-          </li>
-        
-          <li>
-            <a href="/2018/06/30/智能合约开发-基于以太坊的文章付费转载demo/">智能合约开发-基于以太坊的文章付费转载 demo</a>
-          </li>
-        
-          <li>
-            <a href="/2018/06/17/智能合约开发-如何更好的与合约交互/">智能合约开发 - 如何更好的与合约交互</a>
           </li>
         
       </ul>

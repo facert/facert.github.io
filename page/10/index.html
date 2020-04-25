@@ -73,6 +73,193 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-python-与-数据结构-第三章-线性表-（中）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（中）/" class="article-date">
+  <time datetime="2016-10-13T15:38:28.000Z" itemprop="datePublished">2016-10-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/13/python-与-数据结构-第三章-线性表-（中）/">python 与 数据结构 第三章 线性表 （中）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="3-3-链接表"><a href="#3-3-链接表" class="headerlink" title="3.3 链接表"></a>3.3 链接表</h4><p>基于链接技术实现的线性表称为链接表或者链表</p>
+<h5 id="3-2-3-单链表"><a href="#3-2-3-单链表" class="headerlink" title="3.2.3 单链表"></a>3.2.3 单链表</h5><ul>
+<li>一个单链表由一些具体的表节点构成</li>
+<li>每个节点是一个对象，有自己的标识</li>
+<li>节点之间通过节点链接建立起单向的顺序联系</li>
+</ul>
+<p>定义一个简单的表结点类：</p>
+<pre><code>class LNode:
+    def __init__(self, elem, next_=None):
+        self.elem = elem
+        self.next = next_
+</code></pre>
+        
+          <p class="article-more-link">
+            <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（中）/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2016/10/13/python-与-数据结构-第三章-线性表-（中）/" data-id="ck9fd0vk9000fbls6sx38bls0" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-python-与-数据结构-第三章-线性表-（上）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（上）/" class="article-date">
+  <time datetime="2016-10-13T12:18:39.000Z" itemprop="datePublished">2016-10-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/13/python-与-数据结构-第三章-线性表-（上）/">python 与 数据结构 第三章 线性表 （上）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="3-1-线性表抽象数据类型"><a href="#3-1-线性表抽象数据类型" class="headerlink" title="3.1  线性表抽象数据类型"></a>3.1  线性表抽象数据类型</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ADT List:</span><br><span class="line">  List(self)             # 一个表抽象数据类型</span><br><span class="line">  is_empty(self)         # 判断 self 是否为一个空表</span><br><span class="line">  len(self)              # 获得 self 的长度</span><br><span class="line">  prepend(self, elem)    # 将元素 elem 加入表中作为第一个元素</span><br><span class="line">  append(self, elem)     # 将元素 elem 加入表中作为最后一个元素</span><br><span class="line">  insert(self, elem, i)  # 将 elem 加入表中作为第 i 个元素， 其他元素的顺序不变</span><br><span class="line">  del_first(self)        # 删除表中的首元素</span><br><span class="line">  del_last(self)         # 删除表中尾元素</span><br><span class="line">  del(self)              # 删除表中第 i 个元素</span><br><span class="line">  search(self, elem)     # 查找元素 elem 在表中出现的位置， 不出现时返回 -1</span><br><span class="line">  forall(self, op)       # 对表中的每个元素执行操作 op</span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2016/10/13/python-与-数据结构-第三章-线性表-（上）/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2016/10/13/python-与-数据结构-第三章-线性表-（上）/" data-id="ck9fd0vk2000cbls64yrqr62x" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-django-源码分析-base36编码函数" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/13/django-源码分析-base36编码函数/" class="article-date">
+  <time datetime="2016-10-13T07:37:36.000Z" itemprop="datePublished">2016-10-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/13/django-源码分析-base36编码函数/">django 源码分析 - base36编码函数</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h3><p>   首先介绍一下什么是 base36编码，它的编码中包含0~9的数字，加上所有26个字母，不区分大小写，不包含任何标点，所有的字母要不全大写，要不全小写。所以加起来就是 “0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ”,<br>或者 ‘0123456789abcdefghijklmnopqrstuvwxyz’，同样的还有 base62编码，就是26个字母的大小写再加上0-9，一共62个字符。<br>
+        
+          <p class="article-more-link">
+            <a href="/2016/10/13/django-源码分析-base36编码函数/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2016/10/13/django-源码分析-base36编码函数/" data-id="ck9fd0vje0004bls6ccsxn6yk" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-django-源码分析-自定义数据结构" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/10/13/django-源码分析-自定义数据结构/" class="article-date">
+  <time datetime="2016-10-13T07:36:40.000Z" itemprop="datePublished">2016-10-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/10/13/django-源码分析-自定义数据结构/">django 源码分析 - 自定义数据结构</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>django 自定义了一些数据结构，主要有 OrderedSet，MultiValueDict，ImmutableList，DictWrapper<br>
+        
+          <p class="article-more-link">
+            <a href="/2016/10/13/django-源码分析-自定义数据结构/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://facert.github.io/2016/10/13/django-源码分析-自定义数据结构/" data-id="ck9fd0vjz0007bls67wfh2ff0" class="article-share-link">Teilen</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-一致性哈希算法-简单的-python-实现" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/10/13/一致性哈希算法-简单的-python-实现/" class="article-date">
@@ -105,55 +292,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://facert.github.io/2016/10/13/一致性哈希算法-简单的-python-实现/" data-id="cjpzjnlxf000rmgol6ne7t45s" class="article-share-link">Teilen</a>
+      <a data-url="https://facert.github.io/2016/10/13/一致性哈希算法-简单的-python-实现/" data-id="ck9fd0vka000hbls67ig7d9x5" class="article-share-link">Teilen</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/计算机系统/">计算机系统</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-django-防爬虫实现" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/09/29/django-防爬虫实现/" class="article-date">
-  <time datetime="2016-09-29T10:02:42.000Z" itemprop="datePublished">2016-09-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/09/29/django-防爬虫实现/">django 防爬虫实现</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="基本防爬策略"><a href="#基本防爬策略" class="headerlink" title="基本防爬策略"></a>基本防爬策略</h3><hr>
-<p>一般的，像 nginx 这种 web 服务器都有防爬虫模块，基于 ip, user_agent 来识别爬虫，从而限制爬虫的爬取频率。但是基于某一个登录用户去做频率限制就有点麻烦了，这种情况下，只能通过下一层程序去防，比如 django 的话，通过中间件结合缓存的方式可以做到一定的频率限制。<br>
-        
-          <p class="article-more-link">
-            <a href="/2016/09/29/django-防爬虫实现/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://facert.github.io/2016/09/29/django-防爬虫实现/" data-id="cjpzjnlw20005mgol5jdbwni4" class="article-share-link">Teilen</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
 
     </footer>
   </div>
@@ -167,7 +309,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/9/">&laquo; zurück</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span>
+    <a class="extend prev" rel="prev" href="/page/9/">&laquo; zurück</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/11/">weiter &raquo;</a>
   </nav>
 
 </section>
@@ -191,7 +333,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/IPFS/" style="font-size: 10px;">IPFS</a> <a href="/tags/algorithm/" style="font-size: 15px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/ipfs/" style="font-size: 15px;">ipfs</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 15px;">代理</a> <a href="/tags/以太坊/" style="font-size: 10px;">以太坊</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 12.5px;">数据结构</a> <a href="/tags/智能合约/" style="font-size: 17.5px;">智能合约</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
+      <a href="/tags/DIY/" style="font-size: 10px;">DIY</a> <a href="/tags/IPFS/" style="font-size: 10px;">IPFS</a> <a href="/tags/algorithm/" style="font-size: 15px;">algorithm</a> <a href="/tags/django源码/" style="font-size: 10px;">django源码</a> <a href="/tags/ghost/" style="font-size: 10px;">ghost</a> <a href="/tags/ipfs/" style="font-size: 20px;">ipfs</a> <a href="/tags/python-入门/" style="font-size: 20px;">python 入门</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/web-django/" style="font-size: 10px;">web, django</a> <a href="/tags/web开发/" style="font-size: 10px;">web开发</a> <a href="/tags/代理/" style="font-size: 15px;">代理</a> <a href="/tags/以太坊/" style="font-size: 10px;">以太坊</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/思考/" style="font-size: 10px;">思考</a> <a href="/tags/数据结构/" style="font-size: 12.5px;">数据结构</a> <a href="/tags/智能合约/" style="font-size: 17.5px;">智能合约</a> <a href="/tags/计算机系统/" style="font-size: 10px;">计算机系统</a>
     </div>
   </div>
 
@@ -200,7 +342,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li></ul>
     </div>
   </div>
 
@@ -213,23 +355,23 @@
       <ul>
         
           <li>
+            <a href="/2020/04/25/深入理解-IPFS-消费-订阅系统/">深入理解 IPFS - 消费/订阅系统</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/25/深入理解-IPFS-分布式代理/">深入理解 IPFS - 分布式代理</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/25/深入理解-IPFS-DHT-网络（1）/">深入理解 IPFS - DHT 网络（1）</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/25/深入理解-IPFS-分层架构总览/">深入理解 IPFS - 分层架构总览</a>
+          </li>
+        
+          <li>
             <a href="/2018/12/22/基于-IPFS-的去中心化短链接服务/">基于 IPFS 的去中心化短链接服务</a>
-          </li>
-        
-          <li>
-            <a href="/2018/09/26/基于libp2p-的echo例子/">基于libp2p 的echo例子</a>
-          </li>
-        
-          <li>
-            <a href="/2018/09/26/基于libp2p的http代理/">基于libp2p的http代理</a>
-          </li>
-        
-          <li>
-            <a href="/2018/06/30/智能合约开发-基于以太坊的文章付费转载demo/">智能合约开发-基于以太坊的文章付费转载 demo</a>
-          </li>
-        
-          <li>
-            <a href="/2018/06/17/智能合约开发-如何更好的与合约交互/">智能合约开发 - 如何更好的与合约交互</a>
           </li>
         
       </ul>
