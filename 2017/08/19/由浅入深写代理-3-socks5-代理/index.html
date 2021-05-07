@@ -1,0 +1,106 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 由浅入深写代理(3) -socks5 代理 · 程序化思维</title><meta name="description" content="由浅入深写代理(3) -socks5 代理 - facert"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://facert.github.io/atom.xml" title="程序化思维"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/facert" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">由浅入深写代理(3) -socks5 代理</h1><div class="post-info">Aug 19, 2017</div><div class="post-content"><p>本文讲的是如何写一个 socks5 代理，其实 shadowsocks 的代理也是 socks5 协议的，所以 socks5 代理也是本系列教程的一个重点。</p>
+<p>首先放出 socks5 协议的 <a href="https://www.ietf.org/rfc/rfc1928.txt" target="_blank" rel="noopener">rfc</a>，socks5 协议很简单，SOCKS5 协议并不负责代理服务器的数据传输环节，此协议只是在 C/S 两端真实交互之间，建立起一条从客户端到代理服务器的授信连接。<br><a id="more"></a></p>
+<h3 id="sock5-代理结构图"><a href="#sock5-代理结构图" class="headerlink" title="sock5 代理结构图"></a>sock5 代理结构图</h3><p><img src="/media/15032089114950.jpg" alt=""></p>
+<h3 id="0x02-socks5-协议分析"><a href="#0x02-socks5-协议分析" class="headerlink" title="0x02 socks5 协议分析"></a>0x02 socks5 协议分析</h3><h5 id="认证阶段"><a href="#认证阶段" class="headerlink" title="认证阶段"></a>认证阶段</h5><p>首先客户端需要和服务端有个握手认证的过程，可以采用 <strong>用户名/密码</strong> 认证或者无需认证方式。</p>
+<p>格式如下 （<em>数字表示位数</em>）</p>
+<pre><code>+----+----------+----------+
+|VER | NMETHODS | METHODS  |
++----+----------+----------+
+| 1  |    1     |  1~255   |
++----+----------+----------+
+</code></pre><ul>
+<li>VER 字段是当前协议的版本号，也就是 5；</li>
+<li>NMETHODS 字段是 METHODS 字段占用的字节数；</li>
+<li><p>METHODS 字段的每一个字节表示一种认证方式，表示客户端支持的全部认证方式。</p>
+<pre><code>0x00: NO AUTHENTICATION REQUIRED
+0x01: GSSAPI
+0x02: USERNAME/PASSWORD
+0x03: to X’7F’ IANA ASSIGNED
+0x80: to X’FE’ RESERVED FOR PRIVATE METHODS
+0xFF: NO ACCEPTABLE METHODS
+</code></pre></li>
+</ul>
+<p>服务端返回格式</p>
+<pre><code>+----+--------+
+|VER | METHOD |
++----+--------+
+| 1  |   1    |
++----+--------+
+</code></pre><p>一般情况下服务端返回两种情况</p>
+<pre><code>0x05 0x00：告诉客户端采用无认证的方式建立连接；
+0x05 0xff：客户端的任意一种认证方式服务器都不支持。
+</code></pre><p>举个例子， 服务器无需认证的情况如下</p>
+<pre><code>client -&gt; server: 0x05 0x01 0x00
+server -&gt; client: 0x05 0x00
+</code></pre><h5 id="连接阶段"><a href="#连接阶段" class="headerlink" title="连接阶段"></a>连接阶段</h5><p>认证完成，客户端向服务端发送请求：</p>
+<pre><code>+----+-----+-------+------+----------+----------+
+|VER | CMD |  RSV  | ATYP | DST.ADDR | DST.PORT |
++----+-----+-------+------+----------+----------+
+| 1  |  1  |   1   |  1   | Variable |    2     |
++----+-----+-------+------+----------+----------+
+</code></pre><ul>
+<li>CMD 字段 command 的缩写：<ul>
+<li>0x01：CONNECT 建立 TCP 连接</li>
+<li>0x02: BIND 上报反向连接地址</li>
+<li>0x03：关联 UDP 请求</li>
+</ul>
+</li>
+<li>RSV 字段：保留字段，值为 0x00</li>
+<li>ATYP 字段：address type 的缩写，取值为：<ul>
+<li>0x01：IPv4        </li>
+<li>0x03：域名</li>
+<li>0x04：IPv6</li>
+</ul>
+</li>
+<li>DST.ADDR 字段：destination address 的缩写，取值随 ATYP 变化：<ul>
+<li>ATYP == 0x01：4 个字节的 IPv4 地址</li>
+<li>ATYP == 0x03：1 个字节表示域名长度，紧随其后的是对应的域名</li>
+<li>ATYP == 0x04：16 个字节的 IPv6 地址</li>
+<li>DST.PORT 字段：目的服务器的端口</li>
+</ul>
+</li>
+</ul>
+<p>服务端返回格式</p>
+<pre><code>+----+-----+-------+------+----------+----------+
+|VER | REP |  RSV  | ATYP | BND.ADDR | BND.PORT |
++----+-----+-------+------+----------+----------+
+| 1  |  1  |   1   |  1   | Variable |    2     |
++----+-----+-------+------+----------+----------+
+</code></pre><ul>
+<li>REP 字段<ul>
+<li>X’00’ succeeded</li>
+<li>X’01’ general SOCKS server failure</li>
+<li>X’02’ connection not allowed by ruleset</li>
+<li>X’03’ Network unreachable</li>
+<li>X’04’ Host unreachable</li>
+<li>X’05’ Connection refused</li>
+<li>X’06’ TTL expired</li>
+<li>X’07’ Command not supported</li>
+<li>X’08’ Address type not supported</li>
+<li>X’09’ to X’FF’ unassigned</li>
+</ul>
+</li>
+</ul>
+<p>举个例子，客户端通过 127.0.0.1:8000 的代理发送请求</p>
+<pre><code># request:        VER  CMD  RSV  ATYP DST.ADDR            DST.PORT
+client -&gt; server: 0x05 0x01 0x00 0x01 0x7f 0x00 0x00 0x01 0x1f 0x40
+# response:       VER  REP  RSV  ATYP BND.ADDR            BND.PORT
+server -&gt; client: 0x05 0x00 0x00 0x01 0x00 0x00 0x00 0x00 0x10 0x10
+</code></pre><h4 id="传输阶段"><a href="#传输阶段" class="headerlink" title="传输阶段"></a>传输阶段</h4><p>接下来就开始传输数据，socks5 服务器只做单纯的转发功能</p>
+<p>整个过程如下</p>
+<pre><code># 认证阶段
+client -&gt; server: 0x05 0x01 0x00
+server -&gt; client: 0x05 0x00
+# 连接阶段
+client -&gt; server: 0x05 0x01 0x00 0x03 0x0a b&apos;google.com&apos;  0x00 0x50
+server -&gt; client: 0x05 0x00 0x00 0x01 0x00 0x00 0x00 0x00 0x10 0x10
+# 传输阶段
+client -&gt; server -&gt; remote
+remote -&gt; server -&gt; client
+...    
+</code></pre><p>下篇教程用代码实现下 socks5 代理</p>
+<p>参考链接：</p>
+<pre><code>* https://loggerhead.me/posts/shadowsocks-yuan-ma-fen-xi-xie-yi-yu-jie-gou.html#fn:bnd.addr
+* https://www.ietf.org/rfc/rfc1928.txt
+* http://www.moye.me/2017/08/03/analyze-socks5-protocol/
+</code></pre></div></article></div></main><footer><div class="paginator"><a href="/2017/08/20/由浅入深写代理-4-socks5-代理-md/" class="prev">PREV</a><a href="/2017/08/14/由浅入深写代理-2-socket-编程/" class="next">NEXT</a></div><div class="copyright"><p>© 2021 <a href="https://facert.github.io">facert</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 动态可配置化 Python 爬虫教程 · 程序化思维</title><meta name="description" content="动态可配置化 Python 爬虫教程 - facert"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://facert.github.io/atom.xml" title="程序化思维"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/facert" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">动态可配置化 Python 爬虫教程</h1><div class="post-info">Dec 3, 2017</div><div class="post-content"><p>爬虫大家都很熟悉，像 scrapy 这种 Python 爬虫框架也很成熟，不过每写一个爬虫都得重新复制一份代码，这部分如果做成可配置的话，能相应减少一些工作量，对新手也会友好些，所以我花了点时间，开发了一个动态可配置的爬虫网站 <a href="http://www.anycrawl.info" target="_blank" rel="noopener">http://www.anycrawl.info</a> ，基于 scrapy ，提供一些配置项，5分钟就可生成一个通用爬虫，并可直接下载代码使用。</p>
+<p>我举 <a href="http://www.anycrawl.info/project/15/" target="_blank" rel="noopener">http://www.anycrawl.info/project/15/</a> 豆瓣小组爬虫的例子来介绍下网站的使用方法。<br><a id="more"></a></p>
+<h4 id="0x00-需求"><a href="#0x00-需求" class="headerlink" title="0x00 需求"></a>0x00 需求</h4><p><img src="/media/15123009061075.jpg" alt=""><br><img src="/media/15123009205239.jpg" alt=""></p>
+<p>我们希望能够爬取害羞组下的所有话题的标题，作者，以及对应的内容和图片</p>
+<h4 id="0x01-基础配置"><a href="#0x01-基础配置" class="headerlink" title="0x01 基础配置"></a>0x01 基础配置</h4><p>基础配置主要是 scrapy 的 settings.py 的一些选项</p>
+<p><img src="/media/15122997289231.jpg" alt=""></p>
+<ol>
+<li>项目名，别名不说了，域名指的是 allowed_domains，也就是允许爬虫在哪些域名下爬取</li>
+<li>爬虫开始的链接指的是 start_urls，指的是爬虫从哪个链接开始爬取，比如，<a href="https://www.douban.com/group/haixiuzu/discussion" target="_blank" rel="noopener">https://www.douban.com/group/haixiuzu/discussion</a> ， 从豆瓣害羞组的第一页爬取。</li>
+<li><p>保存数据的方式，目前支持 json, csv, image, mongodb, elasticsearch。(如果选择 image 的方式，则需要在下面配置规则的时候，选择保存图片链接 到 image_urls 这个字段，scrapy 会自动下载图片。mongodb, elasticsearch 则需要自己在 settings.py 配置你的 host 和 port)</p>
+<p>我们配置如下<br><img src="/media/15123038498788.jpg" alt=""></p>
+</li>
+</ol>
+<h4 id="0x02-规则列表"><a href="#0x02-规则列表" class="headerlink" title="0x02 规则列表"></a>0x02 规则列表</h4><p><img src="/media/15123004064954.jpg" alt=""></p>
+<ol>
+<li>规则列表分成两部分，链接正则 和 xpath 规则，必须先配置链接正则，链接正则对应的概念是 scrapy 的 Rule 的概念，意思是根据你给定的链接正则去匹配，如果匹配的到，则执行回调函数 callback, callback 可以为空，如果为空，则放入队列中。</li>
+</ol>
+<p><img src="/media/15123005270324.jpg" alt=""></p>
+<p>如上面 <code>/group/\w+/discussion\?start=[0-9]{0,4}$</code> 这个对应的是小组分页的链接正则，遇到这些链接，只要丢到队列中，由 scrapy 下次处理，<code>/group/topic/\d+/</code> 这个对应的是话题的详情链接，遇到这些，则执行 parse_topic 函数，那么这个函数具体执行什么内容，这就看下面配置的 xpath 规则，<a href="https://zhuanlan.zhihu.com/p/31659319" target="_blank" rel="noopener">xpath 教程</a> ，如我们需要 title, author, description, create_time, image_urls 这几个字段，直接配置即可，只要能通过 xpath 语法找到。</p>
+<p>配置完成后，会对应生成如下的源码：</p>
+<p><img src="/media/15123045039778.jpg" alt=""></p>
+<h4 id="0x03-爬取状态"><a href="#0x03-爬取状态" class="headerlink" title="0x03 爬取状态"></a>0x03 爬取状态</h4><p>点击提交后，就跳转到下载页面</p>
+<p><img src="/media/15123045808565.jpg" alt=""></p>
+<p>这里面有个数据指标的功能，记录你爬取的数目，目前看起来有点鸡肋，如果不需要记录，将 settings 里面的 COUNT_DATA 改为 False 就行。</p>
+<h4 id="0x04-运行爬虫"><a href="#0x04-运行爬虫" class="headerlink" title="0x04 运行爬虫"></a>0x04 运行爬虫</h4><p>运行爬虫必须有 python 和 scrapy 环境，安装 python 和 pip 这里不介绍了，安装 scrapy 命令如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install scrapy</span><br></pre></td></tr></table></figure>
+<p>然后下载刚才的项目代码，解压后，进入 output/xxxxxx 目录，执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python scripts.py</span><br></pre></td></tr></table></figure>
+<p>或者直接用 scrapy</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scrapy crawl &lt;项目名&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="0x05-Todo"><a href="#0x05-Todo" class="headerlink" title="0x05 Todo"></a>0x05 Todo</h4><ol>
+<li>支持自动登录</li>
+<li>支持动态爬取</li>
+<li>api 接口爬虫</li>
+<li>能适配更多爬取场景</li>
+<li>支持 css 解析网页</li>
+<li>其他</li>
+</ol>
+</div></article></div></main><footer><div class="paginator"><a href="/2017/12/03/xpath-使用教程/" class="prev">PREV</a><a href="/2017/10/11/谈谈-django-应用实践/" class="next">NEXT</a></div><div class="copyright"><p>© 2021 <a href="https://facert.github.io">facert</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

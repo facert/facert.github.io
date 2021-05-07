@@ -1,0 +1,102 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 深入理解 IPFS - 消费/订阅系统 · 程序化思维</title><meta name="description" content="深入理解 IPFS - 消费/订阅系统 - facert"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://facert.github.io/atom.xml" title="程序化思维"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/facert" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">深入理解 IPFS - 消费/订阅系统</h1><div class="post-info">Apr 25, 2020</div><div class="post-content"><p>本文译自：<a href="https://docs.libp2p.io/concepts/publish-subscribe/" target="_blank" rel="noopener">https://docs.libp2p.io/concepts/publish-subscribe/</a></p>
+<p>发布/订阅系统是节点聚集在他们感兴趣的主题上。节点对这个主题感兴趣被称为订阅了此节点。</p>
+<p><img src="/media/15872201968829.jpg" alt=""></p>
+<p>节点可以发送消息给主题，每个消息都需要发送到订阅此主题的所有节点。</p>
+<p><img src="/media/15872203338802.jpg" alt=""></p>
+<p>使用 pub/sub 系统的例子</p>
+<ul>
+<li><strong>聊天室</strong> 每个聊天室都是一个主题，客户端发送聊天消息到聊天室，其他客户端都可以收到。</li>
+<li><strong>文件共享</strong>  每个 pub/sub 主题代表一个可以下载的文件。上传者和文件的下载者通知他们所拥有的文件，在 pub/sub 系统之外协调下载。</li>
+</ul>
+<a id="more"></a>
+<h4 id="设计目标"><a href="#设计目标" class="headerlink" title="设计目标"></a>设计目标</h4><p>在 pub/sub 系统中，所有节点都参与发送信息。有几个不同的设计点需要权衡。理想的属性包括:</p>
+<ul>
+<li><strong>可靠性</strong>:所有消息都能传递给所有订阅该主题的节点。 　　</li>
+<li><strong>速度</strong>:消息传递迅速。 　　</li>
+<li><strong>效率</strong>:网络不会充斥过量消息副本。 　　</li>
+<li><strong>弹性</strong>:节点加入和离开网络时不会破坏它。没有中心节点故障。 　　</li>
+<li><strong>规模</strong>:主题可以有大量的用户和能处理大吞吐量的消息。 　　</li>
+<li><strong>简单性</strong>:该系统是容易理解和实现。每个节点只需存储少量的状态。</li>
+</ul>
+<p>libp2p 目前使用一个叫做 gossipsub 的设计。以此命名是因为节点互相发送他们知道的 gossip 消息来维护一个消息传递网络。</p>
+<h4 id="节点发现"><a href="#节点发现" class="headerlink" title="节点发现"></a>节点发现</h4><p>在节点订阅主题之前，需找到其他节点，跟他们建立连接。pub/sub 系统自己没有办法发现节点，它依赖于节点发现服务。</p>
+<p>以下是发现节点的方法：</p>
+<ul>
+<li>分布式哈希表</li>
+<li>本地服务广播</li>
+<li>跟已存在节点分享节点列表</li>
+<li>中心化 trackers 或者约定节点</li>
+<li>初始化节点列表</li>
+</ul>
+<p>比如，在 BitTorrent 应用中，上述方法都被用来下载文件。通过复用 BitTorrent 的节点发现逻辑，应用也可以创建一个健壮的 pub/sub 系统。</p>
+<p>被发现节点会被询问他们是否支持 pub/sub 协议，如果支持，则将被加入到 pub/sub 网络中。</p>
+<h4 id="节点类型"><a href="#节点类型" class="headerlink" title="节点类型"></a>节点类型</h4><p>在 gossipsub 中，节点以 <code>全消息</code> 节点或 <code>元数据</code> 节点连接彼此。网络结构也被分成两种：</p>
+<p><img src="/media/15872877223807.jpg" alt=""></p>
+<h5 id="全消息"><a href="#全消息" class="headerlink" title="全消息"></a>全消息</h5><p>全消息节点用来传递网络中完整的内容。网络中此类节点和少量同类节点相连。（在 <a href="https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/README.md" target="_blank" rel="noopener">gossipsub specification</a> 中，这种网络被称为网格，网络中的节点称为网格成员。）</p>
+<p>限制全消息节点数是有用的，可以让网络流量受到控制；每个节点只传递消息给少量节点比所有节点要好。每个节点有它想连接的目标数量的节点。在这个例子中，节点都想要被 3 个节点连接，实际有2-4 个连接。</p>
+<p><img src="/media/15872884892477.jpg" alt=""></p>
+<blockquote>
+<p>节点数开发者可自定义</p>
+</blockquote>
+<p>节点度（也被称为网络度或 D）控制速度，可靠性，弹性，效率之间的权衡。一个高的节点度能帮助消息传播更快，因为有更大的机会接触到所有的订阅者，更少的机会被离开的节点所扰乱。当然，一个高节点度同样会引起额外重复消息的传递，加大带宽的开销。</p>
+<p>在 libp2p 默认的实现节点度是 6，上下浮动 4-12。</p>
+<h5 id="元消息"><a href="#元消息" class="headerlink" title="元消息"></a>元消息</h5><p>除了稀疏的全节点网络以外，还有密集的元消息节点网络，它由非全消息节点构成。</p>
+<p>元消息网络共享哪些 gossip 消息可用以及帮助维护全消息节点网络。</p>
+<p><img src="/media/15872892870491.jpg" alt=""></p>
+<h5 id="嫁接和修剪"><a href="#嫁接和修剪" class="headerlink" title="嫁接和修剪"></a>嫁接和修剪</h5><p>节点是双向的，意味着任意两个互连的节点，都认为他们的连接是全消息或者元消息。</p>
+<p>任意节点可以通过通知对方，来改变他们的连接类型，嫁接就是将元消息连接转成全消息，修剪是将全消息节点转成元消息。</p>
+<p><img src="/media/15872895625610.jpg" alt=""></p>
+<p>当一个节点有很少的全消息节点时，它会随机嫁接一些元消息节点为全消息节点。</p>
+<p><img src="/media/15872896899989.jpg" alt=""></p>
+<p>相反的，如果一个节点有很多全节点，它也会修剪一些节点到元节点。</p>
+<p><img src="/media/15872897437561.jpg" alt=""></p>
+<p>在 libp2p 实现中，所有节点 1 秒检查一次，成为心跳检测。嫁接和修剪也发生在此期间。</p>
+<h4 id="订阅和退订"><a href="#订阅和退订" class="headerlink" title="订阅和退订"></a>订阅和退订</h4><p>节点记录他们直连的节点所订阅的主题。通过这个信息，每个节点都可以构建出一幅图像，包括他们周围的主题和主题都被哪些节点所订阅。</p>
+<p><img src="/media/15872910929771.jpg" alt=""></p>
+<p>记录节点发生在发送订阅和退订消息的时候，当两个节点间新连接建立时，它们开始发送给对方他们订阅的主题列表。</p>
+<p><img src="/media/15872911962062.jpg" alt=""></p>
+<p>随着时间的推移，无论一个节点订阅或退订一个主题，它都会将消息发送给其他节点。这些消息无论被接受节点对被订阅主题是否有疑问，都会被发送到已连接节点。</p>
+<p><img src="/media/15872914445192.jpg" alt=""></p>
+<p>订阅和退订消息会跟嫁接和修剪消息一起被发送。当节点订阅主题时，他会选择一些节点变成此主题的全消息节点，同时发送嫁接消息。</p>
+<p><img src="/media/15872920779406.jpg" alt=""></p>
+<p>当节点退订主题时，它将通知全消息节点把他们的连接修剪成元消息节点，同时发送退订消息。</p>
+<p><img src="/media/15872921633734.jpg" alt=""></p>
+<h4 id="发送消息"><a href="#发送消息" class="headerlink" title="发送消息"></a>发送消息</h4><p>当节点想发布一个消息，它会发送一个消息备份给所有它连接的全消息节点：</p>
+<p><img src="/media/15872922476532.jpg" alt=""></p>
+<p>类似的，当节点接收到另一个节点的新消息时，它将存储这个消息然后将这个备份发送给所有它连接的全消息节点：</p>
+<p><img src="/media/15872923506664.jpg" alt=""></p>
+<p>在 <a href="https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/README.md" target="_blank" rel="noopener">gossipsub specification</a> 中,这种节点也被称为路由，因为他们在网络中路由消息。</p>
+<p>节点保存了最近见到的消息列表。能让节点只在初次见到消息时有所行动，之后就会忽略。</p>
+<p>节点也会选择校验他们接收到的消息。这取决于程序。比如，一个聊天程序强制所有消息要短于 100 字符。如果程序告诉 libp2p 消息无效，它将会被丢弃，也不会被再次发送到网络中。</p>
+<h4 id="Gossip"><a href="#Gossip" class="headerlink" title="Gossip"></a>Gossip</h4><p>节点间相互八卦他们之前见到的消息，每秒所有节点都会随机选中 6 个元消息节点，发送给他们最近见到的消息。</p>
+<p><img src="/media/15872931162221.jpg" alt=""></p>
+<p>八卦机制给节点一个机会能被通知到他们错过的全消息网络上的消息。如果一个节点意识到他一直丢失消息，它会重置一些新的全消息节点。</p>
+<p>这里有一个例子，一个特定的消息如何在元消息节点间传递。</p>
+<p><img src="/media/15872933503864.jpg" alt=""></p>
+<p>在 <a href="https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/README.md" target="_blank" rel="noopener">gossipsub specification</a> 中，八卦最近看到的消息被称为 <code>IHAVE</code> 消息，请求特定消息被称为 <code>IWANT</code> 消息。</p>
+<h4 id="扩散"><a href="#扩散" class="headerlink" title="扩散"></a>扩散</h4><p>节点被允许发布消息到它未订阅的主题上。这里有些特定规则来确保消息被可靠传递。</p>
+<p>首先，一个节点想要发布消息到它未订阅的主题上，它随机选 6 个订阅该主题的节点（3 个如下所示），提醒它们作为扩散节点。</p>
+<p><img src="/media/15872937598967.jpg" alt=""></p>
+<p>和其他节点类型不同，扩散节点是单向的；它们总是从一个主题外的节点到主题内的节点。主题内节点并未被告知它们被选中，仍然会和其他元节点相连。</p>
+<p>每次发送方想要发送消息，它将消息发送给扩散节点，然后扩散节点分发消息到主题内。</p>
+<p><img src="/media/15872940138560.jpg" alt=""></p>
+<p>如果发送方发送消息时发现一些扩散节点已下线，他将随机再选额外的扩散节点，直到 6 个节点。</p>
+<p>当节点订阅了主题，如果它已经有一些扩散节点，它会将他们变成全消息节点：</p>
+<p><img src="/media/15872941598723.jpg" alt=""></p>
+<p>两分钟后没有消息再发送给这个主题，所有的扩散节点会被遗忘。</p>
+<p><img src="/media/15872942032975.jpg" alt=""></p>
+<h4 id="网络数据包"><a href="#网络数据包" class="headerlink" title="网络数据包"></a>网络数据包</h4><p>节点间相互发送的数据包是由各种类型组合起来的（应用消息，have/want, 订阅/退订, 嫁接/修剪），这种结构允许不同请求打包合并成一个请求发送。</p>
+<p>如下：</p>
+<p><img src="/media/15872944474148.jpg" alt=""></p>
+<p>参见 <a href="https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/README.md#protobuf" target="_blank" rel="noopener">specification</a>  <a href="https://developers.google.com/protocol-buffers" target="_blank" rel="noopener">Protocol Buffers</a> </p>
+<h4 id="状态"><a href="#状态" class="headerlink" title="状态"></a>状态</h4><p>这是一个每个节点必须记住的状态总结：</p>
+<ul>
+<li><strong>订阅</strong>：订阅的主题列表</li>
+<li><strong>扩散主题</strong> 一些近期发送过消息但并未订阅的主题。每个主题的最近消息时间需保存。</li>
+<li><strong>最近连接的节点列表</strong> 每个节点已连接的节点列表，以及他们都订阅过哪些主题，节点是全消息节点，元消息节点还是扩散节点。</li>
+<li><strong>最近发送的消息</strong> 这是一份最近发送消息的缓存。它被用于检测和忽略重复消息。每个消息包括谁发送的和序列号，足够唯一标识这个消息。特别近期的消息，这条消息内容都会被保存，这样它可以将消息发送给其他节点。</li>
+</ul>
+<p><img src="/media/15872954228831.jpg" alt=""></p>
+<h4 id="更多信息"><a href="#更多信息" class="headerlink" title="更多信息"></a>更多信息</h4><p>更多细节和 pub/sub 设计讨论，见 <a href="https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/README.md" target="_blank" rel="noopener">gossipsub specification</a></p>
+<p>实现详情，见 <a href="https://github.com/libp2p/go-libp2p-pubsub/blob/master/gossipsub.go" target="_blank" rel="noopener">gossipsub.go</a></p>
+</div></article></div></main><footer><div class="paginator"><a href="/2020/04/25/深入理解-IPFS-分布式代理/" class="next">NEXT</a></div><div class="copyright"><p>© 2021 <a href="https://facert.github.io">facert</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

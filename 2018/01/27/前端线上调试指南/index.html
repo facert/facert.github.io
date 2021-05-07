@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 前端线上调试指南 · 程序化思维</title><meta name="description" content="前端线上调试指南 - facert"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://facert.github.io/atom.xml" title="程序化思维"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/facert" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">前端线上调试指南</h1><div class="post-info">Jan 27, 2018</div><div class="post-content"><h4 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h4><p>前端工程师可能会遇到如下的场景：测试环境功能都 ok ，到了生产环境就出问题，改完 bug 上线后发现又引入了新的问题。只能再次重复这个过程。</p>
+<p>所以能不能不上线，将本地代码直接作用于线上，来调试功能呢。</p>
+<p>我们有如下工具可以选择 fiddler (windows), charles (mac), mitmproxy (可自定义脚本)</p>
+<p>下面我们举 charles 和 mitmproxy 为例子说明<br><a id="more"></a></p>
+<h5 id="charles"><a href="#charles" class="headerlink" title="charles"></a>charles</h5><ol>
+<li><p>打开 charles, 点击 Tools -&gt; Map Local -&gt; Add， 将需要的 Path 映射到 Local path （自己的本地目录），然后找到自己需要映射的目录或文件，（比如 js 目录）。</p>
+<p><img src="/media/15170629957005.jpg" alt=""></p>
+</li>
+</ol>
+<ol>
+<li>这里面我们也可以选择 Map Remote 模式，它能映射到 url 地址，如 www.example.com/js -&gt; test.example.com/js</li>
+</ol>
+<ol>
+<li>接下来我们只需让浏览器代理到 charles 即可，charles 默认开启的是 http 代理，8888 端口</li>
+</ol>
+<ul>
+<li>Chrome 用户下载插件 switchyOmega，配置如下</li>
+</ul>
+<p><img src="/media/15170631701355.jpg" alt=""></p>
+<ul>
+<li>Safari 用户不用装插件，只需 charles -&gt; Proxy -&gt; MacosProxy 选中即可。</li>
+</ul>
+<ol>
+<li>配置完成！接下来你本地对 js 的改动，直接能够作用在 exampel.com 上。</li>
+</ol>
+<h5 id="mitmproxy"><a href="#mitmproxy" class="headerlink" title="mitmproxy"></a>mitmproxy</h5><p>mitmproxy 没有界面，只能在终端运行，不过它可以定制 python 插件，实现想要的功能。</p>
+<p>接下来我先介绍下原理，为什么本地的文件能直接作用于线上。</p>
+<p>原理在于我们使用了代理，或者更准确一点叫中间人劫持，不过这个中间人是我们自己。</p>
+<p>代理软件在代理我们访问的网页时，会根据我们配置的规则修改返回给我们的内容，比如我们访问 example.com/js/a.js 的时候，发现我们配置了规则是去本地找 a.js 这个文件，找到这个文件，拿到内容后，会直接将 response 的 boby 内容改成本地的内容，这样浏览器就会根据本地内容做渲染。</p>
+<p>我们用 mitmproxy 的脚本来实现，自定义一个文件 test.py</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">import re</span><br><span class="line">import glob</span><br><span class="line">from mitmproxy import http</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 拿到本地 a.js 的内容</span><br><span class="line">main_js = glob.glob(&apos;./js/a\.js&apos;)</span><br><span class="line">main_content = &apos;&apos;</span><br><span class="line">if main_js:</span><br><span class="line">    with open(main_js[0]) as f:</span><br><span class="line">        main_content = f.read()</span><br><span class="line"></span><br><span class="line"># 匹配 example.com/js/a.js 的内容</span><br><span class="line">pattern = re.compile(&quot;http://example\.com/js/a\.js&quot;)</span><br><span class="line"></span><br><span class="line">def request(flow: http.HTTPFlow) -&gt; None:</span><br><span class="line">    if pattern.match(flow.request.pretty_url):</span><br><span class="line">        flow.response = http.HTTPResponse.make(</span><br><span class="line">            200,</span><br><span class="line">            main_content,</span><br><span class="line">            &#123;&quot;Content-Type&quot;: &quot;application/javascript&quot;,</span><br><span class="line">             &quot;Content-Encoding&quot;: &quot;gzip&quot;&#125;</span><br><span class="line">        )</span><br></pre></td></tr></table></figure>
+<p>然后运行 <code>mitmdump  -s test.py</code> 就可达到和 charles 一样的效果。</p>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/02/25/利用-ipfs-构建去中心化-django-博客系统/" class="prev">PREV</a><a href="/2018/01/13/开源【动态可配化爬虫】代码/" class="next">NEXT</a></div><div class="copyright"><p>© 2021 <a href="https://facert.github.io">facert</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
